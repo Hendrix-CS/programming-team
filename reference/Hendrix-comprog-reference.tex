@@ -1,0 +1,42 @@
+% -*- compile-command: "pdflatex -shell-escape Hendrix-comprog-reference.tex" -*-
+
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+
+\usepackage{minted}
+\newcommand{\code}[1]{\inputminted[fontsize=\normalsize]{java}{code/#1}}
+
+\newcommand{\kattis}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
+
+\begin{document}
+
+\section{Data Structures}
+
+\subsection{Union-find}
+
+A union-find structure can be used to keep track of a collection of
+disjoint sets, with the ability to quickly test whether two items are
+in the same set, and to quickly union two given sets into one.  It is
+used in Kruskal's Minimum Spanning Tree algorithm, and can also be
+useful on its own.
+
+Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
+\kattis{islandhopping}, \kattis{kastenlauf}, \kattis{lostmap},
+\kattis{minspantree}, \kattis{numbersetseasy}, \kattis{treehouses},
+\kattis{unionfind}, \kattis{virtualfriends},
+\kattis{wheresmyinternet},
+
+\code{data-structures/UnionFind.java}
+
+\section{Mathematics}
+
+\subsection{Fractions}
+
+\subsection{Binomial coefficients}
+
+\subsection{GCD/Euclidean Algorithm}
+
+\end{document}

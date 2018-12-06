@@ -1,0 +1,5 @@
+reference/_minted*
+*.class
+*.aux
+*.log
+*.out
