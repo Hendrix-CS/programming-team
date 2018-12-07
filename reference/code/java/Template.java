@@ -6,5 +6,7 @@ public class ClassName {
         Scanner in = new Scanner(System.in);
 
         // Solution code here
+
+        System.out.println(answer);
     }
 }

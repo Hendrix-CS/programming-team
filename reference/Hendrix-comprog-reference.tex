@@ -13,7 +13,8 @@
 
 \usepackage{minted}
 \newcommand{\code}[1]{\inputminted[fontsize=\normalsize]{java}{code/#1}}
-
+\newcommand*{\fulllink}[1]{\hyperref[{#1}]{\nameref*{#1}~(\ref*{#1}, page~\pageref*{#1})}}
+\newcommand*{\link}[1]{\hyperref[{#1}]{(\ref*{#1}, page~\pageref*{#1})}}
 \newcommand{\kattis}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
 
 \begin{document}
@@ -49,7 +50,7 @@
 \texttt{Scanner} is relatively slow but should usually be sufficient
 for most purposes.  If the input or output is relatively large (> 1MB)
 and you suspect the time taken to read or write it may be a hindrance,
-you can use \hyperref[sec:fastio]{Fast IO}.
+you can use \fulllink{sec:fastio}.
 
 \code{java/ScannerExample.java}
 
@@ -77,7 +78,7 @@ HashMap, TreeMap
 
 \subsection{Sorting}
 
-\subsection{Fast IO} \label{sec:fastio}
+\subsection{Fast I/O} \label{sec:fastio}
 
 \section{Data Structures}
 
@@ -86,10 +87,9 @@ HashMap, TreeMap
 A union-find structure can be used to keep track of a collection of
 disjoint sets, with the ability to quickly test whether two items are
 in the same set, and to quickly union two given sets into one.  It is
-used in Kruskal's Minimum Spanning Tree algorithm, and can also be
-useful on its own.  \texttt{find} (with path compression) and
-\texttt{union} both take essentially constant amortized
-time.
+used in Kruskal's Minimum Spanning Tree algorithm \link{sec:kruskal},
+and can also be useful on its own.  \texttt{find} and \texttt{union}
+both take essentially constant amortized time.
 
 Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
 \kattis{islandhopping}, \kattis{kastenlauf}, \kattis{lostmap},
@@ -139,5 +139,13 @@ Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
 \subsection{Primality}
 
 \section{Geometry}
+
+\section{Miscellaneous}
+
+\subsection{2D grids}
+
+Discussion of implicit graphs
+
+Trick for listing neighbors with delta vector
 
 \end{document}
