@@ -1,6 +1,11 @@
 % -*- compile-command: "pdflatex -shell-escape Hendrix-comprog-reference.tex" -*-
 
-\documentclass{article}
+\documentclass[10pt]{article}
+
+\usepackage[noheadfoot,margin=1in]{geometry}
+
+% TODO: make table of contents
+% TODO: make fancy header with page number and section etc.
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -13,26 +18,66 @@
 
 \begin{document}
 
-\section{Miscellaneous tools}
+\title{Hendrix Programming Team Reference}
 
-Big-O.  Size of int, long.
+\maketitle
 
-BigInteger.
+\tableofcontents
+\newpage
 
+\section{Limits}
 
-\section{Graphs}
+\begin{itemize}
+\item Rule of thumb: $10^8$ operations per second.
+  XXX table of runtimes, discussion of brute force
+\item $2^{10} = 1024 \approx 10^3$
+\item $2 \cdot 10^9$ fits in a 32-bit \texttt{int}.
+\item $9 \cdot 10^{18}$ fits in a 64-bit \texttt{long}.  Remember to
+  use \texttt{long} if you need an answer $\bmod (10^9 + 7)$ (which
+  would fit in an \texttt{int}) but computing the answer requires
+  \emph{multiplying} $\bmod (10^9 + 7)$.
+\end{itemize}
 
-\subsection{Traversal (DFS/BFS)}
+\section{Java Reference}
 
-\subsection{Single-source shortest paths (Dijkstra)}
+\subsection{Template}
 
-\subsection{All-pairs shortest paths (Floyd-Warshall)}
+\code{java/Template.java}
 
-\subsection{Min spanning tree (Kruskal)} \label{sec:kruskal}
+\subsection{Scanner}
 
-\subsection{Topological sort}
+\texttt{Scanner} is relatively slow but should usually be sufficient
+for most purposes.  If the input or output is relatively large (> 1MB)
+and you suspect the time taken to read or write it may be a hindrance,
+you can use \hyperref[sec:fastio]{Fast IO}.
 
-\subsection{Max flow}
+\code{java/ScannerExample.java}
+
+\subsection{String}
+
+\subsection{Arrays}
+
+\subsection{ArrayList}
+
+\subsection{Stack}
+
+\subsection{Queue}
+
+ArrayDeque
+
+\subsection{Set}
+
+HashSet, TreeSet
+
+\subsection{Map}
+
+HashMap, TreeMap
+
+\subsection{BigInteger}
+
+\subsection{Sorting}
+
+\subsection{Fast IO} \label{sec:fastio}
 
 \section{Data Structures}
 
@@ -57,6 +102,21 @@ Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
 \subsection{Segment tree}
 
 \subsection{Fenwick tree}
+
+
+\section{Graphs}
+
+\subsection{Traversal (DFS/BFS)}
+
+\subsection{Single-source shortest paths (Dijkstra)}
+
+\subsection{All-pairs shortest paths (Floyd-Warshall)}
+
+\subsection{Min spanning tree (Kruskal)} \label{sec:kruskal}
+
+\subsection{Topological sort}
+
+\subsection{Max flow}
 
 \section{Dynamic Programming}
 
