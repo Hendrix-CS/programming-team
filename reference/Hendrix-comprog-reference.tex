@@ -42,7 +42,9 @@ A union-find structure can be used to keep track of a collection of
 disjoint sets, with the ability to quickly test whether two items are
 in the same set, and to quickly union two given sets into one.  It is
 used in Kruskal's Minimum Spanning Tree algorithm, and can also be
-useful on its own.
+useful on its own.  \texttt{find} (with path compression) and
+\texttt{union} both take essentially constant amortized
+time.
 
 Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
 \kattis{islandhopping}, \kattis{kastenlauf}, \kattis{lostmap},
