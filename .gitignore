@@ -3,3 +3,4 @@ reference/_minted*
 *.aux
 *.log
 *.out
+*.toc
