@@ -11,6 +11,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 
+\usepackage{graphicx}
+\graphicspath{{images/}}
+
 \usepackage{minted}
 \newcommand{\code}[1]{\inputminted[fontsize=\normalsize]{java}{code/#1}}
 \newcommand*{\fulllink}[1]{\hyperref[{#1}]{\nameref*{#1}~(\ref*{#1}, page~\pageref*{#1})}}
@@ -91,7 +94,7 @@ used in Kruskal's Minimum Spanning Tree algorithm \link{sec:kruskal},
 and can also be useful on its own.  \texttt{find} and \texttt{union}
 both take essentially constant amortized time.
 
-Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
+\includegraphics[height=0.9\baselineskip]{Kattis} \kattis{10kindsofpeople}, \kattis{drivingrange},
 \kattis{islandhopping}, \kattis{kastenlauf}, \kattis{lostmap},
 \kattis{minspantree}, \kattis{numbersetseasy}, \kattis{treehouses},
 \kattis{unionfind}, \kattis{virtualfriends},
@@ -106,7 +109,15 @@ Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
 
 \section{Graphs}
 
+\subsection{Representation}
+
+  Adjacency matrix, adjacency maps.  Edge objects.
+
+  Implicit graphs.
+
 \subsection{Traversal (DFS/BFS)}
+
+Code for DFS/BFS with level labelling, parent map.
 
 \subsection{Single-source shortest paths (Dijkstra)}
 
@@ -117,6 +128,10 @@ Kattis: \kattis{10kindsofpeople}, \kattis{drivingrange},
 \subsection{Topological sort}
 
 \subsection{Max flow}
+
+\subsection{Miscellaneous}
+
+  New virtual source/sink node trick
 
 \section{Dynamic Programming}
 
