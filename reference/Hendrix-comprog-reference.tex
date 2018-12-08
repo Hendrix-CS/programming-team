@@ -1,10 +1,18 @@
 % -*- compile-command: "pdflatex -shell-escape Hendrix-comprog-reference.tex" -*-
 
-\documentclass[10pt]{article}
+\documentclass[10pt]{book}
 
-\usepackage[noheadfoot,margin=1in]{geometry}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
 
-% TODO: make table of contents
+\pagestyle{fancy}
+
+% \lhead{\leftmark}
+% \rhead{\rightmark}
+
+% \lfoot{Hendrix Programming Team Reference}
+% \rfoot{\thepage}
+
 % TODO: make fancy header with page number and section etc.
 
 \usepackage[T1]{fontenc}
@@ -20,6 +28,8 @@
 \newcommand*{\link}[1]{\hyperref[{#1}]{(\ref*{#1}, page~\pageref*{#1})}}
 \newcommand{\kattis}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
 
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
 \begin{document}
 
 \title{Hendrix Programming Team Reference}
@@ -29,11 +39,11 @@
 \tableofcontents
 \newpage
 
-\section{Limits}
+\chapter{Limits}
 
 \begin{itemize}
 \item Rule of thumb: $10^8$ operations per second.
-  XXX table of runtimes, discussion of brute force
+  \todo{table of runtimes, discussion of brute force}
 \item $2^{10} = 1024 \approx 10^3$
 \item $2 \cdot 10^9$ fits in a 32-bit \texttt{int}.
 \item $9 \cdot 10^{18}$ fits in a 64-bit \texttt{long}.  Remember to
@@ -42,13 +52,13 @@
   \emph{multiplying} $\bmod (10^9 + 7)$.
 \end{itemize}
 
-\section{Java Reference}
+\chapter{Java Reference}
 
-\subsection{Template}
+\section{Template}
 
 \code{java/Template.java}
 
-\subsection{Scanner}
+\section{Scanner}
 
 \texttt{Scanner} is relatively slow but should usually be sufficient
 for most purposes.  If the input or output is relatively large (> 1MB)
@@ -57,35 +67,42 @@ you can use \fulllink{sec:fastio}.
 
 \code{java/ScannerExample.java}
 
-\subsection{String}
+\section{String}
 
-\subsection{Arrays}
+\section{Arrays}
 
-\subsection{ArrayList}
+\section{ArrayList}
 
-\subsection{Stack}
+\section{Stack}
 
-\subsection{Queue}
+\section{Queue}
 
 ArrayDeque
 
-\subsection{Set}
+\section{PriorityQueue}
+
+\section{Set}
 
 HashSet, TreeSet
 
-\subsection{Map}
+\section{Map}
 
 HashMap, TreeMap
 
-\subsection{BigInteger}
+\section{BigInteger}
 
-\subsection{Sorting}
+\section{Sorting}
 
-\subsection{Fast I/O} \label{sec:fastio}
+\todo{Basic template for implementing Comparable}
+\todo{Arrays.sort, Collections.sort}
 
-\section{Data Structures}
+\section{Fast I/O} \label{sec:fastio}
 
-\subsection{Union-find}
+\todo{Kattio}
+
+\chapter{Data Structures}
+
+\section{Union-find}
 
 A union-find structure can be used to keep track of a collection of
 disjoint sets, with the ability to quickly test whether two items are
@@ -102,65 +119,84 @@ both take essentially constant amortized time.
 
 \code{data-structures/UnionFind.java}
 
-\subsection{Segment tree}
+\section{Segment tree}
 
-\subsection{Fenwick tree}
+\section{Fenwick tree}
 
+\section{Heap}
 
-\section{Graphs}
+\section{Red-black tree}
 
-\subsection{Representation}
+\chapter{Graphs}
+
+\section{Representation}
 
   Adjacency matrix, adjacency maps.  Edge objects.
 
   Implicit graphs.
 
-\subsection{Traversal (DFS/BFS)}
+\section{Traversal (DFS/BFS)}
 
 Code for DFS/BFS with level labelling, parent map.
 
-\subsection{Single-source shortest paths (Dijkstra)}
+\section{Single-source shortest paths (Dijkstra)}
 
-\subsection{All-pairs shortest paths (Floyd-Warshall)}
+\section{All-pairs shortest paths (Floyd-Warshall)}
 
-\subsection{Min spanning tree (Kruskal)} \label{sec:kruskal}
+\section{Min spanning tree (Kruskal)} \label{sec:kruskal}
 
-\subsection{Topological sort}
+\section{DAGs, topological sort}
 
-\subsection{Max flow}
-
-\subsection{Miscellaneous}
-
-  New virtual source/sink node trick
-
-\section{Dynamic Programming}
-
-\section{Strings}
-
-\subsection{Suffix array}
-
-\section{Divide \& Conquer}
-
-\subsection{Counting inversions}
-
-\section{Mathematics}
-
-\subsection{Fractions}
-
-\subsection{Binomial coefficients}
-
-\subsection{GCD/Euclidean Algorithm}
-
-\subsection{Primality}
-
-\section{Geometry}
+\section{Max flow}
 
 \section{Miscellaneous}
 
-\subsection{2D grids}
+\todo{New virtual source/sink node trick}
 
-Discussion of implicit graphs
+\chapter{Dynamic Programming}
 
-Trick for listing neighbors with delta vector
+\chapter{Strings}
+
+\section{Suffix array}
+
+\chapter{Divide \& Conquer}
+
+\section{Counting inversions}
+
+\chapter{Mathematics}
+
+\section{GCD/Euclidean Algorithm}
+
+\section{Fractions}
+
+\section{Primes and factorization}
+
+\todo{Basic primality testing and factorization with trial division.
+  Sieving (primes, factors, Euler totient).}
+
+\section{Combinatorics}
+
+\todo{Basic principles of combinatorics.  Code for computing binomial
+  coefficients.}
+
+\chapter{Bit Tricks}
+
+\todo{Basic bit manipulation.  Using bitstrings to compactly represent
+  sets/states.  Iterating through all subsets with counter.}
+
+\chapter{Geometry}
+
+\chapter{Miscellaneous}
+
+\section{2D grids}
+
+\todo{Discussion of implicit graphs}
+\todo{Formulas for converting between pair of coordinates and single index}
+\todo{Trick for listing neighbors with delta vector}
+
+\chapter{Python reference}
+
+\todo{Basic Python template for doing I/O etc.}
+\todo{Benefits of Python (big integer, dictionaries)}
 
 \end{document}
