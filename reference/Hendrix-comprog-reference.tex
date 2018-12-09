@@ -19,21 +19,70 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 
+\usepackage{titlepic}
 \usepackage{graphicx}
 \graphicspath{{images/}}
 
 \usepackage{minted}
-\newcommand{\code}[1]{\inputminted[fontsize=\normalsize]{java}{code/#1}}
-\newcommand*{\fulllink}[1]{\hyperref[{#1}]{\nameref*{#1}~(\ref*{#1}, page~\pageref*{#1})}}
-\newcommand*{\link}[1]{\hyperref[{#1}]{(\ref*{#1}, page~\pageref*{#1})}}
-\newcommand{\kattis}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
+\usepackage{etoolbox}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{xspace}
+\usepackage{pifont}
 
-\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Inline code
+
+\newcommand{\code}[1]{\inputminted[fontsize=\normalsize]{java}{code/#1}}
+\newcommand{\pycode}[1]{\inputminted[fontsize=\normalsize]{python}{code/#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Links
+
+\newcommand*{\fulllink}[1]{\hyperref[{#1}]{\nameref*{#1}~(\S\ref*{#1}, page~\pageref*{#1})}}
+\newcommand*{\link}[1]{\hyperref[{#1}]{(\S\ref*{#1}, page~\pageref*{#1})}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Kattis
+
+\newcommand{\kattis}[1]{%
+  \begin{mdframed}
+  \includegraphics[height=0.9\baselineskip]{Kattis}
+  \def\nextitem{\def\nextitem{, }}
+  \renewcommand*{\do}[1]{\nextitem\kattislink{##1}}
+  \docsvlist{#1}
+  \end{mdframed}
+}
+
+\newcommand{\kattislink}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Todos
+
+\newif\iftodos
+\todostrue
+\newcommand{\todo}[1]{\iftodos\textcolor{red}{[TODO: #1]}\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Warning
+
+\newenvironment{warning}
+{\par\begin{mdframed}[linewidth=2pt,linecolor=red]%
+    \begin{list}{}{\leftmargin=1cm
+        \labelwidth=\leftmargin}\item[\Large\ding{43}]}
+    {\end{list}\end{mdframed}\par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Misc
+
+\newcommand{\eg}{\emph{e.g.}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
 \title{Hendrix Programming Team Reference}
-
+\titlepic{\includegraphics[width=3in]{Hendrix-logo}}
 \maketitle
 
 \tableofcontents
@@ -41,15 +90,57 @@
 
 \chapter{Limits}
 
+As a rule of thumb, you should assume about $10^8$ (= 100 million)
+operations per second.  If you can think of a straightforward brute
+force solution to a problem, you should check whether it is likely to
+fit within the time limit; if so, go for it!  Some problems are
+explicitly written to see if you will recognize this.  If a brute
+force solution won't fit, the input size can help guide you to search
+for the right algorithm running time.
+
+Example: suppose a problem requires you to find the length of a
+shortest path in a weighted graph.
 \begin{itemize}
-\item Rule of thumb: $10^8$ operations per second.
-  \todo{table of runtimes, discussion of brute force}
+\item If the graph has $|V| = 400$ vertices, you should use
+  Floyd-Warshall: it is the easiest to code and takes $O(V^3)$ time
+  which should be good enough.
+\item If the graph has $|V| = 4000$ vertices, especially if it doesn't
+  have all possible edges, you can use Dijkstra's algorithm, which is
+  $O(E \log V)$.
+\item If the graph has $|V| = 10^5$ vertices, you should look for some
+  special property of the graph which allows you to solve the problem
+  in $O(V)$ or $O(V \log V)$ time---for example, perhaps the graph is
+  a tree, so you can run DFS to find a unique path and then add up the
+  weights.  An input size of $10^5$ is a common sign that you are
+  expected to use an $O(n \lg n)$ or $O(n)$ algorithm---it's big
+  enough to make $O(n^2)$ too slow but not so big that the time to do
+  I/O makes a big difference.
+\end{itemize}
+
+\begin{table*}[h]\centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}lll@{}}\toprule
+    $n$ & Worst running time & Example \\
+    \midrule
+    $11$ & $O(n!)$ & Generating all permutations \link{sec:combinatorics} \\
+    $25$ & $O(2^n)$ & Generating all subsets \link{sec:bittricks} \\
+    $100$ & $O(n^4)$ & Some brute force algorithms \\
+    $400$ & $O(n^3)$ & Floyd-Warshall \link{sec:floydwarshall} \\
+    $10^4$ & $O(n^2)$ & Testing all pairs \\
+    $10^6$ & $O(n \lg n)$ & BFS/DFS; sort+greedy \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\kattis{bing, transportationplanning, dancerecital, prozor,
+  rectanglesurrounding, weakvertices}
+
+\begin{itemize}
 \item $2^{10} = 1024 \approx 10^3$
 \item $2 \cdot 10^9$ fits in a 32-bit \texttt{int}.
-\item $9 \cdot 10^{18}$ fits in a 64-bit \texttt{long}.  Remember to
-  use \texttt{long} if you need an answer $\bmod (10^9 + 7)$ (which
-  would fit in an \texttt{int}) but computing the answer requires
-  \emph{multiplying} $\bmod (10^9 + 7)$.
+\item $9 \cdot 10^{18}$ fits in a 64-bit \texttt{long}.
+\item If you need larger values, use \fulllink{sec:bigint} or just use
+  \fulllink{chap:python}; see \fulllink{sec:combinatorics}.
 \end{itemize}
 
 \chapter{Java Reference}
@@ -71,34 +162,59 @@ you can use \fulllink{sec:fastio}.
 
 \section{Arrays}
 
+\todo{Basic array template/examples.}
+
 \section{ArrayList}
 
 \section{Stack}
 
+\todo{Stack class}
+
 \section{Queue}
 
-ArrayDeque
+\todo{Queue interface, ArrayDeque class}
 
 \section{PriorityQueue}
 
+\todo{Note lack of decreaseKey operation (Dijkstra), use remove + add,
+  not as fast}
+
 \section{Set}
 
-HashSet, TreeSet
+\todo{HashSet, TreeSet}
 
 \section{Map}
 
-HashMap, TreeMap
+\todo{HashMap, TreeMap}
 
-\section{BigInteger}
+\section{BigInteger} \label{sec:bigint}
 
 \section{Sorting}
 
 \todo{Basic template for implementing Comparable}
 \todo{Arrays.sort, Collections.sort}
+\todo{Include code for basic sorting implementations (in case it's
+  useful to code them up explicitly so they can be enhanced with extra
+  info): insertion sort, mergesort, quicksort)}
 
 \section{Fast I/O} \label{sec:fastio}
 
-\todo{Kattio}
+Typically ACM ICPC problems are designed so \texttt{Scanner} and
+\texttt{System.out.println} are fast enough to read and write the
+required input and output within the time limits.  However, these are
+relatively slow since they are unbuffered (every single read and write
+happens immediately).  Occasionally it can be useful to have faster
+I/O; indeed, some problems on Kattis cannot be solved in Java without
+using this. \todo{Link to some examples.}
+
+\begin{warning}
+  Be sure to call \texttt{flush()} at the end of your program
+  or else some output might be lost!
+\end{warning}
+
+\code{java/Kattio.java}
+
+\todo{Add \texttt{getLine()} method}
 
 \chapter{Data Structures}
 
@@ -111,37 +227,35 @@ used in Kruskal's Minimum Spanning Tree algorithm \link{sec:kruskal},
 and can also be useful on its own.  \texttt{find} and \texttt{union}
 both take essentially constant amortized time.
 
-\includegraphics[height=0.9\baselineskip]{Kattis} \kattis{10kindsofpeople}, \kattis{drivingrange},
-\kattis{islandhopping}, \kattis{kastenlauf}, \kattis{lostmap},
-\kattis{minspantree}, \kattis{numbersetseasy}, \kattis{treehouses},
-\kattis{unionfind}, \kattis{virtualfriends},
-\kattis{wheresmyinternet},
+\kattis{drivingrange, islandhopping, kastenlauf, lostmap, minspantree,
+  numbersetseasy, treehouses, unionfind, virtualfriends,
+  wheresmyinternet}
 
 \code{data-structures/UnionFind.java}
 
-\section{Heap}
+\section{Heaps}
 
-\section{Red-black tree}
+\section{Tries}
 
-\section{Segment tree}
+\section{Red-black trees}
 
-\section{Fenwick tree}
+\section{Segment trees}
+
+\section{Fenwick trees}
 
 \chapter{Graphs}
 
 \section{Representation}
 
-  Adjacency matrix, adjacency maps.  Edge objects.
-
-  Implicit graphs.
+\todo{Adjacency matrix, adjacency maps.  Edge objects. Implicit graphs.}
 
 \section{Traversal (DFS/BFS)}
 
-Code for DFS/BFS with level labelling, parent map.
+\todo{Code for DFS/BFS with level labelling, parent map.}
 
 \section{Single-source shortest paths (Dijkstra)}
 
-\section{All-pairs shortest paths (Floyd-Warshall)}
+\section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
 
 \section{Min spanning tree (Kruskal)} \label{sec:kruskal}
 
@@ -157,7 +271,7 @@ Code for DFS/BFS with level labelling, parent map.
 
 \chapter{Strings}
 
-\section{Suffix array}
+\section{Suffix arrays}
 
 \chapter{Divide \& Conquer}
 
@@ -174,17 +288,25 @@ Code for DFS/BFS with level labelling, parent map.
 \todo{Basic primality testing and factorization with trial division.
   Sieving (primes, factors, Euler totient).}
 
-\section{Combinatorics}
+\section{Combinatorics} \label{sec:combinatorics}
 
 \todo{Basic principles of combinatorics.  Code for computing binomial
   coefficients.}
 
+\todo{mod $10^9 + 7$.}
+
+\begin{warning}
+  Remember to use \texttt{long} if you need an answer
+  $\bmod (10^9 + 7)$ (which would fit in an \texttt{int}) but
+  computing the answer requires \emph{multiplying} $\bmod (10^9 + 7)$.
+\end{warning}
+
 \todo{Heap's Algorithm for generating all permutations.  See Bit
   Tricks for generating all subsets.}
 
-\todo{PIE}
+\todo{PIE?}
 
-\chapter{Bit Tricks}
+\chapter{Bit Tricks} \label{sec:bittricks}
 
 \todo{Basic bit manipulation.  Using bitstrings to compactly represent
   sets/states.  Iterating through all subsets with counter.}
@@ -195,6 +317,7 @@ Code for DFS/BFS with level labelling, parent map.
 
 \section{Range queries}
 
+\todo{Monoid vs group}
 \todo{Prefix sum trick}
 \todo{2D prefix sum trick with PIE}
 \todo{Kadena's Algorithm for max subsequence sum}
@@ -206,9 +329,17 @@ Code for DFS/BFS with level labelling, parent map.
 \todo{Formulas for converting between pair of coordinates and single index}
 \todo{Trick for listing neighbors with delta vector}
 
-\chapter{Python reference}
+\chapter{Python} \label{chap:python}
 
-\todo{Basic Python template for doing I/O etc.}
-\todo{Benefits of Python (big integer, dictionaries)}
+Python's built-in support for arbitrary-size integers (using
+\texttt{BigInteger} in Java is a pain!) and built-in dictionaries with
+lightweight syntax make it attractive for certain kinds of problems.
+
+Below is a basic template showing how to read typical contest problem
+input in Python:
+
+\pycode{python/template.py}
+
+\todo{Mention basic Python data structures such as set, deque, list methods}
 
 \end{document}
