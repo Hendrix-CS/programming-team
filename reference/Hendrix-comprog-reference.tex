@@ -137,6 +137,8 @@ shortest path in a weighted graph.
 
 \begin{itemize}
 \item $2^{10} = 1024 \approx 10^3$
+\item One \texttt{int} is 32 bits = 4 bytes. So an array of $10^6$
+  \texttt{int}s requires $< 4$ MB---typical memory limit is $1$ GB.
 \item $2 \cdot 10^9$ fits in a 32-bit \texttt{int}.
 \item $9 \cdot 10^{18}$ fits in a 64-bit \texttt{long}.
 \item If you need larger values, use \fulllink{sec:bigint} or just use
@@ -197,6 +199,10 @@ you can use \fulllink{sec:fastio}.
   useful to code them up explicitly so they can be enhanced with extra
   info): insertion sort, mergesort, quicksort)}
 
+\section{BitSet}
+
+\todo{Basic examples of BitSet use.}
+
 \section{Fast I/O} \label{sec:fastio}
 
 Typically ACM ICPC problems are designed so \texttt{Scanner} and
@@ -242,6 +248,17 @@ both take essentially constant amortized time.
 \section{Segment trees}
 
 \section{Fenwick trees}
+
+\chapter{Search}
+
+\subsection{Complete search}
+
+\todo{Complete search aka brute force}
+
+\subsection{Binary and ternary search}
+
+\todo{Binary search on an array; binary search on unbounded function
+  on the integers; binary search on real interval; ternary search}
 
 \chapter{Graphs}
 
@@ -310,6 +327,8 @@ both take essentially constant amortized time.
 
 \todo{Basic bit manipulation.  Using bitstrings to compactly represent
   sets/states.  Iterating through all subsets with counter.}
+
+\todo{BitSet instead of array of booleans.}
 
 \chapter{Geometry}
 
