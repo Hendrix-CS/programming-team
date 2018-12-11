@@ -280,6 +280,38 @@ both take essentially constant amortized time.
 
 \section{Max flow}
 
+A \emph{flow network} is a directed, weighted graph where the edge
+weights (typically integers) are thought of as representing
+\emph{capacities} (\eg imagine pipes of varying sizes).  The \emph{max
+  flow problem} is to determine, given a flow network, the maximum
+possible amount of \emph{flow} which can move through the network
+between given source and sink vertices, subject to the constraints
+that the flow on any edge is no greater than the capacity, and the sum
+of incoming flows equals outgoing flows at every vertex other than the
+source or sink.  Flow networks can be used to model a wide variety of
+problems.
+
+\todo{Enumerate a few problem types: item assignment; max bipartite
+  matching; min cut}
+
+\todo{choose directed/undirected edges carefully!}
+
+\todo{Requires vertices $0 \dots n-1$: either carefully keep track of
+  which numbers are for which vertices, or use lookup tables}
+
+\kattis{copsandrobbers,escapeplan,gopher2,guardianofdecency,marblestree,maxflow,mincut,paintball,waif}
+
+Dinitz' Algorithm is probably the best all-around algorithm to use for
+solving max flow problems in competitive programming.  It takes $O(V^2
+E)$ in theory (although is often much faster in practice).  In the
+special case where we are modelling a bipartite matching problem,
+Dinitz' Algorithm reduces to the special case of the Hopcroft-Karp
+algorithm which runs in $O(E \sqrt{V})$.
+
+\code{flow/Dinitz.java}
+
+\todo{Include a sample solution using a flow network}
+
 \section{Miscellaneous}
 
 \todo{New virtual source/sink node trick}
