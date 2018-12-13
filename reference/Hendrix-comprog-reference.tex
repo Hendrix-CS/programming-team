@@ -162,24 +162,50 @@ you can use \fulllink{sec:fastio}.
 
 \section{String}
 
+The \texttt{String} type can be used in Java to represent sequences of
+characters.
+
+\todo{Useful \texttt{String} methods: concatenation, substring, charAt, \dots?}
+\todo{Converting between \texttt{String} and \texttt{char[]},
+  advantages and disadvantages of each}
+
+\kattis{battlesimulation, bing, connectthedots, itsasecret, shiritori,
+suffixarrayreconstruction}
+
 \section{Arrays}
 
 \todo{Basic array template/examples.}
 
+\kattis{falcondive,freefood,traveltheskies}
+
 \section{ArrayList}
+
+\todo{Basic template and examples.  Useful \texttt{ArrayList} methods:
+  \texttt{add}, \texttt{get}, \texttt{set}.  Advantages/disadvantages
+  compared to arrays.}
 
 \section{Stack}
 
-\todo{Stack class}
+\todo{Example using \texttt{Stack} class.}
+\todo{Mention balanced parentheses, DFS}
+
+\kattis{backspace, islands, pairingsocks, reservoir, restaurant,
+  throwns, zagrade}
 
 \section{Queue}
 
-\todo{Queue interface, ArrayDeque class}
+\todo{\texttt{Queue} interface, \texttt{ArrayDeque} class}
+
+\kattis{brexit, coconut, ferryloading4, shuffling}
 
 \section{PriorityQueue}
 
+\todo{Examples of using \texttt{PriorityQueue}.  Show how to
+  construct with custom \texttt{Comparator}, eg. using lambda notation}
 \todo{Note lack of decreaseKey operation (Dijkstra), use remove + add,
   not as fast}
+
+\kattis{bank, guessthedatastructure, knigsoftheforest}
 
 \section{Set}
 
@@ -190,6 +216,10 @@ you can use \fulllink{sec:fastio}.
 \todo{HashMap, TreeMap}
 
 \section{BigInteger} \label{sec:bigint}
+
+\todo{Examples.  Useful methods, constructors (gcd, mod, base conversion!).}
+
+\kattis{basicremains}
 
 \section{Sorting}
 
@@ -202,6 +232,8 @@ you can use \fulllink{sec:fastio}.
 \section{BitSet}
 
 \todo{Basic examples of BitSet use.}
+
+\kattis{primesieve}
 
 \section{Fast I/O} \label{sec:fastio}
 
@@ -243,6 +275,8 @@ both take essentially constant amortized time.
 
 \section{Tries}
 
+\kattis{boggle, heritage, phonelist}
+
 \section{Red-black trees}
 
 \section{Segment trees}
@@ -262,21 +296,29 @@ both take essentially constant amortized time.
 
 \chapter{Graphs}
 
+\section{Useful graph theory}
+
+\todo{characterization of trees.}
+
 \section{Representation}
 
 \todo{Adjacency matrix, adjacency maps.  Edge objects. Implicit graphs.}
 
-\section{Traversal (DFS/BFS)}
+\section{BFS}
 
-\todo{Code for DFS/BFS with level labelling, parent map.}
+\todo{Code for BFS with level labelling, parent map.}
+
+\kattis{brexit}
+
+\section{DFS, SCCs, topological sorting}
+
+\todo{Code for DFS, start/finish labelling, top sorting, Tarjan's SCC algorithm}
 
 \section{Single-source shortest paths (Dijkstra)}
 
 \section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
 
 \section{Min spanning tree (Kruskal)} \label{sec:kruskal}
-
-\section{DAGs, topological sort}
 
 \section{Max flow}
 
@@ -302,11 +344,11 @@ problems.
 \kattis{copsandrobbers,escapeplan,gopher2,guardianofdecency,marblestree,maxflow,mincut,paintball,waif}
 
 Dinitz' Algorithm is probably the best all-around algorithm to use for
-solving max flow problems in competitive programming.  It takes $O(V^2
-E)$ in theory (although is often much faster in practice).  In the
-special case where we are modelling a bipartite matching problem,
-Dinitz' Algorithm reduces to the special case of the Hopcroft-Karp
-algorithm which runs in $O(E \sqrt{V})$.
+solving max flow problems in competitive programming.  It takes
+$O(V^2 E)$ in theory (although is often much faster in practice).  In
+the special case where we are modelling a bipartite matching problem,
+Dinitz' Algorithm reduces to the Hopcroft-Karp algorithm which runs in
+$O(E \sqrt{V})$.
 
 \code{flow/Dinitz.java}
 
@@ -325,6 +367,8 @@ algorithm which runs in $O(E \sqrt{V})$.
 \chapter{Divide \& Conquer}
 
 \section{Counting inversions}
+
+\kattis{excursion, froshweek}
 
 \chapter{Mathematics}
 
