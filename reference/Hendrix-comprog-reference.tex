@@ -23,7 +23,7 @@
 \usepackage{graphicx}
 \graphicspath{{images/}}
 
-\usepackage{minted}
+\usepackage[newfloat]{minted}
 \usepackage{etoolbox}
 \usepackage{mdframed}
 \usepackage{booktabs}
@@ -430,30 +430,38 @@ $O(E \sqrt{V})$.
 
 \chapter{Miscellaneous}
 
+\section{2D grids}
+
+\todo{Discussion of implicit graphs}
+
+
+\todo{Formulas for converting between pair of coordinates and single index}
+\todo{Trick for listing neighbors with delta vector}
+
 \section{Range queries}
 
 Suppose we have a $1$-indexed array $A[1 \dots n]$ containing some
 values, and there is some operation $\oplus$ which takes two values
-and combine them to produce a new value.  Given indices $i$ and $j$,
+and combines them to produce a new value.  Given indices $i$ and $j$,
 we want to quickly find the value that results from combining all the
 values in the range $A[i \dots j]$, \ie $A[i] \oplus A[i+1] \oplus
 \dots \oplus A[j]$.
 
 For example, $A$ could be an array of integers, and $\oplus$ could be
-$\max$, that is, we want to find the maximum value in a range
+$\max$, that is, we want to find the maximum value in the range
 $A[i \dots j]$.  Likewise $\oplus$ could be sum, or product, or GCD.
 Or $A$ could be an array of booleans, and we want to find the AND, OR,
 or XOR of the range $A[i \dots j]$.
 
 \begin{itemize}
 \item For this to make sense, the combining operation must typically
-  be \emph{associative} ($a \oplus (b \oplus c) = (a \oplus b) \oplus
-  c$). \todo{Mention word ``semigroup''.}
+  be \emph{associative}, \ie $a \oplus (b \oplus c) = (a \oplus b) \oplus
+  c$.  (This is called a \emph{semigroup}.)
 \item Sometimes there is also an inverse operation $\ominus$ which
-  ``cancels out'' the effects of the combining operation.  For
-  example, subtraction cancels out addition. On the other hand, there
-  is no operation that can cancel out the effect of taking a
-  maximum. \todo{Mention word ``group''; link to more info?}
+  ``cancels out'' the effects of the combining operation (this is
+  called a \emph{group}).  For example, subtraction cancels out
+  addition. On the other hand, there is no operation that can cancel
+  out the effect of taking a maximum.
 \item If we only need to find the value of combining a \emph{single}
   range $A[i \dots j]$, then ignore everything in this section and
   simply iterate through the interval, combining all the values in
@@ -476,7 +484,7 @@ technique can handle updates.
 
 In a situation where we have an inverse operation and we do not need
 to update the array, there is a very simple solution.  First, make
-another \emph{prefix scan array} $P[0 \dots n]$ such that $P[i]$
+a \emph{prefix scan array} $P[0 \dots n]$ such that $P[i]$
 stores the value that results from combining $A[1 \dots i]$.  ($P[0]$
 stores the ``identity'' value, \eg zero if the combining operation is
 sum.)  $P$ can be computed in linear time by scanning from left to
@@ -489,21 +497,30 @@ already $0$-indexed instead of $1$-indexed, then it's probably easier
 to just put in a special case for looking up the value of $A[0 \dots
 j]$ as $P[j]$, without the need for an inverse operation.
 
-\todo{Example code for sum}
+For example, suppose we are given an array of $10^5$ integers, along
+with $10^5$ pairs $(i,j)$ for which we must output the sum of
+$A[i \dots j]$.  Simply adding up the values in each range would be
+too slow. We could solve this with the following code:
+
+\code{range/PrefixSum.java}
+
+\subsection{Kadena's Algorithm}
+
+\todo{Kadena's Algorithm for max subsequence sum}
+
+\subsection{2D prefix scan}
 
 \todo{2D prefix sum trick with PIE}
 
+\subsection{Doubling windows (no inverse; $O(1)$ queries; no updates)}
 
-\todo{Kadena's Algorithm for max subsequence sum}
-\todo{Segment trees, Fenwick trees}
+\subsection{Segment trees (no inverse; $O(\lg n)$ queries; $O(\lg n)$
+  updates)}
 
-\section{2D grids}
+\todo{Segment trees}
 
-\todo{Discussion of implicit graphs}
-
-
-\todo{Formulas for converting between pair of coordinates and single index}
-\todo{Trick for listing neighbors with delta vector}
+\subsection{Fenwick trees (inverse required; $O(\lg n)$ queries;
+  $O(\lg n)$ updates}
 
 \chapter{Python} \label{chap:python}
 
