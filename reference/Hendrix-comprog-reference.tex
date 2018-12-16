@@ -76,6 +76,7 @@
 %% Misc
 
 \newcommand{\eg}{\emph{e.g.}\xspace}
+\newcommand{\ie}{\emph{i.e.}\xspace}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -102,25 +103,25 @@ Example: suppose a problem requires you to find the length of a
 shortest path in a weighted graph.
 \begin{itemize}
 \item If the graph has $|V| = 400$ vertices, you should use
-  Floyd-Warshall: it is the easiest to code and takes $O(V^3)$ time
+  Floyd-Warshall \link{sec:floydwarshall}: it is the easiest to code and takes $O(V^3)$ time
   which should be good enough.
 \item If the graph has $|V| = 4000$ vertices, especially if it doesn't
-  have all possible edges, you can use Dijkstra's algorithm, which is
-  $O(E \log V)$.
+  have all possible edges, you can use Dijkstra's algorithm
+  \link{sec:dijkstra}, which is $O(E \log V)$.
 \item If the graph has $|V| = 10^5$ vertices, you should look for some
   special property of the graph which allows you to solve the problem
   in $O(V)$ or $O(V \log V)$ time---for example, perhaps the graph is
-  a tree, so you can run DFS to find a unique path and then add up the
-  weights.  An input size of $10^5$ is a common sign that you are
-  expected to use an $O(n \lg n)$ or $O(n)$ algorithm---it's big
-  enough to make $O(n^2)$ too slow but not so big that the time to do
-  I/O makes a big difference.
+  a tree \link{sec:graph-basics}, so you can run a DFS \link{sec:dfs}
+  to find a unique path and then add up the weights.  An input size of
+  $10^5$ is a common sign that you are expected to use an $O(n \lg n)$
+  or $O(n)$ algorithm---it's big enough to make $O(n^2)$ too slow but
+  not so big that the time to do I/O makes a big difference.
 \end{itemize}
 
 \begin{table*}[h]\centering
   \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{@{}lll@{}}\toprule
-    $n$ & Worst running time & Example \\
+    $n$ & Worst viable running time & Example \\
     \midrule
     $11$ & $O(n!)$ & Generating all permutations \link{sec:combinatorics} \\
     $25$ & $O(2^n)$ & Generating all subsets \link{sec:bittricks} \\
@@ -136,11 +137,17 @@ shortest path in a weighted graph.
   rectanglesurrounding, weakvertices}
 
 \begin{itemize}
-\item $2^{10} = 1024 \approx 10^3$
-\item One \texttt{int} is 32 bits = 4 bytes. So an array of $10^6$
-  \texttt{int}s requires $< 4$ MB---typical memory limit is $1$ GB.
-\item $2 \cdot 10^9$ fits in a 32-bit \texttt{int}.
-\item $9 \cdot 10^{18}$ fits in a 64-bit \texttt{long}.
+\item $2^{10} = 1024 \approx 10^3$.
+\item One \texttt{int} is 32 bits = 4 bytes. So \emph{e.g.} an array
+  of $10^6$ \texttt{int}s requires $< 4$ MB---no big deal since the
+  typical memory limit is $1$ GB.  Don't be afraid to make arrays with
+  millions of elements!
+\item \texttt{int} holds 32 bits; the largest \texttt{int} value is
+  \verb|Integer.MAX_VALUE| $ = 2^{31} - 1$, a bit more than
+  $2 \cdot 10^9$.
+\item \texttt{long} holds 64 bits; the largest
+  \texttt{long} value is \verb|Long.MAX_VALUE| $ = 2^{63} - 1$, a bit
+  more than $9 \cdot 10^{18}$.
 \item If you need larger values, use \fulllink{sec:bigint} or just use
   \fulllink{chap:python}; see \fulllink{sec:combinatorics}.
 \end{itemize}
@@ -175,6 +182,7 @@ suffixarrayreconstruction}
 \section{Arrays}
 
 \todo{Basic array template/examples.}
+\todo{Useful \texttt{Arrays} methods: sort, copyOf, copyOfRange, fill, binarySearch}
 
 \kattis{falcondive,freefood,traveltheskies}
 
@@ -214,6 +222,7 @@ suffixarrayreconstruction}
 \section{Map}
 
 \todo{HashMap, TreeMap}
+\todo{Iterating over keys, values, both (MapEntry)}
 
 \section{BigInteger} \label{sec:bigint}
 
@@ -225,6 +234,7 @@ suffixarrayreconstruction}
 
 \todo{Basic template for implementing Comparable}
 \todo{Arrays.sort, Collections.sort}
+\todo{Sorting with a custom \texttt{Comparator}}
 \todo{Include code for basic sorting implementations (in case it's
   useful to code them up explicitly so they can be enhanced with extra
   info): insertion sort, mergesort, quicksort)}
@@ -293,11 +303,13 @@ both take essentially constant amortized time.
 
 \todo{Binary search on an array; binary search on unbounded function
   on the integers; binary search on real interval; ternary search}
+\todo{Point out \texttt{Arrays.binarySearch}}
 
 \chapter{Graphs}
 
-\section{Tips \& tricks}
+\section{Graph basics} \label{sec:graph-basics}
 
+\todo{Directed, undirected, weighted, unweighted, self loops, multiple edges}
 \todo{characterization of trees}
 \todo{New virtual source/sink node trick}
 
@@ -311,11 +323,11 @@ both take essentially constant amortized time.
 
 \kattis{brexit}
 
-\section{DFS, SCCs, topological sorting}
+\section{DFS, SCCs, topological sorting} \label{sec:dfs}
 
 \todo{Code for DFS, start/finish labelling, top sorting, Tarjan's SCC algorithm}
 
-\section{Single-source shortest paths (Dijkstra)}
+\section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
 \section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
 
@@ -401,6 +413,8 @@ $O(E \sqrt{V})$.
 \todo{Basic bit manipulation.  Using bitstrings to compactly represent
   sets/states.  Iterating through all subsets with counter.}
 
+\kattis{flipfive}
+
 \todo{BitSet instead of array of booleans.}
 
 \chapter{Geometry}
@@ -418,15 +432,76 @@ $O(E \sqrt{V})$.
 
 \section{Range queries}
 
-\todo{Monoid vs group}
-\todo{Prefix sum trick}
+Suppose we have a $1$-indexed array $A[1 \dots n]$ containing some
+values, and there is some operation $\oplus$ which takes two values
+and combine them to produce a new value.  Given indices $i$ and $j$,
+we want to quickly find the value that results from combining all the
+values in the range $A[i \dots j]$, \ie $A[i] \oplus A[i+1] \oplus
+\dots \oplus A[j]$.
+
+For example, $A$ could be an array of integers, and $\oplus$ could be
+$\max$, that is, we want to find the maximum value in a range
+$A[i \dots j]$.  Likewise $\oplus$ could be sum, or product, or GCD.
+Or $A$ could be an array of booleans, and we want to find the AND, OR,
+or XOR of the range $A[i \dots j]$.
+
+\begin{itemize}
+\item For this to make sense, the combining operation must typically
+  be \emph{associative} ($a \oplus (b \oplus c) = (a \oplus b) \oplus
+  c$). \todo{Mention word ``semigroup''.}
+\item Sometimes there is also an inverse operation $\ominus$ which
+  ``cancels out'' the effects of the combining operation.  For
+  example, subtraction cancels out addition. On the other hand, there
+  is no operation that can cancel out the effect of taking a
+  maximum. \todo{Mention word ``group''; link to more info?}
+\item If we only need to find the value of combining a \emph{single}
+  range $A[i \dots j]$, then ignore everything in this section and
+  simply iterate through the interval, combining all the values in
+  $O(n)$ time.
+\item More typically, we need to do many queries, and $O(n)$ per query
+  is not fast enough.  The idea is to preprocess the array into a data
+  structure which allows us to answer queries more quickly, \ie in
+  $O(1)$ or $O(\lg n)$.
+\item Sometimes we also need to be able to \emph{update} the array in
+  between queries; in this case we need a more sophisticated query
+  data structure that can be quickly updated.
+\end{itemize}
+
+Each of the below subsections outlines one approach to solving this
+problem; for quick reference, each subsection title says whether an
+inverse operation is required, how fast queries are, and whether the
+technique can handle updates.
+
+\subsection{Prefix scan (inverse required; $O(1)$ queries; no updates)}
+
+In a situation where we have an inverse operation and we do not need
+to update the array, there is a very simple solution.  First, make
+another \emph{prefix scan array} $P[0 \dots n]$ such that $P[i]$
+stores the value that results from combining $A[1 \dots i]$.  ($P[0]$
+stores the ``identity'' value, \eg zero if the combining operation is
+sum.)  $P$ can be computed in linear time by scanning from left to
+right; each $P[i] = P[i-1] \oplus A[i]$.  Now the value of $A[i \dots
+j]$ can be computed in $O(1)$ time as $P[j] \ominus P[i-1]$.
+
+Note that having $P[0]$ store the identity value is not strictly
+necessary, but it removes the need for a special case.  If $A$ is
+already $0$-indexed instead of $1$-indexed, then it's probably easier
+to just put in a special case for looking up the value of $A[0 \dots
+j]$ as $P[j]$, without the need for an inverse operation.
+
+\todo{Example code for sum}
+
 \todo{2D prefix sum trick with PIE}
+
+
 \todo{Kadena's Algorithm for max subsequence sum}
 \todo{Segment trees, Fenwick trees}
 
 \section{2D grids}
 
 \todo{Discussion of implicit graphs}
+
+
 \todo{Formulas for converting between pair of coordinates and single index}
 \todo{Trick for listing neighbors with delta vector}
 
