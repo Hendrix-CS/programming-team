@@ -1,3 +1,5 @@
+// *Don't* include a package declaration!
+
 import java.util.*;
 import java.math.*;
 
