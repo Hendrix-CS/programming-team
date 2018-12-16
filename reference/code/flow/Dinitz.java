@@ -49,20 +49,20 @@ class FlowNetwork {
         return sendFlowR(s, t, INF);
     }
 
-    private long sendFlowR(int s, int t, long availableFlow) {
-        if (s == t) return availableFlow;
+    private long sendFlowR(int s, int t, long available) {
+        if (s == t) return available;
 
-        long sentFlow = 0;
+        long sent = 0;
         for (Edge e : adj.get(s).values()) {
-            if (e.remainingCapacity() > 0 && !pruned[e.to] && level[e.to] == level[s] + 1) {
-                long flow = sendFlowR(e.to, t, Math.min(availableFlow, e.remainingCapacity()));
-                availableFlow -= flow; sentFlow += flow;
+            if (e.remaining() > 0 && !pruned[e.to] && level[e.to] == level[s] + 1) {
+                long flow = sendFlowR(e.to, t, Math.min(available, e.remaining()));
+                available -= flow; sent += flow;
                 e.flow += flow; e.rev.flow -= flow;
-                if (availableFlow == 0) break;
+                if (available == 0) break;
             }
         }
-        if (sentFlow == 0) pruned[s] = true;
-        return sentFlow;
+        if (sent == 0) pruned[s] = true;
+        return sent;
     }
 
     private boolean bfs(int s, int t) {
@@ -73,7 +73,7 @@ class FlowNetwork {
         while (!q.isEmpty()) {
             int cur = q.remove();
             for (Edge e : adj.get(cur).values()) {
-                if (e.remainingCapacity() > 0 && level[e.to] == -1) {
+                if (e.remaining() > 0 && level[e.to] == -1) {
                     level[e.to] = level[cur]+1;
                     q.add(e.to);
                 }
@@ -91,5 +91,5 @@ class Edge {
         this.from = from; this.to = to; this.capacity = cap; this.flow = 0;
     }
     public void setRev(Edge rev) { this.rev = rev; rev.rev = this; }
-    public long remainingCapacity() { return capacity - flow; }
+    public long remaining() { return capacity - flow; }
 }
