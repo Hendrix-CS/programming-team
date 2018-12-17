@@ -136,7 +136,7 @@ shortest path in a weighted graph.
     $n$ & Worst viable running time & Example \\
     \midrule
     $11$ & $O(n!)$ & Generating all permutations \link{sec:combinatorics} \\
-    $25$ & $O(2^n)$ & Generating all subsets \link{sec:bittricks} \\
+    $25$ & $O(2^n)$ & Generating all subsets \link{chap:bittricks} \\
     $100$ & $O(n^4)$ & Some brute force algorithms \\
     $400$ & $O(n^3)$ & Floyd-Warshall \link{sec:floydwarshall} \\
     $10^4$ & $O(n^2)$ & Testing all pairs \\
@@ -402,10 +402,19 @@ $O(E \sqrt{V})$.
 \todo{Basic primality testing and factorization with trial division.
   Sieving (primes, factors, Euler totient).}
 
+\section{Factorial} \label{sec:factorial}
+
+\kattis{eulersnumber, factstone, howmanydigits, lastfactorialdigit,
+  inversefactorial, loworderzeros}
+
+\todo{Computing factorials; size using logs, etc}
+
 \section{Combinatorics} \label{sec:combinatorics}
 
+\kattis{anagramcounting, secretsanta}
+
 \todo{Basic principles of combinatorics.  Code for computing binomial
-  coefficients.}
+  coefficients. Multinomial coefficients.}
 
 \todo{mod $10^9 + 7$.}
 
@@ -420,7 +429,7 @@ $O(E \sqrt{V})$.
 
 \todo{PIE?}
 
-\chapter{Bit Tricks} \label{sec:bittricks}
+\chapter{Bit Tricks} \label{chap:bittricks}
 
 \todo{Basic bit manipulation.  Using bitstrings to compactly represent
   sets/states.  Iterating through all subsets with counter.}
@@ -429,7 +438,7 @@ $O(E \sqrt{V})$.
 
 \todo{BitSet instead of array of booleans.}
 
-\chapter{Geometry}
+\chapter{Geometry} \label{chap:geometry}
 
 \todo{Points, vectors, angles.  Degrees/radians. \texttt{atan2}. Dot
   product. Rotation. Vector magnitude, norm (squared), normalize.
@@ -444,11 +453,54 @@ $O(E \sqrt{V})$.
 
 \section{2D grids}
 
-\todo{Discussion of implicit graphs}
+2D grids/arrays (of characters, numbers, booleans\dots) are a popular
+feature of many competitive programming problems.
 
+\begin{itemize}
+\item In many cases the grid should be thought of as a graph where
+  each cell is a vertex which is connected by edges to its neighbors.
+  Note that in these cases one rarely wants to explicitly construct
+  a different representation of the graph, but simply use the grid
+  itself as an (implicit) graph representation.
+\item It is often useful to be able to assign a unique number to each
+  cell in the grid, so we can store ID numbers of cells in data
+  structures rather than making some class to represent a pair of a
+  row and column index.  The easiest method is to number the first row
+  from $0$ to $C-1$ (where $C$ is the number of columns), then the
+  second row $C$ to $2C-1$, and so on.
 
-\todo{Formulas for converting between pair of coordinates and single index}
-\todo{Trick for listing neighbors with delta vector}
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    $0$ & $1$ & $2$ & $\dots$ & $C-1$ \\
+    \hline
+    $C$ & $C+1$ & $C+2$ & $\dots$ & $2C-1$ \\
+    \hline
+    $2C$ & $2C+1$ & $2C+2$ & $\dots$ & $3C-1$ \\
+    \hline
+    $\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ \\
+    \hline
+    $(R-1)C$ & $(R-1)C+1$ & $(R-1)C+2$ & $\dots$ & $RC-1$ \\
+    \hline
+  \end{tabular}
+
+\item Using this scheme, to convert between $(r,c)$ pairs and ID
+  numbers $n$, one can use the formulas
+  \[ (r,c) \mapsto r \cdot C + c \qquad n \mapsto (n / C, n \% C) \]
+
+\item To list the four neighbors of a given cell $(r,c)$ to the north,
+  east, south, and west, one can of course simply list the four cases
+  manually, but sometimes this is tedious and error-prone, especially
+  if there is a lot of code to handle each neighbor that needs to be
+  copied four times.
+
+  Instead, one can use the following template. The idea is that
+  $(dr, dc)$ specifies the \emph{offset} from the current cell $(r,c)$
+  to one of its neighbors; each time through the loop we rotate it
+  counterclockwise by $1/4$ turn using the mapping
+  $(dr,dc) \mapsto (-dc,dr)$ (see \fulllink{chap:geometry}).
+
+  \code{grid/Neighbors.java}
+\end{itemize}
 
 \section{Range queries} \label{sec:range-queries}
 
@@ -612,7 +664,7 @@ in \texttt{prefix} to the identity element instead of zero.
 \subsection{Segment trees (no inverse required; $O(\lg n)$ queries;
   $O(\lg n)$ updates)}
 
-\todo{Segment trees}
+\todo{Segment trees.}
 
 \chapter{Python} \label{chap:python}
 
