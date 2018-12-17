@@ -18,6 +18,14 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={green!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
 
 \usepackage{titlepic}
 \usepackage{graphicx}
@@ -45,9 +53,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Kattis
 
+\newcommand{\kattislogo}{\raisebox{-0.2em}{\includegraphics[height=0.9\baselineskip]{Kattis}}}
+
 \newcommand{\kattis}[1]{%
   \begin{mdframed}
-  \includegraphics[height=0.9\baselineskip]{Kattis}
+  \kattislogo
   \def\nextitem{\def\nextitem{, }}
   \renewcommand*{\do}[1]{\nextitem\kattislink{##1}}
   \docsvlist{#1}
@@ -55,6 +65,8 @@
 }
 
 \newcommand{\kattislink}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
+
+\newcommand{\inlinekattis}[1]{\kattislogo\ \kattislink{#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Todos
@@ -285,13 +297,13 @@ both take essentially constant amortized time.
 
 \section{Tries}
 
-\kattis{boggle, heritage, phonelist}
+\kattis{boggle, heritage, herkabe, phonelist}
 
 \section{Red-black trees}
 
-\section{Segment trees}
+\section{Segment trees and Fenwick trees}
 
-\section{Fenwick trees}
+See \fulllink{sec:range-queries}.
 
 \chapter{Search}
 
@@ -425,7 +437,7 @@ $O(E \sqrt{V})$.
 \todo{Cross product in 2D. Signed area (parallelogram, triangle),
   polygon area, right/left turn, inside/outside testing.}
 \todo{Lines/rays (point + vector).  Line intersection. Segment
-  intersection. Closest point on a line/segment.}
+  intersection. Closest point on a line/segment. Point/line distance.}
 \todo{Convex hull.}
 
 \chapter{Miscellaneous}
@@ -438,7 +450,7 @@ $O(E \sqrt{V})$.
 \todo{Formulas for converting between pair of coordinates and single index}
 \todo{Trick for listing neighbors with delta vector}
 
-\section{Range queries}
+\section{Range queries} \label{sec:range-queries}
 
 Suppose we have a $1$-indexed array $A[1 \dots n]$ containing some
 values, and there is some operation $\oplus$ which takes two values
@@ -504,23 +516,103 @@ too slow. We could solve this with the following code:
 
 \code{range/PrefixSum.java}
 
-\subsection{Kadena's Algorithm}
+More commonly, a prefix scan is a necessary first step in a more
+complex solution. \kattis{divisible, dvoniz, srednji, subseqhard}
 
-\todo{Kadena's Algorithm for max subsequence sum}
+\subsection{Kadane's Algorithm}
+
+As an aside, suppose we want to find the subsequence $A[i\dots j]$
+with the \emph{biggest} sum.  A brute-force approach is $O(n^3)$:
+iterate through all $(i,j)$ pairs and find the sum of each
+subsequence.  Using the prefix scan approach, we can cut this down to
+$O(n^2)$, since we can compute the sums of the $O(n^2)$ possible
+subsequences in $O(1)$ time each.  However, there is an even better
+$O(n)$ algorithm which is worth knowing, known as \emph{Kadane's
+  Algorithm}.
+
+The basic idea is simple: scan through the array, keeping a running
+sum in an accumulator, and also keeping track of the biggest total
+seen.  Whenever the running sum drops below zero, reset it to zero.
+Below is a sample solution to \inlinekattis{commercials}.  Note that
+subtracting \texttt{P} from each input is specific to the problem, but
+the rest is purely Kadane's Algorithm.
+
+\code{range/Commercials.java}
 
 \subsection{2D prefix scan}
 
-\todo{2D prefix sum trick with PIE}
+\todo{make pictures}
+
+It is possible to extend the prefix scan idea to two dimensions.
+Given a 2D array $A$, we create a parallel 2D array $P$ such that
+$P[i][j]$ is the result of combining all the entries of $A$ in the
+rectangle from the upper-left corner to $(i,j)$ inclusive.  The
+simplest way to do this is to compute \[ P[i][j] = A[i][j] + P[i-1][j]
+  + P[i][j-1] - P[i-1][j-1] \] Including $P[i-1][j]$ and $P[i][j-1]$
+double counts all the entries in the rectangle from the upper left to
+$(i-1,j-1)$ so we have to subtract them.
+
+Given $P$, to compute the combination of the elements in some
+rectangle from $(a,b)$ to $(c,d)$, we can compute \[ P[c][d] -
+  P[a-1][d] - P[c][b-1] + P[a-1][b-1] \]
+
+\inlinekattis{prozor} can be solved by brute force, but it's a nice
+exercise to solve it using the above approach.
 
 \subsection{Doubling windows (no inverse; $O(1)$ queries; no updates)}
 
-\subsection{Segment trees (no inverse; $O(\lg n)$ queries; $O(\lg n)$
-  updates)}
-
-\todo{Segment trees}
+\todo{Include link to discussion in CP3}
 
 \subsection{Fenwick trees (inverse required; $O(\lg n)$ queries;
-  $O(\lg n)$ updates}
+  $O(\lg n)$ updates)}
+
+\kattis{fenwick, supercomputer, turbo, moviecollection}
+
+We can use a \emph{Fenwick tree} to query the range $A[i..j]$ (\ie get
+the combination of all the values in the range $A[i] \dots A[j]$
+according to the combining operation $\oplus$) in $O(\lg n)$ time.  We
+can also dynamically update any entry in the array in $O(\lg n)$ time.
+If dynamic updates are required but we have an invertible combining
+operation, a Fenwick tree should definitely be the first choice
+because the code is quite short.
+
+The code shown here stores \texttt{int} values and uses addition as
+the combining operation, so range queries return the \emph{sum} of all
+values in the range; but it can be easily modified for any other type
+of values and any other invertible combining operation: change the
+type of the array, change the \texttt{+} operation in the
+\texttt{prefix} and \texttt{add} methods, change the subtraction
+in the \texttt{range} method, and change the assignment \texttt{s = 0}
+in \texttt{prefix} to the identity element instead of zero.
+
+\begin{warning}
+  Note that this \texttt{FenwickTree} code assumes the
+  underlying array is $1$-indexed!
+\end{warning}
+
+\code{range/FenwickTree.java}
+
+\begin{itemize}
+\item The constructor creates a \texttt{FenwickTree} over an array of
+  all zeros.
+\item To create a \texttt{FenwickTree} over a given $1$-indexed array
+  $A$, simply create a default tree and then loop through the array,
+  calling \texttt{ft.add(i, A[i])} for each \texttt{i}.  This takes
+  $O(n \lg n)$.
+\item \texttt{ft.add(i, delta)} can be used to update the value at a
+  particular index by adding \texttt{delta} to it.
+\item If you want to simply replace the value at index $i$ instead of
+  adding something to it, you could use \texttt{ft.add(i, newValue - ft.range(i,i))}.
+\item \texttt{ft.range(i,j)} returns the sum $A[i] + \dots + A[j]$.
+\end{itemize}
+
+\todo{Discuss CP3 presentation of Fenwick trees; explain how Fenwick
+  trees work}
+
+\subsection{Segment trees (no inverse required; $O(\lg n)$ queries;
+  $O(\lg n)$ updates)}
+
+\todo{Segment trees}
 
 \chapter{Python} \label{chap:python}
 
