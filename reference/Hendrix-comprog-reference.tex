@@ -236,6 +236,8 @@ suffixarrayreconstruction}
 \todo{HashMap, TreeMap}
 \todo{Iterating over keys, values, both (MapEntry)}
 
+\kattis{awkwardparty}
+
 \section{BigInteger} \label{sec:bigint}
 
 \todo{Examples.  Useful methods, constructors (gcd, mod, base conversion!).}
@@ -381,7 +383,12 @@ $O(E \sqrt{V})$.
 
 \chapter{Dynamic Programming}
 
+\todo{knapsack, longest common subsequence}
+\todo{longest increasing subsequence ($O(n^2)$ and $O(n \lg n)$, see \url{https://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming})}
+
 \chapter{Strings}
+
+\section{Z-algorithm}
 
 \section{Suffix arrays}
 
@@ -522,10 +529,10 @@ or XOR of the range $A[i \dots j]$.
   be \emph{associative}, \ie $a \oplus (b \oplus c) = (a \oplus b) \oplus
   c$.  (This is called a \emph{semigroup}.)
 \item Sometimes there is also an inverse operation $\ominus$ which
-  ``cancels out'' the effects of the combining operation (this is
-  called a \emph{group}).  For example, subtraction cancels out
-  addition. On the other hand, there is no operation that can cancel
-  out the effect of taking a maximum.
+  ``cancels out'' the effects of the combining operation, that is, $(a
+  \oplus b) \ominus b = a$ (this is called a \emph{group}).  For
+  example, subtraction cancels out addition. On the other hand, there
+  is no operation that can cancel out the effect of taking a maximum.
 \item If we only need to find the value of combining a \emph{single}
   range $A[i \dots j]$, then ignore everything in this section and
   simply iterate through the interval, combining all the values in
@@ -547,13 +554,17 @@ technique can handle updates.
 \subsection{Prefix scan (inverse required; $O(1)$ queries; no updates)}
 
 In a situation where we have an inverse operation and we do not need
-to update the array, there is a very simple solution.  First, make
-a \emph{prefix scan array} $P[0 \dots n]$ such that $P[i]$
-stores the value that results from combining $A[1 \dots i]$.  ($P[0]$
-stores the ``identity'' value, \eg zero if the combining operation is
-sum.)  $P$ can be computed in linear time by scanning from left to
-right; each $P[i] = P[i-1] \oplus A[i]$.  Now the value of $A[i \dots
-j]$ can be computed in $O(1)$ time as $P[j] \ominus P[i-1]$.
+to update the array, there is a very simple solution.  First, make a
+\emph{prefix scan array} $P[0 \dots n]$ such that $P[i]$ stores the
+value that results from combining $A[1 \dots i]$.  ($P[0]$ stores the
+unique ``identity'' value $a \ominus a$, \eg zero if the combining
+operation is sum.)  $P$ can be computed in linear time by scanning
+from left to right; each $P[i] = P[i-1] \oplus A[i]$.  Now the value
+of $A[i \dots j]$ can be computed in $O(1)$ time as
+$P[j] \ominus P[i-1]$. That is, $P[j]$ gives us the value of
+$A[1] \oplus \dots \oplus A[j]$, and then we cancel
+$P[i-1] = A[1] \oplus \dots \oplus A[i-1]$ to leave just
+$A[i] \oplus \dots \oplus A[j]$ as desired.
 
 Note that having $P[0]$ store the identity value is not strictly
 necessary, but it removes the need for a special case.  If $A$ is
@@ -624,9 +635,12 @@ We can use a \emph{Fenwick tree} to query the range $A[i..j]$ (\ie get
 the combination of all the values in the range $A[i] \dots A[j]$
 according to the combining operation $\oplus$) in $O(\lg n)$ time.  We
 can also dynamically update any entry in the array in $O(\lg n)$ time.
-If dynamic updates are required but we have an invertible combining
+If dynamic updates are required and we have an invertible combining
 operation, a Fenwick tree should definitely be the first choice
-because the code is quite short.
+because the code is quite short. (Segment
+trees~\link{sec:segment-trees} can also handle dynamic updates, and
+work for any combining operation, even with no inverse, but the
+required code is a bit longer.)
 
 The code shown here stores \texttt{int} values and uses addition as
 the combining operation, so range queries return the \emph{sum} of all
@@ -662,7 +676,7 @@ in \texttt{prefix} to the identity element instead of zero.
   trees work}
 
 \subsection{Segment trees (no inverse required; $O(\lg n)$ queries;
-  $O(\lg n)$ updates)}
+  $O(\lg n)$ updates)} \label{sec:segment-trees}
 
 \todo{Segment trees.}
 
@@ -678,5 +692,14 @@ input in Python:
 \pycode{python/template.py}
 
 \todo{Mention basic Python data structures such as set, deque, list methods}
+
+\chapter{Advanced topics} \label{chap:advanced}
+
+This is a list of advanced topics that may eventually be included.
+
+\begin{itemize}
+\item Exact Set Cover with Algorithm X/dancing links
+\item Matrix powers
+\end{itemize}
 
 \end{document}

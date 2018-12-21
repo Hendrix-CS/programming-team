@@ -1,7 +1,3 @@
-// url: http://open.kattis.com/problems/commercials
-// difficulty: 2.0
-// tags: list, maximum, range, sum, greedy, radio, commercial, Kadane
-
 import java.util.*;
 
 public class Commercials {
