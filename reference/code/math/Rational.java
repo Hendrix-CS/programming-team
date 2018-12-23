@@ -1,41 +1,41 @@
 class Rational implements Comparable<Rational> {
-    long p, q;
-    public Rational(long _p, long _q) {
-        p = _p; q = _q;
-        if (q < 0) { p = -p; q = -q; }
-        long g = gcd(Math.abs(p),q); p /= g; q /= g;
+    long n, d;
+    public Rational(long _n, long _d) {
+        n = _n; d = _d;
+        if (d < 0) { n = -n; d = -d; }
+        long g = gcd(Math.abs(n),d); n /= g; d /= g;
     }
     private long gcd(long a, long b) {
         return b == 0 ? a : gcd(b, a % b);
     }
-    public Rational(long p) { this(p,1); }
+    public Rational(long n) { this(n,1); }
 
     public Rational plus(Rational other) {
-        return new Rational(p * other.q + other.p * q, q * other.q);
+        return new Rational(n * other.d + other.n * d, d * other.d);
     }
     public Rational minus(Rational other) {
-        return plus(other.negate());
+        return new Rational(n * other.d - other.n * d, d * other.d);
     }
     public Rational negate() {
-        return new Rational(-p, q);
+        return new Rational(-n, d);
     }
     public Rational times(Rational other) {
-        return new Rational(p * other.p, q * other.q);
+        return new Rational(n * other.n, d * other.d);
     }
     public Rational divide(Rational other) {
-        return new Rational(p * other.q, q * other.p);
+        return new Rational(n * other.d, d * other.n);
     }
     public boolean equals(Object otherObj) {
         Rational other = (Rational)otherObj;
-        return (p == other.p) && (q == other.q);
+        return (n == other.n) && (d == other.d);
     }
     public int compareTo(Rational r) {
-        long diff = p * r.q - q * r.p;
+        long diff = n * r.d - d * r.n;
         if (diff < 0) return -1;
         else if (diff > 0) return 1;
         else return 0;
     }
     public String toString() {
-        return q == 1 ? ("" + p) : (p + "/" + q);
+        return d == 1 ? ("" + n) : (n + "/" + d);
     }
 }

@@ -381,6 +381,10 @@ $O(E \sqrt{V})$.
 
 \todo{Include a sample solution using a flow network}
 
+\todo{Variants: Multiple sources/sinks? Use trick of adding a new
+  source/sink with infinite capacity edges. Vertex capacities?
+  Turn each vertex into a new edge.}
+
 \chapter{Dynamic Programming}
 
 \todo{knapsack, longest common subsequence}
@@ -402,7 +406,35 @@ $O(E \sqrt{V})$.
 
 \section{GCD/Euclidean Algorithm}
 
-\section{Fractions}
+The \emph{Euclidean algorithm} can be used to compute the greatest
+common divisor of two \textbf{nonnegative} integers. (If you need it
+to work for negative numbers as well, just take absolute values
+first.)  It runs in logarithmic time.  The \emph{extended Euclidean
+  algorithm} not only finds the GCD $g$ of $a$ and $b$, but also finds
+integers $x$ and $y$ such that $ax + by = g$.
+
+\kattis{fairwarning, jughard, kutevi, candydistribution}
+
+\code{math/GCD.java}
+
+\section{Rational numbers}
+
+Occasional problems may require dealing with explicit rational values
+rather than using floating-point approximations.  If a problem
+involves non-integer values but requires being able to test values for
+equality \emph{exactly}, then likely rational numbers are required.
+The below code for a \texttt{Rational} class is not difficult but it's nice
+to have it as a reference. Of course in a real contest situation you
+may not need all the methods.
+
+\kattis{jointattack,prosjek,prsteni,rationalarithmetic,wheels,zipfsong}
+\newpage
+
+\code{math/Rational.java}
+
+\section{Modular arithmetic}
+
+\kattis{modulararithmetic}
 
 \section{Primes and factorization}
 
@@ -700,6 +732,8 @@ This is a list of advanced topics that may eventually be included.
 \begin{itemize}
 \item Exact Set Cover with Algorithm X/dancing links
 \item Matrix powers
+\item Min cost max flow
+\item Max flow with minimum and maximum capacities
 \end{itemize}
 
 \end{document}
