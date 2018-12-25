@@ -37,12 +37,13 @@
 \usepackage{booktabs}
 \usepackage{xspace}
 \usepackage{pifont}
+\usepackage{xparse}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Inline code
 
-\newcommand{\code}[1]{\inputminted[fontsize=\normalsize]{java}{code/#1}}
-\newcommand{\pycode}[1]{\inputminted[fontsize=\normalsize]{python}{code/#1}}
+\NewDocumentCommand{\code}{O{}O{}m}{\inputminted[linenos=true,mathescape,firstline=#1,lastline=#2,autogobble]{java}{code/#3}}
+\newcommand{\pycode}[1]{\inputminted[linenos=true,mathescape]{python}{code/#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Links
@@ -253,7 +254,7 @@ suffixarrayreconstruction}
   useful to code them up explicitly so they can be enhanced with extra
   info): insertion sort, mergesort, quicksort)}
 
-\section{BitSet}
+\section{BitSet} \label{sec:bitset}
 
 \todo{Basic examples of BitSet use.}
 
@@ -404,7 +405,7 @@ $O(E \sqrt{V})$.
 
 \chapter{Mathematics}
 
-\section{GCD/Euclidean Algorithm}
+\section{GCD/Euclidean Algorithm} \label{sec:euclid}
 
 The \emph{Euclidean algorithm} can be used to compute the greatest
 common divisor of two \textbf{nonnegative} integers. (If you need it
@@ -434,12 +435,156 @@ may not need all the methods.
 
 \section{Modular arithmetic}
 
-\kattis{modulararithmetic}
+\kattis{crackingrsa,modulararithmetic,pseudoprime,reducedidnumbers}
+
+\begin{warning}
+  Java's mod operator \texttt{\%} behaves strangely on negative
+  numbers. In many other languages (\eg Python, Haskell) \texttt{a \%
+    b} always returns a result between $0$ and $b-1$; however, in Java
+  (as in C/C++), if \texttt{a} is negative then \texttt{a \% b} will
+  also be negative.  Try adding \texttt{b} first if you need a
+  nonnegative result.
+\end{warning}
+
+For example, suppose \texttt{i} is an index into an array of length
+\texttt{n} and you need to shift by an offset \texttt{o}, wrapping
+around in case the index goes off the end of the array.  The obvious
+way to write this would be
+
+\begin{minted}{java}
+i = (i + o) % n;
+\end{minted}
+
+however, this is \textbf{incorrect if \texttt{o} could be negative!}
+If we assume that \texttt{o} will never be larger in absolute value
+than \texttt{n}, then we could write this correctly as
+
+\begin{minted}{java}
+i = (i + o + n) % n;
+\end{minted}
+
+If \texttt{o} could be arbitrarily large then we could write
+
+\begin{minted}{java}
+i = (((i + o) % n) + n) % n;
+\end{minted}
+
+(the first mod operation reduces it to lie between $-n \dots n$;
+adding $n$ ensures it is positive; and the final mod reduces it to the
+range $[0,n)$).
+
+\textbf{Modular exponentiation and modular inverses}. Sometimes one
+needs to compute the modular exponentiation $b^e \bmod m$ for some
+base $b$, exponent $e$, and modulus $m$.  Using repeated squaring, it
+is possible to do this efficiently even for very large exponents $e$.
+Relatedly, if $b$ is relatively prime to $m$, it is possible to
+compute $b^{-1} \bmod m$, the \emph{modular inverse} of $b$, that is,
+the unique number $0 < b' < m$ such that $bb' \equiv 1 \pmod m$.
+
+In Java, probably the easiest way to compute these is using the
+\texttt{modPow} method from the \texttt{BigInteger} class
+\link{sec:bigint}.  If \texttt{b}, \texttt{e}, and \texttt{m} are
+\texttt{BigIntegers}, then \texttt{b.modPow(e, m)} is a
+\texttt{BigInteger} that represents $b^e \bmod m$.  The exponent
+\texttt{e} can also be negative; in particular, if \texttt{e} is $-1$
+then \texttt{b.modPow(e,m)} will compute the inverse of
+\texttt{b} modulo \texttt{m}.
+
+It is also useful to know how to compute modular exponentiation and
+inverses manually, in case you need some sort of variant version, or
+if \texttt{BigInteger} is not fast enough.
+
+\textbf{Modular exponentiation} can be computed by repeated squaring.
+The basic idea is to compute $b^e$ by splitting up $e$ into a sum of
+powers of two (according to its binary expansion), raising $b$ to each
+power of two and taking the product.  This can be done efficiently
+since we can get from $b^{2^k}$ to $b^{2^{k+1}}$ just by squaring.
+
+  \begin{warning}
+    Even if you need the answer modulo an \texttt{int} value such
+    as $10^9 + 7$, it is important to use \texttt{long} in the method
+    below: the product of two \texttt{int} values does not necessarily
+    fit in an \texttt{int}, even if the very next step will reduce it
+    modulo $m$ back into the range of an \texttt{int}.
+  \end{warning}
+
+\code[2][10]{math/ModExp.java}
+
+\textbf{Modular inverses} can be computed using the extended Euclidean
+algorithm \link{sec:euclid}.  In particular, suppose $a$ and $b$ are
+relatively prime, that is, their GCD is $1$.  In that case the
+\texttt{egcd} algorithm will compute numbers $x$ and $y$ such that
+$ax + by = 1$.  Taking this equation $(\bmod b)$ yields \[ ax + by
+  \equiv ax \equiv 1 \pmod b, \] and so $x$ is the modular inverse of
+$a$ modulo $b$ (in practice one may want to reduce $x \bmod b$ so $x$
+is between $0$ and $b-1$).
+
+Alternatively, for a prime $p$, Fermat's Little Theorem says that
+\[ a^{p-1} \equiv 1 \pmod p \] and hence $a^{p-2}$ is the modular
+inverse of $a$ modulo $p$, which can be computed using modular
+exponentiation.
 
 \section{Primes and factorization}
 
-\todo{Basic primality testing and factorization with trial division.
-  Sieving (primes, factors, Euler totient).}
+Methods for primality testing and prime factorization that may show up
+in a contest can be put in two main classes.  First, methods based on
+\emph{trial division} are relatively simple to code and work well for
+testing just one or a few numbers.  \emph{Sieve} based methods
+construct a whole table of primes or factors all at once, and are
+often more efficient when many numbers need to be factored or tested
+for primality.
+
+\subsection{Trial division}
+
+\kattis{almostperfect,candydivision,crypto,enlarginghashtables,flowergarden,goldbach2,happyprime,iks,listgame,olderbrother,pascal,primalrepresentation}
+
+To test whether a single number is prime, you can use the following
+function which performs (somewhat optimized) trial division.  Note
+that although there are faster primality testing methods (\eg
+Miller-Rabin, Baille-PSW), they tend to be probabilistic and hence
+inappropriate for a contest environment.  Hence, it is highly unlikely
+that a contest would ever require anything more sophisticated than
+divisibility testing.  Note that \texttt{isPrime} has runtime
+$O(\sqrt n)$ and is hence appropriate for numbers up to the maximum
+size of an \texttt{int} ($\approx 2 \cdot 10^9$); running it on inputs
+up to the maximum size of a \texttt{long} is likely to be too slow.
+
+\code[2][10]{math/IsPrime.java}
+
+The following method takes $O(\sqrt n)$ to factor a number into its
+prime factorization, also using trial division.  The returned prime
+factors will be sorted from smallest to biggest.
+
+\code[4][18]{math/Factor.java}
+
+\subsection{Sieving}
+
+\kattis{industrialspy,nonprimefactors,primereduction,primesieve,reseto}
+
+The term \emph{sieve} comes from the ancient \emph{Sieve of
+  Eratosthenes}, a very effective method for generating all the primes
+up to a certain bound.  The basic idea is to make a table of all the
+numbers from $1$ up to some upper bound $n$ and iterate through the
+table. Each time we discover a prime $p$ we ``cross out'' all the
+multiples of $p$ in the table; we know a number is prime if when we
+get to it it has not been crossed out.  This takes time
+$O(n \log \log n)$ (essentially linear time) to construct a table for
+$1 \dots n$.  The code below uses a \texttt{BitSet} \link{sec:bitset}
+instead of an array of \texttt{boolean} which uses less memory.
+Constructing a \texttt{PrimeSieve} of size $10^8$ should take about a second
+and use only about 12 MB of memory; constructing smaller prime sieves
+should be quite fast.
+
+\code{math/PrimeSieve.java}
+
+\todo{Sieving (factors, Euler totient?).}
+
+\section{Divisors and Euler's Totient Function}
+
+\kattis{farey,relatives}
+
+\todo{Number of divisors.  Euler's $\varphi$ function: computing
+  directly and by sieving.}
 
 \section{Factorial} \label{sec:factorial}
 
@@ -450,7 +595,7 @@ may not need all the methods.
 
 \section{Combinatorics} \label{sec:combinatorics}
 
-\kattis{anagramcounting, secretsanta}
+\kattis{anagramcounting, nine, secretsanta, kingscolors, howmanyzeros}
 
 \todo{Basic principles of combinatorics.  Code for computing binomial
   coefficients. Multinomial coefficients.}
@@ -730,10 +875,17 @@ input in Python:
 This is a list of advanced topics that may eventually be included.
 
 \begin{itemize}
+\item Chinese Remainder Theorem
 \item Exact Set Cover with Algorithm X/dancing links
 \item Matrix powers
 \item Min cost max flow
 \item Max flow with minimum and maximum capacities
+\item Discrete logarithms with baby step/giant step
+  (\inlinekattis{discretelogging})
+\item Faster primality testing with Miller-Rabin (\eg testing with $a
+  = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41$ makes it
+  deterministic) or Baille-PSW which is known to be deterministic up
+  to $2^{64}$.
 \end{itemize}
 
 \end{document}
