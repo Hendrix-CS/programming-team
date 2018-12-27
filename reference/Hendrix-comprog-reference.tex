@@ -510,6 +510,10 @@ since we can get from $b^{2^k}$ to $b^{2^{k+1}}$ just by squaring.
 
 \code[2][10]{math/ModExp.java}
 
+Note this correctly computes $0^0 = 1$.  It would be possible to add a
+special case for when $b = 0$ and $e \neq 1$, to avoid multiplying $0$
+by itself a bunch of times, but it's hardly worth it.
+
 \textbf{Modular inverses} can be computed using the extended Euclidean
 algorithm \link{sec:euclid}.  In particular, suppose $a$ and $b$ are
 relatively prime, that is, their GCD is $1$.  In that case the
