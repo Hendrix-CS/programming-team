@@ -290,8 +290,9 @@ used in Kruskal's Minimum Spanning Tree algorithm \link{sec:kruskal},
 and can also be useful on its own.  \texttt{find} and \texttt{union}
 both take essentially constant amortized time.
 
+\todo{move MST problems to MST section, keep only UF-specific ones here}
 \kattis{drivingrange, islandhopping, kastenlauf, lostmap, minspantree,
-  numbersetseasy, treehouses, unionfind, virtualfriends,
+  numbersetseasy, unionfind, virtualfriends,
   wheresmyinternet}
 
 \code{data-structures/UnionFind.java}
@@ -348,6 +349,8 @@ See \fulllink{sec:range-queries}.
 
 \section{Min spanning trees (Kruskal)} \label{sec:kruskal}
 
+\kattis{treehouses, jurassicjigsaw}
+
 \section{Max flow}
 
 A \emph{flow network} is a directed, weighted graph where the edge
@@ -396,12 +399,6 @@ $O(E \sqrt{V})$.
 \section{Z-algorithm}
 
 \section{Suffix arrays}
-
-\chapter{Divide \& Conquer}
-
-\section{Counting inversions}
-
-\kattis{excursion, froshweek}
 
 \chapter{Mathematics}
 
@@ -570,18 +567,41 @@ The term \emph{sieve} comes from the ancient \emph{Sieve of
 up to a certain bound.  The basic idea is to make a table of all the
 numbers from $1$ up to some upper bound $n$ and iterate through the
 table. Each time we discover a prime $p$ we ``cross out'' all the
-multiples of $p$ in the table; we know a number is prime if when we
-get to it it has not been crossed out.  This takes time
+multiples of $p$ in the table; we know a number is prime if it hasn't
+yet been crossed out by the time we get to.  This takes time
 $O(n \log \log n)$ (essentially linear time) to construct a table for
-$1 \dots n$.  The code below uses a \texttt{BitSet} \link{sec:bitset}
-instead of an array of \texttt{boolean} which uses less memory.
-Constructing a \texttt{PrimeSieve} of size $10^8$ should take about a second
-and use only about 12 MB of memory; constructing smaller prime sieves
-should be quite fast.
+$1 \dots n$.  The code below uses a \texttt{BitSet} \link{sec:bitset},
+which uses less memory than an array of \texttt{boolean}s. Constructing
+a \texttt{PrimeSieve} of size $10^8$ should take about a second and
+use only about 12 MB of memory; constructing smaller prime sieves
+should be quite fast.  Even a \texttt{PrimeSieve} of size
+\texttt{Integer.MAX\_VALUE}, \ie $\approx 2 \cdot 10^9$, will fit
+quite easily in memory, although constructing it will probably take
+too long for most contest problems.  (However, there may be occasional
+problems that require building a sieve of this size in order to
+precompute some data offline---\ie writing a program that runs for a
+few minutes in order to precompute some kind of set or lookup table to
+be included in the submitted solution.)
 
 \code{math/PrimeSieve.java}
 
-\todo{Sieving (factors, Euler totient?).}
+Instead of simply storing a boolean indicating whether each number is
+prime or not, we could also store the smallest prime factor.  We can
+still use this to test whether a given number is prime, by checking
+whether \texttt{smallest[n] == n}.  But we can also use it to quickly
+factor any composite \texttt{n}: simply divide \texttt{n} by
+\texttt{smallest[n]} and repeat. We can construct the smallest factor
+array using a sieving method similar to \texttt{PrimeSieve}.  The
+tradeoff is that this uses much more memory: instead of one bit per
+number, we use an entire \texttt{int}, that is, 32 bits.  A
+\texttt{FactorSieve} of size $10^8$ will take up around 380 MB.
+
+The \texttt{FactorSieve} class below includes a trivial
+\texttt{isPrime} method as well as a \texttt{factor} method, which is
+carefully written to work even for \texttt{int} values which are
+bigger than the lookup table.
+
+\code{math/FactorSieve.java}
 
 \section{Divisors and Euler's Totient Function}
 
@@ -612,15 +632,18 @@ should be quite fast.
   computing the answer requires \emph{multiplying} $\bmod (10^9 + 7)$.
 \end{warning}
 
-\todo{Heap's Algorithm for generating all permutations.  See Bit
-  Tricks for generating all subsets.}
+\todo{Heap's Algorithm for generating all permutations; next
+  permutation.  See Bit Tricks for generating all subsets.}
 
 \todo{PIE?}
 
 \chapter{Bit Tricks} \label{chap:bittricks}
 
-\todo{Basic bit manipulation.  Using bitstrings to compactly represent
-  sets/states.  Iterating through all subsets with counter.}
+\todo{Basic bit manipulation: and, or, xor, shift.  Right shift w/o
+  sign extension.  Using bitstrings to compactly represent
+  sets/states.  Iterating through all subsets with counter.  LSB, LSZ,
+  MSB, pop count.
+}
 
 \kattis{flipfive}
 
@@ -879,17 +902,20 @@ input in Python:
 This is a list of advanced topics that may eventually be included.
 
 \begin{itemize}
-\item Chinese Remainder Theorem
-\item Exact Set Cover with Algorithm X/dancing links
+\item Chinese Remainder Theorem (\inlinekattis{heliocentric})
+\item Exact Set Cover with Algorithm X/dancing links (\inlinekattis{programmingteamselection})
 \item Matrix powers
+  \kattis{diceandladders,driving,linearrecurrence,mortgage,overlappingmaps,squawk,timing}
 \item Min cost max flow
 \item Max flow with minimum and maximum capacities
 \item Discrete logarithms with baby step/giant step
   (\inlinekattis{discretelogging})
 \item Faster primality testing with Miller-Rabin (\eg testing with $a
   = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41$ makes it
-  deterministic) or Baille-PSW which is known to be deterministic up
-  to $2^{64}$.
+  deterministic).
+\item Divide \& conquer algorithm for counting inversions.
+  \kattis{excursion, froshweek}
+
 \end{itemize}
 
 \end{document}
