@@ -221,12 +221,13 @@ suffixarrayreconstruction}
 
 \section{PriorityQueue}
 
-\todo{Examples of using \texttt{PriorityQueue}.  Show how to
-  construct with custom \texttt{Comparator}, eg. using lambda notation}
-\todo{Note lack of decreaseKey operation (Dijkstra), use remove + add,
-  not as fast}
+\todo{Examples of using \texttt{PriorityQueue}.
+  \texttt{Collections.reverseOrder()} for max PQ.  Show how to
+  construct with custom \texttt{Comparator}, eg. using lambda
+  notation; things like \texttt{Double.compare}, etc.} \todo{Note lack
+  of decreaseKey operation (Dijkstra), use remove + add, not as fast}
 
-\kattis{bank, ferryloading3, guessthedatastructure, knigsoftheforest}
+\kattis{bank, ferryloading3, guessthedatastructure, knigsoftheforest, vegetables}
 
 \section{Set}
 
@@ -236,6 +237,12 @@ suffixarrayreconstruction}
 
 \todo{HashMap, TreeMap}
 \todo{Iterating over keys, values, both (MapEntry)}
+\todo{Note for purposes of programming contests, TreeMap and HashMap
+  are basically interchangeable.  HashMap is faster in theory but a
+  factor of $\lg n$ is not that much, and HashMap has its own
+  overhead.  Much easier to use custom classes as keys in a TreeMap
+  (just implement Comparable) than in a HashMap (implement hashCode
+  and equals).}
 
 \kattis{awkwardparty}
 
@@ -302,8 +309,6 @@ both take essentially constant amortized time.
 \section{Tries}
 
 \kattis{boggle, heritage, herkabe, phonelist}
-
-\section{Red-black trees}
 
 \section{Segment trees and Fenwick trees}
 
