@@ -160,7 +160,8 @@ shortest path in a weighted graph.
   $2 \cdot 10^9$.
 \item \texttt{long} holds 64 bits; the largest
   \texttt{long} value is \verb|Long.MAX_VALUE| $ = 2^{63} - 1$, a bit
-  more than $9 \cdot 10^{18}$.
+  more than $9 \cdot 10^{18}$. To write literal long values you can
+  add an \texttt{L} suffix, as in \texttt{long x = 1234567890123L;}.
 \item If you need larger values, use \fulllink{sec:bigint} or just use
   \fulllink{chap:python}; see \fulllink{sec:combinatorics}.
 \end{itemize}
@@ -244,7 +245,7 @@ suffixarrayreconstruction}
   (just implement Comparable) than in a HashMap (implement hashCode
   and equals).}
 
-\kattis{awkwardparty}
+\kattis{awkwardparty, administrativeproblems, snowflakes}
 
 \section{BigInteger} \label{sec:bigint}
 
@@ -274,8 +275,10 @@ Typically ACM ICPC problems are designed so \texttt{Scanner} and
 required input and output within the time limits.  However, these are
 relatively slow since they are unbuffered (every single read and write
 happens immediately).  Occasionally it can be useful to have faster
-I/O; indeed, some problems on Kattis cannot be solved in Java without
-using this. \todo{Link to some examples.}
+I/O; indeed, a few problems on Kattis cannot be solved in Java without
+using this.
+
+\kattis{avoidland, cd}
 
 \begin{warning}
   Be sure to call \texttt{flush()} at the end of your program
@@ -288,27 +291,47 @@ using this. \todo{Link to some examples.}
 
 \chapter{Data Structures}
 
+\section{Bag}
+
+\kattis{cookieselection}
+
+A \emph{bag} is a collection of elements where order does not matter
+(like a set) but multiplicity does matter, \ie there can be duplicates.
+
+\todo{hashset and treeset-based bag implementations}
+
 \section{Union-find}
+
+\kattis{forestfires, kastenlauf, ladice, numbersetseasy, unionfind, virtualfriends,
+  wheresmyinternet}
 
 A union-find structure can be used to keep track of a collection of
 disjoint sets, with the ability to quickly test whether two items are
 in the same set, and to quickly union two given sets into one.  It is
 used in Kruskal's Minimum Spanning Tree algorithm \link{sec:kruskal},
-and can also be useful on its own.  \texttt{find} and \texttt{union}
-both take essentially constant amortized time.
-
-\todo{move MST problems to MST section, keep only UF-specific ones here}
-\kattis{drivingrange, islandhopping, kastenlauf, lostmap, minspantree,
-  numbersetseasy, unionfind, virtualfriends,
-  wheresmyinternet}
+and can also be useful on its own (see the above Kattis problems for
+examples).  \texttt{find} and \texttt{union} both take essentially
+constant amortized time.
 
 \code{data-structures/UnionFind.java}
 
-\section{Heaps}
+The above code can easily be enhanced to keep track of the number of
+sets (initialize to \texttt{n}; subtract one every time \texttt{union}
+hits the \texttt{ru != rv} case), or to keep track of the actual size
+of each set instead of just the rank/height (keep a size for each
+index; initialize all to 1; add sizes appropriately when doing
+\texttt{union}).
 
 \section{Tries}
 
 \kattis{boggle, heritage, herkabe, phonelist}
+
+The code below is a very simple implementation of a trie---there are
+many other methods that could be added, and it is not very efficient
+since it repeatedly uses the $O(n)$ \texttt{substring} operation as it
+recurses down the trie, but it is sufficient for some problems.
+
+\code{data-structures/Trie.java}
 
 \section{Segment trees and Fenwick trees}
 
@@ -318,13 +341,43 @@ See \fulllink{sec:range-queries}.
 
 \section{Complete search}
 
-\todo{Complete search aka brute force}
+\kattis{bing, classpicture, coloring, dancerecital, lektira, freefood, gepetto,
+  kastenlauf, mjehuric, paintings, prozor, rectanglesurrounding,
+  reducedidnumbers, reseto, sheldon, shuffling,
+  weakvertices, wheels, transportationplanning}
 
-\section{Binary and ternary search}
+See CP3 for a fuller discussion of complete search, aka brute force,
+and a list of relevant techniques (nested loops, recursive
+backtracking, \emph{etc.}).  Just remember that there's no need to
+code anything more sophisticated if a back-of-the-envelope analysis
+shows that a simple complete search will finish under the time
+limit. (Although some kinds of complete search can themselves be
+rather sophisticated.  For example, see \fulllink{chap:bittricks}.
+Some of the above problems are much harder than others!)
+
+Sometimes complete search isn't in and of itself the full solution to
+a problem, but the problem is set up so that a subpart can be done via
+complete search, to keep the solution complexity from getting out of
+hand and allowing you to focus your efforts on the more
+``interesting'' part of the problem.
+
+\section{Binary search}
+
+\kattis{bottles, cheese, guess, insert, speed, suspensionbridges, tetration}
 
 \todo{Binary search on an array; binary search on unbounded function
-  on the integers; binary search on real interval; ternary search}
+  on the integers; binary search on real interval}
 \todo{Point out \texttt{Arrays.binarySearch}}
+
+\todo{When searching over the integers, make sure you're very explicit
+  about whether the lo and hi bounds are included or
+  excluded. Probably easiest to include.}
+
+\section{Ternary search}
+
+\kattis{brocard, euclideantsp, infiniteslides, janitortroubles}
+
+\todo{Write about ternary search.}
 
 \chapter{Graphs}
 
@@ -333,6 +386,8 @@ See \fulllink{sec:range-queries}.
 \todo{Directed, undirected, weighted, unweighted, self loops, multiple edges}
 \todo{characterization of trees}
 \todo{New virtual source/sink node trick}
+
+\kattis{chopwood}
 
 \section{Graph representation}
 
@@ -354,7 +409,7 @@ See \fulllink{sec:range-queries}.
 
 \section{Min spanning trees (Kruskal)} \label{sec:kruskal}
 
-\kattis{treehouses, jurassicjigsaw}
+\kattis{drivingrange, islandhopping, jurassicjigsaw, lostmap, minspantree, treehouses}
 
 \section{Max flow}
 
@@ -650,7 +705,7 @@ bigger than the lookup table.
   MSB, pop count.
 }
 
-\kattis{flipfive}
+\kattis{flipfive, pagelayout}
 
 \todo{BitSet instead of array of booleans.}
 
@@ -922,5 +977,12 @@ This is a list of advanced topics that may eventually be included.
   \kattis{excursion, froshweek}
 
 \end{itemize}
+
+\chapter{Resources} \label{chap:resources}
+
+\todo{methodstosolve}
+\todo{UVa}
+\todo{CP3}
+\todo{Geeksforgeeks, topcoder, codeforces}
 
 \end{document}
