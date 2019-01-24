@@ -39,6 +39,13 @@
 \usepackage{pifont}
 \usepackage{xparse}
 
+\usepackage{algorithm, algorithmicx}
+\usepackage[noend]{algpseudocode}
+
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat=algnonumber}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Inline code
 
@@ -50,6 +57,10 @@
 
 \newcommand*{\fulllink}[1]{\hyperref[{#1}]{\nameref*{#1}~(\S\ref*{#1}, page~\pageref*{#1})}}
 \newcommand*{\link}[1]{\hyperref[{#1}]{(\S\ref*{#1}, page~\pageref*{#1})}}
+
+\newcommand{\javalogo}{\includegraphics[height=0.9\baselineskip]{Java}}
+\newcommand*{\javadoclink}[2]{\href{https://docs.oracle.com/javase/10/docs/api/java/#1/#2.html}{\texttt{#2}}}
+\newcommand*{\javadoc}[2]{\javalogo\ \javadoclink{#1}{#2}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Kattis
@@ -124,8 +135,8 @@ shortest path in a weighted graph.
 \item If the graph has $|V| = 10^5$ vertices, you should look for some
   special property of the graph which allows you to solve the problem
   in $O(V)$ or $O(V \log V)$ time---for example, perhaps the graph is
-  a tree \link{sec:graph-basics}, so you can run a DFS \link{sec:dfs}
-  to find a unique path and then add up the weights.  An input size of
+  a tree \link{sec:graph-basics}, so you can run a BFS/DFS \link{sec:dfs}
+  to find the unique path and then add up the weights.  An input size of
   $10^5$ is a common sign that you are expected to use an $O(n \lg n)$
   or $O(n)$ algorithm---it's big enough to make $O(n^2)$ too slow but
   not so big that the time to do I/O makes a big difference.
@@ -163,8 +174,10 @@ shortest path in a weighted graph.
   more than $9 \cdot 10^{18}$. To write literal long values you can
   add an \texttt{L} suffix, as in \texttt{long x = 1234567890123L;}.
 \item If you need larger values, use \fulllink{sec:bigint} or just use
-  \fulllink{chap:python}; see \fulllink{sec:combinatorics}.
+  Python~\link{chap:python}; see also \fulllink{sec:combinatorics}.
 \end{itemize}
+
+\kattis{different}
 
 \chapter{Java Reference}
 
@@ -174,24 +187,51 @@ shortest path in a weighted graph.
 
 \section{Scanner}
 
-\texttt{Scanner} is relatively slow but should usually be sufficient
+\javadoc{util}{Scanner} is relatively slow but should usually be sufficient
 for most purposes.  If the input or output is relatively large (> 1MB)
 and you suspect the time taken to read or write it may be a hindrance,
 you can use \fulllink{sec:fastio}.
 
 \code{java/ScannerExample.java}
 
-\section{String}
-
-The \texttt{String} type can be used in Java to represent sequences of
-characters.
-
-\todo{Useful \texttt{String} methods: concatenation, substring, charAt, \dots?}
-\todo{Converting between \texttt{String} and \texttt{char[]},
-  advantages and disadvantages of each}
+\section{String/StringBuilder}
 
 \kattis{battlesimulation, bing, connectthedots, itsasecret, shiritori,
 suffixarrayreconstruction}
+
+The \javadoc{lang}{String} type can be used in Java to represent
+sequences of characters.  Some useful \texttt{String} methods include:
+\begin{itemize}
+\item concatenation (\texttt{+})
+\item \texttt{substring(i)} yields the substring starting at index
+  \texttt{i} up to the end of the string
+\item \texttt{substring(i,j)} yields the substring starting at
+  \texttt{i} (inclusive) and ending \emph{just before} \texttt{j}
+  (same as Python slices).
+\item \texttt{charAt(i)} yields the \texttt{char} at index \texttt{i}.
+\item \texttt{toCharArray()} converts to a \texttt{char[]}, which can
+  be convenient if you need to do a lot of indexing (\texttt{[i]}
+  instead of \texttt{charAt(i)}
+\item \texttt{split(String)} splits a string into a \texttt{String[]}
+  of pieces between occurrences of the splitting string.
+\item \texttt{endsWith(String)}, \texttt{startsWith(String)},
+  \texttt{indexOf(String)}, and \texttt{replace(...)} can occasionally be useful.
+\end{itemize}
+
+\todo{Example of using \texttt{split}, \emph{e.g.} solution to
+  \inlinekattis{sumoftheothers}.}
+
+\texttt{String}s are immutable, which means in particular that
+concatenation has to allocate an entirely new \texttt{String} and copy
+both arguments.  Hence repeatedly appending individual characters to
+the end of a \texttt{String} takes $O(n^2)$ time, since the entire
+string must be copied with each append operation.  In this situation,
+either pre-allocate a sufficiently large \texttt{char[]}, or use
+the \javadoc{lang}{StringBuilder} class.
+
+\todo{Example of using \texttt{StringBuilder}.}
+
+\kattis{itsasecret}
 
 \section{Arrays}
 
@@ -289,6 +329,21 @@ using this.
 
 \todo{Add \texttt{getLine()} method}
 
+\chapter{Python Reference} \label{chap:python}
+
+Python's built-in support for arbitrary-size integers (using
+\texttt{BigInteger} in Java is a pain!) and built-in dictionaries with
+lightweight syntax make it attractive for certain kinds of problems.
+
+\section{Template}
+
+Below is a basic template showing how to read typical contest problem
+input in Python:
+
+\pycode{python/template.py}
+
+\todo{Mention basic Python data structures such as set, deque, list methods}
+
 \chapter{Data Structures}
 
 \section{Bag}
@@ -296,7 +351,11 @@ using this.
 \kattis{cookieselection}
 
 A \emph{bag} is a collection of elements where order does not matter
-(like a set) but multiplicity does matter, \ie there can be duplicates.
+(like a set) but multiplicity does matter, \ie there can be
+duplicates.  Bags are not needed often but can occasionally be useful.
+It is not too hard to build a bag as a map from values to integer
+counts, but there are a few corner cases so it's worth copying a
+well-tested implementation instead of writing one from scratch.
 
 \todo{hashset and treeset-based bag implementations}
 
@@ -391,13 +450,90 @@ hand and allowing you to focus your efforts on the more
 
 \section{Graph representation}
 
-\todo{Adjacency matrix, adjacency maps.  Edge objects. Implicit graphs.}
+\todo{Adjacency matrix, adjacency maps.  Edge objects. Implicit
+  graphs.}
+
+Figure~\ref{fig:horrorlist} has a sample solution for
+\inlinekattis{horrorlist} which builds an adjacency map
+representation of an undirected graph.
+
+\todo{State space search with complex states: make a class, implement
+  Comparable, use TreeMap}
 
 \section{BFS}
 
-\todo{Code for BFS with level labelling, parent map.}
+\kattis{brexit, horrorlist}
 
-\kattis{brexit}
+Breadth-first search (BFS) can be used to find single-source shortest
+paths (\emph{i.e.} shortest paths from a particular starting vertex to
+all other vertices) in an unweighted graph. BFS comes up often in many
+different guises, so it's worth being very familiar with BFS and its
+variants. Below is pseudocode showing a generic BFS implementation.
+Important invariants:
+\begin{itemize}
+\item Every vertex in $Q$ has already been marked visited. (This is
+  important since it prevents vertices from being added to $Q$
+  multiple times.)
+\item $Q$ only contains vertices from at most two (consecutive) levels
+  at a time.
+\end{itemize}
+
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\begin{algorithm}[H]
+  \begin{algorithmic}[1]
+\State $s \gets$ starting vertex
+\State Mark $s$ visited
+\State $Q \gets$ new queue containing only $s$
+\State $\mathit{level}[s] \gets 0$
+\While{$Q$ not empty}
+  \State $u \gets Q.\mathit{remove}$
+  \For{each neighbor $v$ of $u$}
+    \If{$v$ is not visited}
+      \State $\mathit{level}[v] \gets \mathit{level}[u] + 1$ \Comment{Optionally mark level}
+      \State Add $v$ to $Q$
+      \State Mark $v$ visited
+      \State $\mathit{parent}[v] \gets u$ \Comment{Optionally record parent}
+    \EndIf
+  \EndFor
+\EndWhile
+  \end{algorithmic}
+\caption{BFS}
+\end{algorithm}
+\end{minipage}
+\end{center}
+
+Some options/variants:
+\begin{itemize}
+\item The $\mathit{level}$ array shown above is optional, and can be
+  omitted if not needed.  Sometimes it makes sense to have the
+  $\mathit{level}$ array do double-duty to also track visited vertices:
+  if the $\mathit{level}$ of every vertex is initialized to some
+  nonsensical value such as $-1$ or $\infty$, then a vertex is visited
+  iff its $\mathit{level}$ is not equal to the initial value.
+
+  Figure~\ref{fig:horrorlist} shows a sample solution for
+  \inlinekattis{horrorlist}, exhibiting a BFS with level labelling.
+\item The parent map is also optional, and can be used to reconstruct
+  an actual shortest path from $s$ to any vertex (see below).
+\item If you want to compute shortest paths from \emph{any} of a set
+  of starting vertices, simply replace the initialization of $s$ with
+  the desired set (\emph{i.e.} mark them all visited, add them all to
+  $Q$, and set their $\mathit{level}$ to $0$ before starting the loop;
+  the loop itself does not change).
+\item Replacing $Q$ with a stack results in a depth-first rather than
+  breadth-first search (although often it makes more sense to
+  implement a DFS recursively; see \link{sec:dfs}).
+\end{itemize}
+
+\begin{figure}
+  \small
+  \code{graph/horrorList.java}
+  \caption{Sample solution for \texttt{horrorlist} (Adjacency set
+    representation; BFS with level labelling)}  \label{fig:horrorlist}
+\end{figure}
+
+\todo{Show how to reconstruct a shortest path using parent map}
 
 \section{DFS, SCCs, topological sorting} \label{sec:dfs}
 
@@ -602,13 +738,18 @@ for primality.
 To test whether a single number is prime, you can use the following
 function which performs (somewhat optimized) trial division.  Note
 that although there are faster primality testing methods (\eg
-Miller-Rabin, Baille-PSW), they tend to be probabilistic and hence
-inappropriate for a contest environment.  Hence, it is highly unlikely
-that a contest would ever require anything more sophisticated than
-divisibility testing.  Note that \texttt{isPrime} has runtime
-$O(\sqrt n)$ and is hence appropriate for numbers up to the maximum
-size of an \texttt{int} ($\approx 2 \cdot 10^9$); running it on inputs
-up to the maximum size of a \texttt{long} is likely to be too slow.
+Miller-Rabin, Baille-PSW), it is highly unlikely that a contest would
+ever require anything more sophisticated than divisibility testing:
+Miller-Rabin is not hard to code but it is probabilistic, so a program
+using it may give different results on subsequent runs, hardly
+suitable for a competitive programming environment; Baille-PSW is
+known to be deterministic for numbers up to $2^{64}$, but is much more
+complex to code.
+
+Note that \texttt{isPrime} has runtime $O(\sqrt n)$ and is hence
+appropriate for numbers up to the maximum size of an \texttt{int}
+($\approx 2 \cdot 10^9$); running it on inputs up to the maximum size
+of a \texttt{long} is likely to be too slow.
 
 \code[2][10]{math/IsPrime.java}
 
@@ -944,19 +1085,6 @@ in \texttt{prefix} to the identity element instead of zero.
 
 \todo{Segment trees.}
 
-\chapter{Python} \label{chap:python}
-
-Python's built-in support for arbitrary-size integers (using
-\texttt{BigInteger} in Java is a pain!) and built-in dictionaries with
-lightweight syntax make it attractive for certain kinds of problems.
-
-Below is a basic template showing how to read typical contest problem
-input in Python:
-
-\pycode{python/template.py}
-
-\todo{Mention basic Python data structures such as set, deque, list methods}
-
 \chapter{Advanced topics} \label{chap:advanced}
 
 This is a list of advanced topics that may eventually be included.
@@ -975,6 +1103,7 @@ This is a list of advanced topics that may eventually be included.
   deterministic).
 \item Divide \& conquer algorithm for counting inversions.
   \kattis{excursion, froshweek}
+\item 2-SAT
 
 \end{itemize}
 
