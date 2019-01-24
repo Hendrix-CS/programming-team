@@ -515,7 +515,9 @@ Some options/variants:
   Figure~\ref{fig:horrorlist} shows a sample solution for
   \inlinekattis{horrorlist}, exhibiting a BFS with level labelling.
 \item The parent map is also optional, and can be used to reconstruct
-  an actual shortest path from $s$ to any vertex (see below).
+  an actual shortest path from $s$ to any vertex, by starting with the
+  end vertex and iteratively following parents backwards until
+  reaching $s$.
 \item If you want to compute shortest paths from \emph{any} of a set
   of starting vertices, simply replace the initialization of $s$ with
   the desired set (\emph{i.e.} mark them all visited, add them all to
@@ -532,8 +534,6 @@ Some options/variants:
   \caption{Sample solution for \texttt{horrorlist} (Adjacency set
     representation; BFS with level labelling)}  \label{fig:horrorlist}
 \end{figure}
-
-\todo{Show how to reconstruct a shortest path using parent map}
 
 \section{DFS, SCCs, topological sorting} \label{sec:dfs}
 
