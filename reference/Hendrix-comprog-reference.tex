@@ -843,13 +843,71 @@ bigger than the lookup table.
 \kattis{bits, classpicture, flipfive, gepetto, hypercube, mazemakers,
   pagelayout, pebblesolitaire, satisfiability, turningtrominos}
 
+\texttt{int} values are represented as a sequence of 32 bits;
+\texttt{long} values are 64 bits.  Sometimes it is useful to think
+about/work with such values directly as a sequence of bits rather than
+as a number. We typically think of the bits as indexed from $0$
+starting at the rightmost (least significant) bit.  For example,
+\[ \arraycolsep=1pt
+  974_{10} =
+  \begin{array}{cccccccccc}
+    1&1&1&1&0&0&1&1&1&0 \\
+      \scriptscriptstyle 9
+     &\scriptscriptstyle 8
+     &\scriptscriptstyle 7
+     &\scriptscriptstyle 6
+     &\scriptscriptstyle 5
+     &\scriptscriptstyle 4
+     &\scriptscriptstyle 3
+     &\scriptscriptstyle 2
+     &\scriptscriptstyle 1
+     &\scriptscriptstyle 0
+  \end{array} \]
+In general, a $1$ bit at index $i$ has value $2^i$.
 
+One frequently useful point of view is to think of a value of type
+\texttt{int}/\texttt{long} as representing a particular subset of a
+given set of up to 32/64 items.  The bit at index $i$ indicates
+whether item $i$ is included in the subset or not.
 
-\todo{Basic bit manipulation: and, or, xor, shift.  Right shift w/o
-  sign extension.  Using bitstrings to compactly represent
-  sets/states.  Iterating through all subsets with counter.  LSB, LSZ,
-  MSB, pop count.
-}
+Java has built-in operators to manipulate values at the bit level:
+\begin{itemize}
+\item \texttt{\&} represents bitwise logical AND.  That is, the
+  index-$i$ bit of the result is the logical AND of the index-$i$ bits
+  of the inputs; each bit index is considered separately.  It is often
+  useful to think of \texttt{\&} as a ``masking'' operation: given
+  values \texttt{v} and \texttt{mask}, evaluating \texttt{v \& mask}
+  will only ``let through'' the bits of \texttt{v} which correspond to
+  $1$ bits in \texttt{mask}; all other bits will be ``turned off''.
+  For example, if you want to extract only the last three bits of a
+  value \texttt{v}, you can compute \texttt{v \& 7} (since bitwise AND
+  with $7 = 111_2$ will turn off all bits except the last three).
+
+  If values are thought of as representing subsets, then \texttt{\&}
+  corresponds to set intersection.
+\item \texttt{|} represents bitwise logical OR.  This can be used to
+  ``turn on'' certain bits: \texttt{v \& on} will result in a value
+  which is the same as \texttt{v} except that the bits which are set
+  to $1$ in \texttt{on} will be turned on.
+
+  If values are thought of as representing subsets, then \texttt{|}
+  corresponds to set union.
+\item \verb|^| represents bitwise logical XOR.  This can be used to
+  ``toggle'' bits: \verb|v ^ toggle| will result in a value which is
+  the same as \texttt{v} except that the bits in positions
+  corresponding to the $1$ bits in \texttt{toggle} have been flipped.
+
+  If values are thought of as representing subsets, then \verb|^|
+  corresponds to symmetric difference: \verb|a ^ b| represents the set
+  of elements which are in \verb|a| or \verb|b| but not both.
+\item \todo{left and right shift, right shift without sign extension}
+\end{itemize}
+
+\todo{Using bitstrings to compactly represent sets/states/adjacent
+  neighbors.  Building a set, iterating through all subsets with
+  counter.}
+
+\todo{LSB, LSZ, MSB, pop count}
 
 \todo{BitSet instead of array of booleans.}
 
