@@ -904,14 +904,34 @@ Java has built-in operators to manipulate values at the bit level:
   If values are thought of as representing subsets, then \verb|^|
   corresponds to symmetric difference: \verb|a ^ b| represents the set
   of elements which are in \verb|a| or \verb|b| but not both.
-\item \todo{left and right shift, right shift without sign extension}
+\item \verb|n >> k| shifts $n$ right by $k$ bits, chopping off the
+  rightmost $k$ bits.  This corresponds to (integer) division by
+  $2^k$.  \verb|n << k| shifts $n$ left by $k$ bits, adding $k$ zeros
+  on the right; this corresponds to multiplying by $2^k$.
+
+  Note that right shifting uses something called \emph{sign extension}
+  so that it fills in bits on the left according to whatever the
+  leftmost bit was initially: a value starting with a zero bit
+  (\emph{i.e.} a positive value) will have zeros filled in on the
+  left, but a (negative) value beginning with a one bit will have ones
+  filled in on the left.  If you don't want this (it rarely matters!)
+  you can use \verb|n >>> k| which does a right shift by $k$ bits
+  \emph{without} sign extension, that is, it always fills in zero bits
+  on the left regardless of the initial bit of $n$.
 \end{itemize}
+
+\subsection*{Bit strings for states}
+
+It is often helpful to represent 
+
+Given a collection of up to 32/64 values, a subset of the collection
+can be compactly represented
 
 \todo{Using bitstrings to compactly represent sets/states/adjacent
   neighbors.  Building a set, iterating through all subsets with
   counter.}
 
-\todo{LSB, LSZ, MSB, pop count}
+\todo{LSB, LSZ, MSB, pop count, iterating through sub-subsets}
 
 \todo{BitSet instead of array of booleans.}
 
