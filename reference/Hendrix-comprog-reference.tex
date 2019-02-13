@@ -922,11 +922,6 @@ Java has built-in operators to manipulate values at the bit level:
 
 \subsection*{Bit strings for states}
 
-It is often helpful to represent 
-
-Given a collection of up to 32/64 values, a subset of the collection
-can be compactly represented
-
 \todo{Using bitstrings to compactly represent sets/states/adjacent
   neighbors.  Building a set, iterating through all subsets with
   counter.}
@@ -937,13 +932,23 @@ can be compactly represented
 
 \chapter{Geometry} \label{chap:geometry}
 
+\kattis{alldifferentdirections, convexpolygonarea, cookiecutter,
+  countingtriangles, cranes, glyphrecognition, hittingtargets,
+  hurricanedanger, jabuke, polygonarea, rafting}
+
+\todo{Keep building above list---grep for geom.  Next to look at is robotprotection.}
+
 \todo{Points, vectors, angles.  Degrees/radians. \texttt{atan2}. Dot
   product. Rotation. Vector magnitude, norm (squared), normalize.
-  Perpendicular (generate, test).}
-\todo{Cross product in 2D. Signed area (parallelogram, triangle),
-  polygon area, right/left turn, inside/outside testing.}
-\todo{Lines/rays (point + vector).  Line intersection. Segment
-  intersection. Closest point on a line/segment. Point/line distance.}
+  Perpendicular (generate, test).}  \todo{Cross product in 2D. Signed
+  area (parallelogram, triangle, Heron's formula), polygon area,
+  right/left turn, inside/outside testing.}  \todo{Lines/rays (point +
+  vector).  Line intersection. Segment intersection. Closest point on
+  a line/segment. Point/line distance.}
+% -- Distance from point p to line defined by p1, p2 is absolute value
+% -- of parallelogram area defined by p, p1, p2 divided by distance
+% -- between p1, p2.  Proof: rearrange triangle area formula A = bh/2 to
+% -- solve for h.
 \todo{Convex hull.}
 
 \chapter{Miscellaneous}
