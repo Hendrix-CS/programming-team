@@ -248,27 +248,52 @@ the \javadoc{lang}{StringBuilder} class.
 
 \section{Stack}
 
-\todo{Example using \texttt{Stack} class.}
-\todo{Mention balanced parentheses, DFS}
-
 \kattis{backspace, islands, pairingsocks, reservoir, restaurant, symmetricorder,
   throwns, zagrade}
 
-\section{Queue/Deque}
+\javadoc{util}{Stack} provides a generic stack implementation with
+$O(1)$ operations.  Standard methods include \texttt{isEmpty},
+\texttt{push}, \texttt{pop}, \texttt{peek}, and \texttt{size}.  The
+code below shows a sample solution to \inlinekattis{backspace} using
+\javadoc{util}{Stack}.
 
-\todo{\texttt{Queue} interface, \texttt{ArrayDeque} class}
+\code{java/backspace.java}
+
+Stacks are often used in implementing DFS \link{sec:dfs} as well as in
+dealing with parentheses or nesting more generally
+(\inlinekattis{pairingsocks}, \inlinekattis{islands}, \inlinekattis{reservoir}).
+
+\section{Queue/ArrayDeque}
 
 \kattis{brexit, coconut, ferryloading4, integerlists, shuffling}
 
+\javadoc{util}{Queue}, unlike \javadoc{util}{Stack}, is not a class
+but an interface.  There are several classes implementing the
+\texttt{Queue} interface, but the best in the context of competitive
+programming is probably \javadoc{util}{ArrayDeque}, which in fact
+implements a \emph{double-ended queue} or \emph{deque}, providing
+$O(1)$ amortized addition and removal from both ends.
+
+The \texttt{add} and \texttt{remove} methods implement enqueueing and
+dequeueing.  To access both ends, use \texttt{addFirst},
+\texttt{addLast}, \texttt{removeFirst}, and \texttt{removeLast}, all
+of which run in $O(1)$ amortized time. (\texttt{add} is the same as
+\texttt{addLast} and \texttt{remove} is the same as
+\texttt{removeFirst}.)
+
+Queues are very commonly used in implementing \fulllink{sec:bfs} and
+in simulations of various sorts (for examples of the latter, see the
+selection of problems above).
+
 \section{PriorityQueue}
+
+\kattis{bank, ferryloading3, guessthedatastructure, knigsoftheforest, vegetables}
 
 \todo{Examples of using \texttt{PriorityQueue}.
   \texttt{Collections.reverseOrder()} for max PQ.  Show how to
   construct with custom \texttt{Comparator}, eg. using lambda
   notation; things like \texttt{Double.compare}, etc.} \todo{Note lack
   of decreaseKey operation (Dijkstra), use remove + add, not as fast}
-
-\kattis{bank, ferryloading3, guessthedatastructure, knigsoftheforest, vegetables}
 
 \section{Set}
 
@@ -461,6 +486,7 @@ representation of an undirected graph.
   Comparable, use TreeMap}
 
 \section{BFS}
+\label{sec:bfs}
 
 \kattis{brexit, collapse, grapevine, horrorlist, mazemakers}
 
