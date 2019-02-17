@@ -259,9 +259,10 @@ code below shows a sample solution to \inlinekattis{backspace} using
 
 \code{java/backspace.java}
 
-Stacks are often used in implementing DFS \link{sec:dfs} as well as in
-dealing with parentheses or nesting more generally
-(\inlinekattis{pairingsocks}, \inlinekattis{islands}, \inlinekattis{reservoir}).
+Stacks are often used in implementing DFS \link{sec:dfs} as well as
+dealing with parentheses, or nesting more generally
+(\inlinekattis{pairingsocks}, \inlinekattis{islands},
+\inlinekattis{reservoir}).
 
 \section{Queue/ArrayDeque}
 
@@ -285,9 +286,30 @@ Queues are very commonly used in implementing \fulllink{sec:bfs} and
 in simulations of various sorts (for examples of the latter, see the
 selection of problems above).
 
+\todo{Sample code using \texttt{Queue}/\texttt{ArrayDeque}}
+
 \section{PriorityQueue}
 
 \kattis{bank, ferryloading3, guessthedatastructure, knigsoftheforest, vegetables}
+
+A \javadoc{util}{PriorityQueue} allows adding new elements
+(\texttt{add}) and removing the \textbf{minimum} element
+(\texttt{remove}), both in $O(\lg n)$ time.  \texttt{peek} can also
+be used to get the minimum in $O(1)$ without removing it.  Priority
+queues are commonly used in Dijkstra's algorithm \link{sec:dijkstra},
+event-based simulations (\inlinekattis{ferryloading3}), and generally
+any situation where we need to do an ``online sort'', that is, we need
+to get items in order from smallest to biggest, but more items may
+continue to arrive/be generated as we go.
+
+Methods you should \emph{not} use with \texttt{PriorityQueue} include
+\texttt{remove(Object)} and \texttt{contains(Object)}, which take
+linear time.
+
+\begin{itemize}
+\item If you want a \emph{max} priority queue, where \texttt{remove()}
+  yields the largest element, XXX
+\end{itemize}
 
 \todo{Examples of using \texttt{PriorityQueue}.
   \texttt{Collections.reverseOrder()} for max PQ.  Show how to
