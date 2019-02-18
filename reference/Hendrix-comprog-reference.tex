@@ -460,6 +460,16 @@ There are two main classes implementing \texttt{Set}:
 
 \end{itemize}
 
+There is also a \javadoc{util}{LinkedHashSet} class which in addition
+to providing all the same features as a \texttt{HashSet}, also
+remembers the order in which the items were added; iterating over the
+set is guaranteed to yield the items in this order.  This is a bit
+more sophisticated than simply keeping an \texttt{ArrayList} and a
+\texttt{HashSet} side-by-side, in particular because a
+\texttt{LinkedHashSet} still supports $O(1)$ removal.  We currently do
+not know of any example problems which can be solved most easily using
+a \texttt{LinkedHashSet}, but it never hurts to be prepared!
+
 \section{Map}
 
 \kattis{awkwardparty, administrativeproblems, snowflakes, pizzahawaii}
