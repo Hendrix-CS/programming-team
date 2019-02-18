@@ -192,6 +192,11 @@ for most purposes.  If the input or output is relatively large (> 1MB)
 and you suspect the time taken to read or write it may be a hindrance,
 you can use \fulllink{sec:fastio}.
 
+\begin{warning}
+  Be sure to read the warning in the comment below about calling
+  \texttt{nextLine()} after \texttt{nextInt()} and the like!
+\end{warning}
+
 \code{java/ScannerExample.java}
 
 \section{String/StringBuilder}
@@ -235,16 +240,70 @@ the \javadoc{lang}{StringBuilder} class.
 
 \section{Arrays}
 
-\todo{Basic array template/examples.}
-\todo{Useful \texttt{Arrays} methods: sort, copyOf, copyOfRange, fill, binarySearch}
-
 \kattis{falcondive,freefood,traveltheskies}
+
+The basic syntax for creating a primitive array in Java is, for example,
+\begin{minted}{java}
+int[] array = new int[500];
+\end{minted}
+
+Some tips and tricks:
+\begin{itemize}
+\item Array indexing starts at 0; however, problems sometimes index
+  things from $1 \dots n$.  In such a situation it is usually a good
+  idea to simply create an array with one extra slot and leave index 0
+  unused.  The alternative (fiddling with indices by subtracting and
+  adding 1 in the right places) is quite error-prone.
+\item You can initialize an entire array to a given value using
+  \texttt{Arrays.fill(array, value)}.
+\item If you only want to initialize part of an array, use
+  \texttt{Arrays.fill(array, fromIndex, toIndex, value)} to fill the
+  array from \texttt{fromIndex} (inclusive) up to \texttt{toIndex}
+  (exclusive).
+\item You can sort the contents of an array in-place using
+  \href{https://docs.oracle.com/javase/10/docs/api/java/util/Arrays.html#sort(int\%5B\%5D)}{\texttt{Arrays.sort}};
+  see \fulllink{sec:sorting}.
+\item You can use \texttt{Arrays.binarySearch(array, key)} to look for
+  \texttt{key} within a sorted \texttt{array}.  Read
+  \href{https://docs.oracle.com/javase/10/docs/api/java/util/Arrays.html#binarySearch(int\%5B\%5D,int)}{the
+    documentation} to make sure you understand how to interpret the
+  return value.  See also \fulllink{sec:binary-search}.
+\item Other methods from the \javadoc{util}{Arrays} class may also
+  occasionally be useful.
+\end{itemize}
 
 \section{ArrayList}
 
-\todo{Basic template and examples.  Useful \texttt{ArrayList} methods:
-  \texttt{add}, \texttt{get}, \texttt{set}.  Advantages/disadvantages
-  compared to arrays.}
+\javadoc{util}{ArrayList} represents a standard dynamically-extensible
+array, doubling the underlying storage when it runs out of space so
+that appending takes $O(1)$ amortized time.  The \texttt{add},
+\texttt{get}, \texttt{set}, \texttt{size}, and \texttt{isEmpty}
+methods are useful, in addition to the ability to iterate over the
+elements in order.  Avoid methods such as \texttt{contains},
+\texttt{indexOf}, \texttt{remove}, and the version of \texttt{add}
+that takes an index, all of which take linear time.  (If you want any
+of these methods it's probably a sign that you ought to be using a
+different data structure.)
+
+If you need to store a list/array and you know in advance exactly how
+much storage space you will need, then prefer using a primitive array
+which has less overhead as well as more concise syntax.  On the other
+hand, if you want to be able to dynamically extend a list by appending
+new elements to the end, use \texttt{ArrayList}.  (If you want to be
+able to dynamically extend a list on \emph{both} ends, use an
+\texttt{ArrayDeque} \link{sec:queue}.)
+
+\begin{minted}{java}
+ArrayList<Integer> lst = new ArrayList<>();
+lst.add(3); lst.add(19); lst.add(6);
+System.out.println(lst.get(2));   // prints 6
+lst.set(1, 12);                   // changes 19 to 12
+int sum = 0;
+for (Integer i: lst) {            // iterate through all items
+    sum += i;
+}
+System.out.println(sum);          // prints 3 + 12 + 6 = 21
+\end{minted}
 
 \section{Stack}
 
@@ -255,7 +314,7 @@ the \javadoc{lang}{StringBuilder} class.
 $O(1)$ operations.  Standard methods include \texttt{isEmpty},
 \texttt{push}, \texttt{pop}, \texttt{peek}, and \texttt{size}.  The
 code below shows a sample solution to \inlinekattis{backspace} using
-\javadoc{util}{Stack}.
+\javadoc{util}{Stack} (and \javadoc{util}{StringBuilder}).
 
 \code{java/backspace.java}
 
@@ -265,6 +324,7 @@ dealing with parentheses, or nesting more generally
 \inlinekattis{reservoir}).
 
 \section{Queue/ArrayDeque}
+\label{sec:queue}
 
 \kattis{brexit, coconut, ferryloading4, integerlists, shuffling}
 
@@ -336,19 +396,21 @@ Traditional presentations of priority queues often have a
 item (or an \emph{adjust key} operation which can arbitrarily change
 the priority) and reestablish the data structure invariants in
 $O(\lg n)$ time; this operation is used, for example, in implementing
-Dijkstra's algorithm \link{sec:dijkstra}.  However, the
-\texttt{PriorityQueue} class has no such method.  One workaround is to
-simply call \texttt{remove} and then \texttt{add} so the item gets
-re-added with the new priority.  However, \texttt{remove} takes linear
-time, so this is not ideal, although in many cases it is still good
-enough.  For those (relatively rare) cases when an $O(\lg n)$ decrease
-key operation is truly essential, see \fulllink{sec:adj-pq}.
+Dijkstra's algorithm efficiently \link{sec:dijkstra}.  However, the
+Java \texttt{PriorityQueue} class has no such method.  One workaround
+is to simply call \texttt{remove} and then \texttt{add} so the item
+gets re-added with the new priority.  However, \texttt{remove} takes
+linear time, so this is not ideal, although in many cases it is still
+good enough.  For those (relatively rare) cases when an $O(\lg n)$
+decrease key operation is truly essential, see \fulllink{sec:adj-pq}.
 
 \section{Set}
 
 \todo{HashSet, TreeSet}
 
 \section{Map}
+
+\kattis{awkwardparty, administrativeproblems, snowflakes}
 
 \todo{HashMap, TreeMap}
 \todo{Iterating over keys, values, both (MapEntry)}
@@ -359,8 +421,6 @@ key operation is truly essential, see \fulllink{sec:adj-pq}.
   (just implement Comparable) than in a HashMap (implement hashCode
   and equals).}
 
-\kattis{awkwardparty, administrativeproblems, snowflakes}
-
 \section{BigInteger} \label{sec:bigint}
 
 \todo{Examples.  Useful methods, constructors (gcd, mod, base conversion!).}
@@ -368,6 +428,7 @@ key operation is truly essential, see \fulllink{sec:adj-pq}.
 \kattis{basicremains}
 
 \section{Sorting}
+\label{sec:sorting}
 
 \todo{Basic template for implementing Comparable}
 \todo{Arrays.sort, Collections.sort}
@@ -401,7 +462,7 @@ using this.
 
 \code{java/Kattio.java}
 
-\todo{Add \texttt{getLine()} method}
+% \todo{Add \texttt{getLine()} method}
 
 \chapter{Python Reference} \label{chap:python}
 
@@ -524,6 +585,7 @@ hand and allowing you to focus your efforts on the more
 ``interesting'' part of the problem.
 
 \section{Binary search}
+\label{sec:binary-search}
 
 \kattis{bottles, cheese, guess, insert, speed, suspensionbridges, tetration}
 
