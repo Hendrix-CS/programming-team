@@ -223,8 +223,12 @@ sequences of characters.  Some useful \texttt{String} methods include:
   \texttt{indexOf(String)}, and \texttt{replace(...)} can occasionally be useful.
 \end{itemize}
 
-\todo{Example of using \texttt{split}, \emph{e.g.} solution to
-  \inlinekattis{sumoftheothers}.}
+Below is shown a solution to \inlinekattis{sumoftheothers}, which uses
+\texttt{split} followed by \texttt{Integer.parseInt} to read the
+integers on each line (necessary in this case because the input does
+not specify how many integers will be on each line).
+
+\code{java/sumOfTheOthers.java}
 
 \texttt{String}s are immutable, which means in particular that
 concatenation has to allocate an entirely new \texttt{String} and copy
