@@ -410,11 +410,59 @@ decrease key operation is truly essential, see \fulllink{sec:adj-pq}.
 
 \section{Set}
 
-\todo{HashSet, TreeSet}
+\kattis{boatparts, bookingaroom, engineeringenglish,
+  whatdoesthefoxsay, securedoors, bard, control}
+
+The \javadoc{util}{Set} interface represents a collection of items
+where each item occurs at most once. Operations supported by all
+\texttt{Set}s include \texttt{add}, \texttt{remove}, \texttt{contains},
+\texttt{size}/\texttt{isEmpty}.
+
+There are two main classes implementing \texttt{Set}:
+
+\begin{itemize}
+\item \javadoc{util}{HashSet} is implemented using a dynamically
+  expanding hash table.  It features $O(1)$ \texttt{add},
+  \texttt{remove}, and \texttt{contains}.
+\item \javadoc{util}{TreeSet} is implemented using a balanced binary
+  tree (a red-black tree, in fact), and supports \texttt{add},
+  \texttt{remove}, and \texttt{contains} in guaranteed $O(\lg n)$
+  time.  However, it has several other advantages over a \texttt{HashSet}:
+  \begin{itemize}
+  \item Since the elements are stored in order in the tree, iterating
+    over a \texttt{TreeSet} is guaranteed to yield the items in order
+    from smallest to biggest, whereas iterating over a
+    \texttt{HashSet} yields the items in an arbitrary order.  For
+    example, if you want to remove duplicates from a set of items and
+    then print them out in order, you might as well just throw them
+    all into a \texttt{TreeSet} instead of putting them in a
+    \texttt{HashSet} and then sorting (\inlinekattis{crowdcontrol}).
+    (And either one is probably going to be faster than sorting and
+    \emph{then} removing duplicates.)
+  \item If you need to put objects of a custom class into a set, it is
+    typically much easier to implement \texttt{Comparable} for your
+    class and use a \texttt{TreeSet} than it is to override
+    \texttt{hashCode} and use a \texttt{HashSet}.  The $O(\lg n)$
+    difference is rarely, if ever, going to be the difference between
+    AC and TLE, so you should use whichever approach will be easier to
+    code.
+  \item \texttt{TreeSet} also supports the \javadoc{util}{OrderedSet}
+    and \javadoc{util}{NavigableSet} interfaces, which provide
+    additional methods like \texttt{first} and \texttt{last} (return
+    the smallest or largest element in the set), \texttt{headSet} and
+    \texttt{tailSet} (return the subset of all items less or greater
+    than a specified element), and \texttt{floor}, \texttt{ceiling},
+    \texttt{lower}, and \texttt{higher} (find the first item in the
+    set less/greater than a specified value).  This last set of
+    methods can be especially useful for some types of problems.
+    \kattis{closestsums, platforme, baloni, excellentengineers}
+  \end{itemize}
+
+\end{itemize}
 
 \section{Map}
 
-\kattis{awkwardparty, administrativeproblems, snowflakes}
+\kattis{awkwardparty, administrativeproblems, snowflakes, pizzahawaii}
 
 \todo{HashMap, TreeMap}
 \todo{Iterating over keys, values, both (MapEntry)}
@@ -1014,7 +1062,7 @@ bigger than the lookup table.
 
 \chapter{Bit Tricks} \label{chap:bittricks}
 
-\kattis{bits, classpicture, flipfive, gepetto, hypercube, mazemakers,
+\kattis{bits, classpicture, flipfive, font, gepetto, hypercube, mazemakers,
   pagelayout, pebblesolitaire, satisfiability, turningtrominos}
 
 \texttt{int} values are represented as a sequence of 32 bits;
