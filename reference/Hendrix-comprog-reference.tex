@@ -288,7 +288,16 @@ selection of problems above).
 
 \todo{Sample code using \texttt{Queue}/\texttt{ArrayDeque}}
 
+\section{Comparator}
+\label{sec:comparator}
+
+\todo{Constructing Comparators via lambda; constructing via things
+  like \texttt{comparing}, \texttt{thenComparing}.
+  \texttt{Collections.reverseOrder()}.  Use for sorting, PQs,
+  TreeSet/Map.}
+
 \section{PriorityQueue}
+\label{sec:pq}
 
 \kattis{bank, ferryloading3, guessthedatastructure, knigsoftheforest, vegetables}
 
@@ -306,16 +315,34 @@ Methods you should \emph{not} use with \texttt{PriorityQueue} include
 \texttt{remove(Object)} and \texttt{contains(Object)}, which take
 linear time.
 
+The default constructor makes an empty min-PQ.  If you want to use a
+different ordering, there is another constructor which takes a
+\javadoc{util}{Comparator}.
 \begin{itemize}
-\item If you want a \emph{max} priority queue, where \texttt{remove()}
-  yields the largest element, XXX
+\item For example, if you want a \textbf{max} priority queue, where
+  \texttt{remove()} yields the largest element, write something like
+  \begin{minted}{java}
+    PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+  \end{minted}
+\item If you want some other ordering, you can also use a lambda to
+  construct a \texttt{Comparator} on the fly, for example:
+  \begin{minted}{java}
+    PriorityQueue<Integer> pq = new PriorityQueue<>((a,b) -> dist[a] - dist[b]);
+  \end{minted}
 \end{itemize}
 
-\todo{Examples of using \texttt{PriorityQueue}.
-  \texttt{Collections.reverseOrder()} for max PQ.  Show how to
-  construct with custom \texttt{Comparator}, eg. using lambda
-  notation; things like \texttt{Double.compare}, etc.} \todo{Note lack
-  of decreaseKey operation (Dijkstra), use remove + add, not as fast}
+Traditional presentations of priority queues often have a
+\emph{decrease key} operation which can decrease the priority of an
+item (or an \emph{adjust key} operation which can arbitrarily change
+the priority) and reestablish the data structure invariants in
+$O(\lg n)$ time; this operation is used, for example, in implementing
+Dijkstra's algorithm \link{sec:dijkstra}.  However, the
+\texttt{PriorityQueue} class has no such method.  One workaround is to
+simply call \texttt{remove} and then \texttt{add} so the item gets
+re-added with the new priority.  However, \texttt{remove} takes linear
+time, so this is not ideal, although in many cases it is still good
+enough.  For those (relatively rare) cases when an $O(\lg n)$ decrease
+key operation is truly essential, see \fulllink{sec:adj-pq}.
 
 \section{Set}
 
@@ -404,7 +431,12 @@ It is not too hard to build a bag as a map from values to integer
 counts, but there are a few corner cases so it's worth copying a
 well-tested implementation instead of writing one from scratch.
 
-\todo{hashset and treeset-based bag implementations}
+The implementation below is based on a \javadoc{util}{TreeMap}, and
+hence supports operations like \texttt{first()} and \texttt{last()}.
+If desired one could easily change the \texttt{TreeMap} to a
+\texttt{HashMap} and remove the methods which are no longer supported.
+
+\code{data-structures/TreeBag.java}
 
 \section{Union-find}
 
@@ -438,6 +470,30 @@ since it repeatedly uses the $O(n)$ \texttt{substring} operation as it
 recurses down the trie, but it is sufficient for some problems.
 
 \code{data-structures/Trie.java}
+
+\section{Adjustable priority queue}
+\label{sec:adj-pq}
+
+\kattis{flowerytrails}
+
+As discussed in \fulllink{sec:pq}, Java's \texttt{PriorityQueue} class
+has no way to efficiently alter the priority of an item already stored
+in the queue; simply removing and re-adding the item does the trick
+but takes $O(n)$ time.  The efficiency of this operation really does
+make a difference in the asymptotic performance of Dijkstra's
+algorithm \link{sec:dijkstra}, and occasionally it really needs to be
+$O(\lg n)$ in order to meet the time limits (\emph{e.g.}
+\inlinekattis{flowerytrails}). A suitable implementation of a priority
+queue with $O(\lg n)$ priority adjustment is shown below.  The key
+idea is to keep a hash table on the side which can be used to quickly
+find the index of any item stored in the priority queue; of course,
+the hash table has to be kept suitably updated whenever items are
+shuffled in the heap.  The \texttt{adjust(e)} method is used to inform
+the priority queue that the priority of item \texttt{e} has changed,
+so that the queue has an opportunity to move the item if necessary to
+reestablish the heap invariants.
+
+\code{data-structures/AdjustablePQ.java}
 
 \section{Segment trees and Fenwick trees}
 
