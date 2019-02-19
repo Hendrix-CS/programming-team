@@ -679,17 +679,25 @@ underlying idea of binary search applies in many more contexts.
 This is probably the most common form of binary search in competitive
 programming.  Given a function $f$ which is monotonic (\emph{i.e.}
 always increasing, or always decreasing) on a given interval of the
-real line $[a, b]$, find $a \leq x \leq b$ such that $f(x)$ is equal
-to some target value.  This can be accomplished by straightforward
-binary search: keep track of a current subinterval $[x_L, x_H]$; at
-each step, evaluate $f$ at the midpoint of the interval, and update
-$x_L$ or $x_H$ if the value is to small or too big, respectively.
-Iterate until $x_H - x_L$ is within an appropriate tolerance, or
-simply iterate a fixed number of times ($50$ should be plenty).  This
-is actually easier than traditional binary search since one doesn't
-have to worry about indexing, off-by-one errors, and the like.
+\emph{real} line $[a, b]$, find $a \leq x \leq b$ such that $f(x)$ is
+equal to some target value.  This can be accomplished by
+straightforward binary search: keep track of a current subinterval
+$[x_L, x_H]$; at each step, evaluate $f$ at the midpoint
+$m = (x_L + x_H)/2$ of the interval, and update $x_L$ or $x_H$ to $m$
+depending on whether the value of $f$ is too small or too big,
+respectively.  Iterate until $x_H - x_L$ is within an appropriate
+tolerance (or simply iterate a fixed number of times---$50$ should be
+plenty), and return $(x_L+x_H)/2$.  This is actually easier than
+traditional binary search since one doesn't have to worry about
+indexing, off-by-one errors, and the like.
 
-\todo{Example code}
+The main trick is to realize when this technique is applicable.
+Sometimes the function $f$ is plainly stated in the problem
+description, but sometimes the thing being searched for is more
+subtle.  Whenever a problem asks for a floating-point number as the
+answer, it's worth considering whether you can binary search for it.
+
+\todo{Example code?}
 
 \subsection*{Binary search on an integer interval}
 \label{sec:unbounded-binary-search}
