@@ -666,11 +666,38 @@ hand and allowing you to focus your efforts on the more
 \section{Binary search}
 \label{sec:binary-search}
 
-\kattis{bottles, cheese, guess, insert, speed, suspensionbridges, tetration}
+If you need to do a traditional binary search---that is, finding the
+index where a given element occurs in a sorted array---you should just
+use the standard \texttt{Arrays.binarySearch} method.  However, the
+underlying idea of binary search applies in many more contexts.
 
-\todo{Binary search on an array; binary search on unbounded function
-  on the integers; binary search on real interval}
-\todo{Point out \texttt{Arrays.binarySearch}}
+\subsection*{Binary search on a real interval}
+\label{sec:binary-search-real}
+
+\kattis{bottles, cheese, speed, suspensionbridges, tetration}
+
+This is probably the most common form of binary search in competitive
+programming.  Given a function $f$ which is monotonic (\emph{i.e.}
+always increasing, or always decreasing) on a given interval of the
+real line $[a, b]$, find $a \leq x \leq b$ such that $f(x)$ is equal
+to some target value.  This can be accomplished by straightforward
+binary search: keep track of a current subinterval $[x_L, x_H]$; at
+each step, evaluate $f$ at the midpoint of the interval, and update
+$x_L$ or $x_H$ if the value is to small or too big, respectively.
+Iterate until $x_H - x_L$ is within an appropriate tolerance, or
+simply iterate a fixed number of times ($50$ should be plenty).  This
+is actually easier than traditional binary search since one doesn't
+have to worry about indexing, off-by-one errors, and the like.
+
+\todo{Example code}
+
+\subsection*{Binary search on an integer interval}
+\label{sec:unbounded-binary-search}
+
+\kattis{guess, freeweights, inversefactorial, reservoir}
+
+\todo{Find some example Kattis problems that need an initial unbounded
+  search.}
 
 \todo{When searching over the integers, make sure you're very explicit
   about whether the lo and hi bounds are included or
@@ -678,9 +705,37 @@ hand and allowing you to focus your efforts on the more
 
 \section{Ternary search}
 
-\kattis{brocard, euclideantsp, infiniteslides, janitortroubles}
+\kattis{brocard, euclideantsp, infiniteslides, janitortroubles, dailydivision}
 
-\todo{Write about ternary search.}
+% Ternary search can be used to find the minimum or maximum of a
+% function which is concave or convex on a given interval.  Binary
+% search does not apply in this case, since just by looking at the value
+% of the function at the midpoint of the interval, it is impossible to
+% know whether we should recurse on the left or right half of the
+% interval.
+
+% Ternary search applies whenever
+% \begin{itemize}
+% \item XXX
+% \end{itemize}
+
+% Suppose we are currently considering the interval $[L,R]$.
+% XXX If we instead look at the two points $1/3$ and $2/3$ of the way
+% through the interval, we can make progress.  Call the two midpoints
+% $m_L$ and $m_R$, and suppose we are looking for the minimum of the
+% function $f$:
+% \begin{itemize}
+% \item If $m_L < m_R$, then we know the minimum can't be to the right
+%   of $m_R$ (because then it would increase from $m_L$ to $m_R$ and
+%   then decrease---but we assume the function decreases until the minimum
+%   and then only increases after that).  Hence, we can recurse on the
+%   interval $[L, m_R]$.
+% \item If $m_L > m_R$, we can likewise recurse on $[m_L, R]$.
+% \item If $m_L = m_R$, we can recurse on $[m_L, m_R]$.
+% \end{itemize}
+% In any case, we decrease the size of the interval by at least $1/3$
+% with each iteration.
+
 
 \chapter{Graphs}
 
@@ -1069,7 +1124,7 @@ bigger than the lookup table.
 
 \section{Combinatorics} \label{sec:combinatorics}
 
-\kattis{anagramcounting, nine, secretsanta, kingscolors, howmanyzeros}
+\kattis{insert, anagramcounting, nine, secretsanta, kingscolors, howmanyzeros}
 
 \todo{Basic principles of combinatorics.  Code for computing binomial
   coefficients. Multinomial coefficients.}
