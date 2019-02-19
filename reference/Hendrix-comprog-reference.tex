@@ -471,6 +471,7 @@ not know of any example problems which can be solved most easily using
 a \texttt{LinkedHashSet}, but it never hurts to be prepared!
 
 \section{Map}
+\label{sec:map}
 
 \kattis{awkwardparty, administrativeproblems, snowflakes, pizzahawaii}
 
@@ -495,9 +496,13 @@ a \texttt{LinkedHashSet}, but it never hurts to be prepared!
 \todo{Basic template for implementing Comparable}
 \todo{Arrays.sort, Collections.sort}
 \todo{Sorting with a custom \texttt{Comparator}}
+\subsection*{Explicit sorting algorithms}
 \todo{Include code for basic sorting implementations (in case it's
   useful to code them up explicitly so they can be enhanced with extra
-  info): insertion sort, mergesort, quicksort)}
+  info): bubble sort, insertion sort?, mergesort?, quicksort?)}
+\subsection*{Radix sort}
+\label{sec:radix-sort}
+\todo{radix sort}
 
 \section{BitSet} \label{sec:bitset}
 
@@ -548,16 +553,19 @@ input in Python:
 \kattis{cookieselection}
 
 A \emph{bag} is a collection of elements where order does not matter
-(like a set) but multiplicity does matter, \ie there can be
-duplicates.  Bags are not needed often but can occasionally be useful.
-It is not too hard to build a bag as a map from values to integer
-counts, but there are a few corner cases so it's worth copying a
-well-tested implementation instead of writing one from scratch.
+(like a set) but multiplicity does matter, \ie there can be duplicates
+and we need to keep track of how many duplicates there are of each
+item.  Bags are not needed often but can occasionally be useful.  It
+is not too hard to build a bag as a map from items to integer counts,
+but there are a few corner cases so it's worth copying a well-tested
+implementation instead of writing one from scratch.
 
-The implementation below is based on a \javadoc{util}{TreeMap}, and
-hence supports operations like \texttt{first()} and \texttt{last()}.
-If desired one could easily change the \texttt{TreeMap} to a
-\texttt{HashMap} and remove the methods which are no longer supported.
+The implementation below is based on a \javadoc{util}{TreeMap}
+\link{sec:map}, and hence supports operations like \texttt{first()}
+and \texttt{last()}.  If desired one could easily change the
+\texttt{TreeMap} to a \texttt{HashMap} and remove the methods which
+are no longer supported, although the factor of $O(\lg n)$ is unlikely
+to make a practical difference.
 
 \code{data-structures/TreeBag.java}
 
@@ -592,7 +600,16 @@ many other methods that could be added, and it is not very efficient
 since it repeatedly uses the $O(n)$ \texttt{substring} operation as it
 recurses down the trie, but it is sufficient for some problems.
 
+\todo{More efficient/full-featured Trie class}
+
 \code{data-structures/Trie.java}
+
+Tries are intimately connected with MSD \fulllink{sec:radix-sort},
+which can be thought of as equivalent to building a trie and then
+traversing it in order.  However, no implementation of radix sort
+actually builds an intermediate trie.  Sometimes it is helpful to
+think about a problem in terms of a trie, but never actually
+implement/materialize the trie at all (\inlinekattis{herkabe}).
 
 \section{Adjustable priority queue}
 \label{sec:adj-pq}
