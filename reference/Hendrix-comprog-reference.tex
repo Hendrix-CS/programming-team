@@ -705,18 +705,67 @@ answer, it's worth considering whether you can binary search for it.
 
 \kattis{guess, freeweights, inversefactorial, reservoir}
 
-% Suppose we again have a function $f$ and want to find a value $n$ such
-% that $f(n)$ is equal to some target value---except that $f$ is defined
-% on the \emph{integers} instead of the real numbers.
+Suppose we again have a function $f$ and want to find a value $n$ such
+that $f(n)$ is equal to some target value $t$---except that $f$ is defined
+on the \emph{integers} instead of the real numbers.  We can again use
+binary search---but we have to be much more careful about potential
+off-by-one errors.
 
+\newcommand{\vlo}{\mathit{lo}}
+\newcommand{\vhi}{\mathit{hi}}
+\newcommand{\vmid}{\mathit{mid}}
 
+\begin{itemize}
+\item In the basic version, we simply want to find $n$ such that
+  $f(n) = t$, or report that no such $n$ exists.  In this case it
+  works well to use a half-open interval, that is, we maintain the
+  invariant that possible values of $n$ lie in the interval
+  $[\vlo, \vhi)$, including $\vlo$ but \textbf{excluding}
+  $\vhi$.  This has the advantage that the size of the
+  remaining interval can be computed as simply $\vhi - \vlo$,
+  and an appropriate condition for the loop is $\vhi - \vlo > 0$.
+
+  The midpoint of $[\vlo, \vhi)$ can be computed as
+  $\vmid = (\vlo + \vhi)/2$;\footnote{Or
+    $\vmid = \vlo + (\vhi - \vlo)/2$, if you are worried about
+    $\vlo + \vhi$ overflowing, but this is unlikely to ever be an
+    issue in a competitive programming context.} $\vmid$ always
+  lies within the interval, even if $\vhi - \vlo = 1$ (the rounding
+  behavior of integer division plays a crucial role).
+
+  If $\vmid$ does not hold the target, one must then either update
+  $\vhi$ to $\vmid$, or $\vlo$ to $\vmid + 1$ (not $\vmid$!) depending
+  on whether the item at $\vmid$ is larger or smaller than the target,
+  respectively.
+
+  \todo{Example code}
+
+\item A slightly more sophisticated variant is where we need to find
+  the largest $n$ such that $f(n) \leq t$, or the smallest such that
+  $f(n) \geq t$, or something similar. This requires even more care.
+  In this situation it tends to be better to use a closed interval
+  $[\vlo, \vhi]$, and using great care to update $\vlo$ and $\vhi$
+  appropriately (to $\vmid - 1$, $\vmid$, or $\vmid+1$) depending on
+  the desired properties of the value being searched for.
+
+  In this scenario, when there can be duplicate values of $f(n)$, it's
+  not possible to stop the search early, since any given $n$ for which
+  $f(n) = t$ may not be the optimal one.  One must continue searching
+  until the interval has reached size $1$, and then return the sole
+  remaining value.
+
+  \todo{Example code}
+\end{itemize}
+
+\subsection*{Unbounded binary search}
+
+Consider the following problem: given an increasing function $f$ and a
+target value $t$, find the smallest positive value of $x$ such that
+$f(x) \geq t$. (The domain of $f$ can be either the reals or the
+integers.)
 
 \todo{Find some example Kattis problems that need an initial unbounded
-  search.}
-
-\todo{When searching over the integers, make sure you're very explicit
-  about whether the lo and hi bounds are included or
-  excluded. Probably easiest to include.}
+  search?}
 
 \section{Ternary search}
 
@@ -751,6 +800,18 @@ iterations relative to the ratio between the starting interval size
 and the desired accuracy.
 
 \todo{Example code}
+
+\subsection*{Integer ternary search}
+
+When ternary searching over an interval of \emph{integers}, much of
+the same advice applies as for binary search (see the previous
+section).  However, care must be taken with the stopping conditions;
+depending on exactly how the recursion works it is possible to end up
+in a scenario where it loops infinitely on an interval of size 1 or 2.
+Even if it is possible to come up with an elegant design that does
+not require any special cases, it may be easiest to simply stop the
+loop when the interval has size 2 or smaller, and then simply check
+the few remaining items manually.
 
 \chapter{Graphs}
 
