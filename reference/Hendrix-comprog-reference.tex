@@ -4,6 +4,7 @@
 
 \usepackage[margin=1in]{geometry}
 \usepackage{fancyhdr}
+\usepackage{amsmath}
 
 \pagestyle{fancy}
 
@@ -704,6 +705,12 @@ answer, it's worth considering whether you can binary search for it.
 
 \kattis{guess, freeweights, inversefactorial, reservoir}
 
+% Suppose we again have a function $f$ and want to find a value $n$ such
+% that $f(n)$ is equal to some target value---except that $f$ is defined
+% on the \emph{integers} instead of the real numbers.
+
+
+
 \todo{Find some example Kattis problems that need an initial unbounded
   search.}
 
@@ -715,35 +722,35 @@ answer, it's worth considering whether you can binary search for it.
 
 \kattis{brocard, euclideantsp, infiniteslides, janitortroubles, dailydivision}
 
-% Ternary search can be used to find the minimum or maximum of a
-% function which is concave or convex on a given interval.  Binary
-% search does not apply in this case, since just by looking at the value
-% of the function at the midpoint of the interval, it is impossible to
-% know whether we should recurse on the left or right half of the
-% interval.
+Ternary search can be used to find the minimum or maximum of a
+function which is concave or convex on a given interval (that is, the
+function only decreases until the minimum and then only increases, or
+vice versa).  Binary search does not apply in this case, since just by
+looking at the value of the function at the midpoint of the interval,
+it is impossible to know whether we should recurse on the left or
+right half of the interval.
 
-% Ternary search applies whenever
-% \begin{itemize}
-% \item XXX
-% \end{itemize}
+Suppose we are currently considering the interval $[L,R]$ and looking
+for the minimum of a function $f$ on the interval.  We compute the two
+points $1/3$ and $2/3$ of the way through the interval, namely
+$m_L = (2L + R)/3$ and $m_R = (L + 2R)/3$.
+\begin{itemize}
+\item If $m_L < m_R$, then we know the minimum can't be to the right
+  of $m_R$ (because then it would increase from $m_L$ to $m_R$ and
+  then decrease---but we assume the function decreases until the minimum
+  and then only increases after that).  Hence, we can recurse on the
+  interval $[L, m_R]$.
+\item If $m_L > m_R$, we can likewise recurse on $[m_L, R]$.
+\item If $m_L = m_R$, we can recurse on $[m_L, m_R]$ (though lumping
+  this case in with either of the above two cases works fine and
+  requires writing less code).
+\end{itemize}
+In any case, we decrease the size of the interval by at least $1/3$
+with each iteration, so we need only a logarithmic number of
+iterations relative to the ratio between the starting interval size
+and the desired accuracy.
 
-% Suppose we are currently considering the interval $[L,R]$.
-% XXX If we instead look at the two points $1/3$ and $2/3$ of the way
-% through the interval, we can make progress.  Call the two midpoints
-% $m_L$ and $m_R$, and suppose we are looking for the minimum of the
-% function $f$:
-% \begin{itemize}
-% \item If $m_L < m_R$, then we know the minimum can't be to the right
-%   of $m_R$ (because then it would increase from $m_L$ to $m_R$ and
-%   then decrease---but we assume the function decreases until the minimum
-%   and then only increases after that).  Hence, we can recurse on the
-%   interval $[L, m_R]$.
-% \item If $m_L > m_R$, we can likewise recurse on $[m_L, R]$.
-% \item If $m_L = m_R$, we can recurse on $[m_L, m_R]$.
-% \end{itemize}
-% In any case, we decrease the size of the interval by at least $1/3$
-% with each iteration.
-
+\todo{Example code}
 
 \chapter{Graphs}
 
@@ -1242,9 +1249,11 @@ Java has built-in operators to manipulate values at the bit level:
 
 \kattis{alldifferentdirections, convexpolygonarea, cookiecutter,
   countingtriangles, cranes, glyphrecognition, hittingtargets,
-  hurricanedanger, jabuke, polygonarea, rafting}
+  hurricanedanger, jabuke, janitortroubles, polygonarea, rafting}
 
 \todo{Keep building above list---grep for geom.  Next to look at is robotprotection.}
+
+See also list of formulas.
 
 \todo{Points, vectors, angles.  Degrees/radians. \texttt{atan2}. Dot
   product. Rotation. Vector magnitude, norm (squared), normalize.
@@ -1482,6 +1491,28 @@ in \texttt{prefix} to the identity element instead of zero.
   $O(\lg n)$ updates)} \label{sec:segment-trees}
 
 \todo{Segment trees.}
+
+\chapter{Formulas} \label{chap:formulas}
+
+\begin{itemize}
+\item \textbf{Derangements} (\inlinekattis{secretsanta}).  The number
+  of permutations of $n$ objects such that no object is left in its
+  original place is
+  \[ !n = n \cdot !(n-1) + (-1)^n = n! \sum_{i=0}^n \frac{(-1)^i}{i!}
+    = \left[ \frac{n!}{e} \right], \]
+  where $!1 = 0$, and $[x]$ denotes the closest
+      integer to $x$.  The first few values of $!n$ are \[
+        0,1,2,9,44,265,1854,14833,133496,1334961. \]
+\item \textbf{Heron's Formula}. The area of a triangle with side
+  lengths $a$, $b$, $c$ is \[ \sqrt{s(s-a)(s-b)(s-c)} \qquad
+    \text{where } s = (a+b+c)/2. \]
+\item \textbf{Brahmagupta's Formula} (\inlinekattis{janitortroubles}).
+  The area of a quadrilateral with side lengths $a$, $b$, $c$, and
+  $d$, with all vertices lying on a common circle, is
+  \[ \sqrt{s(s-a)(s-b)(s-c)(s-d)} \qquad \text{where } s =
+    (a+b+c+d)/2. \] This is also the maximum possible area of a
+  quadrilateral with the given side lengths.
+\end{itemize}
 
 \chapter{Advanced topics} \label{chap:advanced}
 
