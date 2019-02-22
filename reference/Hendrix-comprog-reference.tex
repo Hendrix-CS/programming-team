@@ -68,18 +68,22 @@
 
 \newcommand{\kattislogo}{\raisebox{-0.2em}{\includegraphics[height=0.9\baselineskip]{Kattis}}}
 
-\newcommand{\kattis}[1]{%
-  \begin{mdframed}
-  \kattislogo
+\newcommand{\kattislist}[1]{%
   \def\nextitem{\def\nextitem{, }}
   \renewcommand*{\do}[1]{\nextitem\kattislink{##1}}
   \docsvlist{#1}
+}
+
+\newcommand{\kattis}[1]{%
+  \begin{mdframed}
+    \kattislogo
+    \kattislist{#1}
   \end{mdframed}
 }
 
 \newcommand{\kattislink}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
 
-\newcommand{\inlinekattis}[1]{\kattislogo\ \kattislink{#1}}
+\newcommand{\inlinekattis}[1]{\kattislogo\!\!\kattislist{#1}\!}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Todos
@@ -200,6 +204,10 @@ you can use \fulllink{sec:fastio}.
 
 \code{java/ScannerExample.java}
 
+\section{Math}
+
+\todo{Java \javadoc{lang}{Math} class}
+
 \section{String/StringBuilder}
 
 \kattis{battlesimulation, bing, connectthedots, itsasecret, shiritori,
@@ -275,6 +283,13 @@ Some tips and tricks:
   return value.  See also \fulllink{sec:binary-search}.
 \item Other methods from the \javadoc{util}{Arrays} class may also
   occasionally be useful.
+\item To iterate over the items in an array, you can use foreach
+  syntax:
+  \begin{minted}{java}
+    for (int item : array) {
+      // do something with i
+    }
+  \end{minted}
 \end{itemize}
 
 \section{ArrayList}
@@ -286,9 +301,9 @@ that appending takes $O(1)$ amortized time.  The \texttt{add},
 methods are useful, in addition to the ability to iterate over the
 elements in order.  Avoid methods such as \texttt{contains},
 \texttt{indexOf}, \texttt{remove}, and the version of \texttt{add}
-that takes an index, all of which take linear time.  (If you want any
-of these methods it's probably a sign that you ought to be using a
-different data structure.)
+that takes an index, all of which take linear time.  (If you think you
+want any of these methods, it's probably a sign that you ought to be
+using a different data structure.)
 
 If you need to store a list/array and you know in advance exactly how
 much storage space you will need, then prefer using a primitive array
@@ -474,16 +489,64 @@ a \texttt{LinkedHashSet}, but it never hurts to be prepared!
 \section{Map}
 \label{sec:map}
 
-\kattis{awkwardparty, administrativeproblems, snowflakes, pizzahawaii}
+\kattis{awkwardparty, administrativeproblems, snowflakes, pizzahawaii, snowflakes}
 
-\todo{HashMap, TreeMap}
-\todo{Iterating over keys, values, both (MapEntry)}
-\todo{Note for purposes of programming contests, TreeMap and HashMap
-  are basically interchangeable.  HashMap is faster in theory but a
-  factor of $\lg n$ is not that much, and HashMap has its own
-  overhead.  Much easier to use custom classes as keys in a TreeMap
-  (just implement Comparable) than in a HashMap (implement hashCode
-  and equals).}
+The \javadoc{util}{Map} interface represents a dictionary data
+structure associating keys to values.  Supported operations include
+\texttt{get(K)}, \texttt{put(K,V)}, \texttt{containsKey(K)},
+\texttt{remove(K)}, and \texttt{size/isEmpty}.
+
+As with \texttt{Set}, there are two main classes implementing
+\texttt{Map}:
+
+\begin{itemize}
+\item \javadoc{util}{HashMap} is implemented using a hash table, and
+  allows $O(1)$ \texttt{get}, \texttt{put}, \texttt{remove}, and
+  \texttt{containsKey}.
+
+\item \javadoc{util}{TreeMap} is implemented using a balanced binary
+  tree.  Many of the same comments apply as for \texttt{TreeSet}:
+  \begin{itemize}
+  \item All operations run in worst-case $O(\lg n)$ time.
+  \item Iterating over the keys in the map is guaranteed to return
+    them in order from smallest to biggest.
+  \item \texttt{TreeMap} also implements the \javadoc{util}{SortedMap}
+    interface (allowing one \emph{e.g.} to access the first or last
+    key or to get a submap of all the key/value pairs which lie in
+    between certain keys) and \javadoc{util}{NavigableMap} interface
+    (which lets you find the closest keys and values which are
+    smaller/bigger than a given query key).
+  \end{itemize}
+\end{itemize}
+
+For the purposes of programming contests, \texttt{TreeMap} and
+\texttt{HashMap} are basically interchangeable.  \texttt{HashMap} is
+faster in theory but a factor of $\lg n$ is not that much, and
+\texttt{HashMap} has its own overhead costs.  As with sets, if you
+need to use a custom class as keys in a \texttt{Map}, it's much easier
+to implement \texttt{Comparable} and use a \texttt{TreeMap} than it is
+to implement \texttt{hashCode} and \texttt{equals}.
+
+\begin{itemize}
+\item To iterate over the keys of a map, use \texttt{keySet}:
+  \begin{minted}{java}
+    for (K key : map.keySet()) {
+      ...
+    }
+  \end{minted}
+\item To iterate over the values, use \texttt{values}:
+  \begin{minted}{java}
+    for (V val : map.values()) {
+      ...
+    }
+  \end{minted}
+\item You can also iterate over both at once:
+  \begin{minted}{java}
+    for (Map.Entry<K,V> e : map.entrySet()) {
+      ... e.getKey() ... e.getValue() ...
+    }
+  \end{minted}
+\end{itemize}
 
 \section{BigInteger} \label{sec:bigint}
 
@@ -967,10 +1030,14 @@ $O(E \sqrt{V})$.
 
 \chapter{Dynamic Programming}
 
+\kattis{drivinglanes}
+
 \todo{knapsack, longest common subsequence}
 \todo{longest increasing subsequence ($O(n^2)$ and $O(n \lg n)$, see \url{https://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming})}
 
 \chapter{Strings}
+
+\todo{Write this section!}
 
 \section{Z-algorithm}
 
@@ -1556,10 +1623,16 @@ in \texttt{prefix} to the identity element instead of zero.
 \chapter{Formulas} \label{chap:formulas}
 
 \begin{itemize}
+\item \textbf{Ceiling division} (\inlinekattis{soylent,wordcloud}).
+  If \texttt{p} and \texttt{q} are of type \texttt{int}, then
+  \texttt{p/q} computes $\lfloor p/q \rfloor$, the quotient (rounded
+  down).  If you want the quotient rounded \emph{up}, that is,
+  $\lceil p/q \rceil$, compute \[ \texttt{(p + q - 1) / q}. \]
+
 \item \textbf{Derangements} (\inlinekattis{secretsanta}).  The number
   of permutations of $n$ objects such that no object is left in its
   original place is
-  \[ !n = n \cdot !(n-1) + (-1)^n = n! \sum_{i=0}^n \frac{(-1)^i}{i!}
+  \[ !n = n \cdot !(n-1) + (-1)^n = n! \sum_{k=0}^n \frac{(-1)^k}{k!}
     = \left[ \frac{n!}{e} \right], \]
   where $!1 = 0$, and $[x]$ denotes the closest
       integer to $x$.  The first few values of $!n$ are \[
@@ -1577,7 +1650,10 @@ in \texttt{prefix} to the identity element instead of zero.
 
 \chapter{Advanced topics} \label{chap:advanced}
 
-This is a list of advanced topics that may eventually be included.
+This is a list of advanced topics that may eventually be included in
+this document, but for now you can go read up on them if you are
+interested!  (And then of course write up what you have learned for
+inclusion in this document.)
 
 \begin{itemize}
 \item Chinese Remainder Theorem \kattis{heliocentric, generalchineseremainder}
