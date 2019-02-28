@@ -1090,36 +1090,32 @@ For example, suppose \texttt{i} is an index into an array of length
 \texttt{n} and you need to shift by an offset \texttt{o}, wrapping
 around in case the index goes off the end of the array.  The obvious
 way to write this would be
-
 \begin{minted}{java}
 i = (i + o) % n;
 \end{minted}
-
 however, this is \textbf{incorrect if \texttt{o} could be negative!}
 If we assume that \texttt{o} will never be larger in absolute value
 than \texttt{n}, then we could write this correctly as
-
 \begin{minted}{java}
 i = (i + o + n) % n;
 \end{minted}
-
 If \texttt{o} could be arbitrarily large then we could write
-
 \begin{minted}{java}
 i = (((i + o) % n) + n) % n;
 \end{minted}
-
 (the first mod operation reduces it to lie between $-n \dots n$;
 adding $n$ ensures it is positive; and the final mod reduces it to the
 range $[0,n)$).
 
-\textbf{Modular exponentiation and modular inverses}. Sometimes one
-needs to compute the modular exponentiation $b^e \bmod m$ for some
-base $b$, exponent $e$, and modulus $m$.  Using repeated squaring, it
-is possible to do this efficiently even for very large exponents $e$.
-Relatedly, if $b$ is relatively prime to $m$, it is possible to
-compute $b^{-1} \bmod m$, the \emph{modular inverse} of $b$, that is,
-the unique number $0 < b' < m$ such that $bb' \equiv 1 \pmod m$.
+\subsection*{Modular exponentiation and modular inverses}
+
+Sometimes one needs to compute the modular exponentiation
+$b^e \bmod m$ for some base $b$, exponent $e$, and modulus $m$.  Using
+repeated squaring, it is possible to do this efficiently even for very
+large exponents $e$.  Relatedly, if $b$ is relatively prime to $m$, it
+is possible to compute $b^{-1} \bmod m$, the \emph{modular inverse} of
+$b$, that is, the unique number $0 < b' < m$ such that
+$bb' \equiv 1 \pmod m$.
 
 In Java, probably the easiest way to compute these is using the
 \texttt{modPow} method from the \texttt{BigInteger} class
@@ -1656,7 +1652,10 @@ interested!  (And then of course write up what you have learned for
 inclusion in this document.)
 
 \begin{itemize}
-\item Chinese Remainder Theorem \kattis{heliocentric, generalchineseremainder}
+\item Chinese Remainder Theorem \kattis{heliocentric,
+    generalchineseremainder}
+\item Gauss-Jordan elimination (\ie row reduction \ie solving linear
+  systems)
 \item Exact Set Cover with Algorithm X/dancing links (\inlinekattis{programmingteamselection})
 \item Matrix powers
   \kattis{diceandladders,driving,linearrecurrence,mortgage,overlappingmaps,squawk,timing}
