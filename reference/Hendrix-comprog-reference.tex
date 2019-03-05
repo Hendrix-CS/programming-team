@@ -612,6 +612,17 @@ input in Python:
 
 \chapter{Data Structures}
 
+\section{Pair}
+
+Java has a \texttt{Pair} class in \texttt{javafx.util.Pair}, but one
+can't necessarily assume that this will be available in a conteset
+environment.  Creating a simple class to store two values together is
+easy enough, but if one wants to use pairs as keys or values in a set
+or map structure then it's necessary to also implement
+\texttt{Comparable} and \texttt{hashCode}.
+
+\todo{make a little Pair class, comparable and hashable}
+
 \section{Bag}
 
 \kattis{cookieselection}
@@ -984,11 +995,24 @@ Some options/variants:
 
 \section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
+\begin{figure}
+  \small
+  \code{graph/DGraph.java}
+  \code{graph/DEdge.java}
+  \caption{Dijkstra's algorithm} \label{fig:dijkstra}
+\end{figure}
+
+% TODO: clean this up, remove DGraph stuff, just the algorithm itself
+
 \section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
 
 \section{Min spanning trees (Kruskal)} \label{sec:kruskal}
 
 \kattis{drivingrange, islandhopping, jurassicjigsaw, lostmap, minspantree, treehouses}
+
+\todo{Create a union-find; sort all the edges by size; for each edge
+  smallest to largest, pick it and connect its endpoints if they
+  aren't already connected.}
 
 \section{Max flow}
 
@@ -1030,8 +1054,9 @@ $O(E \sqrt{V})$.
 
 \chapter{Dynamic Programming}
 
-\kattis{drivinglanes}
+\kattis{balanceddiet, drivinglanes}
 
+\todo{subset sum}
 \todo{knapsack, longest common subsequence}
 \todo{longest increasing subsequence ($O(n^2)$ and $O(n \lg n)$, see \url{https://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming})}
 
@@ -1445,6 +1470,20 @@ feature of many competitive programming problems.
   \code{grid/Neighbors.java}
 \end{itemize}
 
+\section{Hexagonal grids} \label{sec:hex-grids}
+
+\kattis{beehouseperimeter, honey, settlers2, beeproblem, honeyheist}
+
+Occasionally a problem will involve a 2D grid of tiled hexagons
+instead of a grid of squares.  (Typically such problems involve a
+story about bees.)  They are often not too hard (\eg some kind of
+straightforward application of \fulllink{sec:bfs}) other than the fact
+that dealing with hexagonal grids can be annoying, unless you know a
+few tricks for working with them elegantly.
+
+\todo{Write about hexagonal grids, storage, coordinate systems, etc.}
+Reference: \url{https://www.redblobgames.com/grids/hexagons/}
+
 \section{Range queries} \label{sec:range-queries}
 
 Suppose we have a $1$-indexed array $A[1 \dots n]$ containing some
@@ -1655,7 +1694,7 @@ inclusion in this document.)
 \item Chinese Remainder Theorem \kattis{heliocentric,
     generalchineseremainder}
 \item Gauss-Jordan elimination (\ie row reduction \ie solving linear
-  systems)
+  systems) (\inlinekattis{primonimo})
 \item Exact Set Cover with Algorithm X/dancing links (\inlinekattis{programmingteamselection})
 \item Matrix powers
   \kattis{diceandladders,driving,linearrecurrence,mortgage,overlappingmaps,squawk,timing}
