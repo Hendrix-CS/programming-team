@@ -1662,7 +1662,7 @@ in \texttt{prefix} to the identity element instead of zero.
   If \texttt{p} and \texttt{q} are of type \texttt{int}, then
   \texttt{p/q} computes $\lfloor p/q \rfloor$, the quotient (rounded
   down).  If you want the quotient rounded \emph{up}, that is,
-  $\lceil p/q \rceil$, compute \[ \texttt{-(-p/q)}. \]
+  $\lceil p/q \rceil$, compute \[ \texttt{(p + q - 1) / q}. \]
 
 \item \textbf{Derangements} (\inlinekattis{secretsanta}).  The number
   of permutations of $n$ objects such that no object is left in its
