@@ -995,14 +995,53 @@ Some options/variants:
 
 \section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
+Dijkstra's algorithm is the standard algorithm for solving the
+\emph{single-source shortest path} problem in weighted, directed
+graphs.  That is, given a graph with (possibly) directed edges and a
+weight on each edge, Dijkstra's algorithm can find the shortest path
+from a single chosen start vertex to every other vertex in the graph.
+Figure~\ref{fig:dijkstra} has a basic implementation.
 \begin{figure}
   \small
-  \code{graph/DGraph.java}
-  \code{graph/DEdge.java}
-  \caption{Dijkstra's algorithm} \label{fig:dijkstra}
+  \code{graph/Dijkstra.java}
+  \caption{$O(VE)$ Dijkstra's algorithm} \label{fig:dijkstra}
 \end{figure}
+\begin{warning}
+  Since Java's \javadoc{util}{PriorityQueue} class does not have a
+  ``decrease key'' method, on line 28 we have to instead do a \texttt{remove}
+  followed by an \texttt{add}; but \texttt{remove} is $O(n)$, making
+  the whole algorithm $O(VE)$.  If you really need $O(E \lg V)$
+  performance, you can use an \fulllink{sec:adj-pq}.
+\end{warning}
 
-% TODO: clean this up, remove DGraph stuff, just the algorithm itself
+There are many possible variants of this basic template; here are a
+few.
+
+\begin{itemize}
+\item The given code explores the \emph{entire} graph.  However, if
+  you have a particular target vertex in mind you can stop early once
+  you find it: just \texttt{break} out of the loop if removing the
+  next node from the priority queue yields the target node, since at
+  that point we are guaranteed that we know the shortest path from the
+  start node to the target node.
+\item If the vertices of your graph are not naturally represented as
+  integers in the range $0 \dots n-1$, one could modify the algorithm
+  to use \texttt{Map}s in place of the \texttt{parent} and
+  \texttt{dist} arrays.  Alternatively, it may be easier to deal with
+  this outside of Dijkstra's algorithm: just arbitrarily assign
+  indices to vertices and use a \texttt{Map} or two to keep track of
+  the assignment.  Then run Dijkstra and translate the results to talk
+  about the original vertices.
+\item Dijkstra's algorithm uses addition to combine the weights of
+  consecutive edges and \texttt{min} to pick the best path among
+  parallel options.  However, there are other pairs of operations one
+  can use with the same basic algorithm template.  For example, using
+  \texttt{min}/\texttt{max} in place of \texttt{+}/\texttt{min} yields
+  an algorithm which finds the path with the maximum possible minimum
+  weight (\inlinekattis{vuk, crowdcontrol, muddyhike}).
+\end{itemize}
+
+\todo{Generalizing to other semirings e.g. max/min.}
 
 \section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
 
