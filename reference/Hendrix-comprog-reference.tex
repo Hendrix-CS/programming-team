@@ -909,7 +909,7 @@ representation of an undirected graph.
 \todo{State space search with complex states: make a class, implement
   Comparable, use TreeMap}
 
-\section{BFS}
+\section{Breadth-First Search}
 \label{sec:bfs}
 
 \kattis{ballsandneedles, brexit, collapse, grapevine, horrorlist, mazemakers}
@@ -995,12 +995,19 @@ Some options/variants:
 
 \section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
+\kattis{bigtruck, blockcrusher, george, getshorty, kitchen,
+  shortestpath1, shortestpath2, walkway}
+
 Dijkstra's algorithm is the standard algorithm for solving the
 \emph{single-source shortest path} problem in weighted, directed
 graphs.  That is, given a graph with (possibly) directed edges and a
-weight on each edge, Dijkstra's algorithm can find the shortest path
-from a single chosen start vertex to every other vertex in the graph.
-Figure~\ref{fig:dijkstra} has a basic implementation.
+weight on each edge, Dijkstra's algorithm can find the shortest
+directed path from a single chosen start vertex to every other vertex
+in the graph (where the length of a path is the sum of the weights on
+the edges). If you want to find the shortest path in a weighted,
+undirected graph, just make a directed graph with edges going both
+directions between each pair of vertices.  Figure~\ref{fig:dijkstra}
+has a basic implementation.
 \begin{figure}
   \small
   \code{graph/Dijkstra.java}
@@ -1008,10 +1015,13 @@ Figure~\ref{fig:dijkstra} has a basic implementation.
 \end{figure}
 \begin{warning}
   Since Java's \javadoc{util}{PriorityQueue} class does not have a
-  ``decrease key'' method, on line 28 we have to instead do a \texttt{remove}
-  followed by an \texttt{add}; but \texttt{remove} is $O(n)$, making
-  the whole algorithm $O(VE)$.  If you really need $O(E \lg V)$
-  performance, you can use an \fulllink{sec:adj-pq}.
+  ``decrease key'' method, on line 28 we have to instead do a
+  \texttt{remove} followed by an \texttt{add}; but \texttt{remove} is
+  $O(n)$, making the whole algorithm $O(VE)$.  If you really need
+  $O(E \lg V)$ performance (\inlinekattis{flowerytrails}), you can use
+  an \fulllink{sec:adj-pq}.  In some situations you can also simply
+  call \texttt{add} without calling \texttt{remove}; see the
+  discussion below.
 \end{warning}
 
 There are many possible variants of this basic template; here are a
@@ -1030,18 +1040,59 @@ few.
   \texttt{dist} arrays.  Alternatively, it may be easier to deal with
   this outside of Dijkstra's algorithm: just arbitrarily assign
   indices to vertices and use a \texttt{Map} or two to keep track of
-  the assignment.  Then run Dijkstra and translate the results to talk
-  about the original vertices.
+  the assignment.  Then run Dijkstra using the assigned vertex indices
+  and translate the result back to the original vertices.
+\item If the priority queue contains objects which inherently store
+  their own priority (\emph{i.e.} comparing two items requires only
+  looking at fields of the items, \emph{not} looking up values in some
+  external array such as \texttt{dist}), then it is often an
+  optimization to simply call \texttt{pq.add(next)} without calling
+  \texttt{pq.remove(next)} first. The priority queue will end up with
+  multiple copies of the same node, each with a different priority,
+  but this is not a problem; when removing the next node from the PQ
+  just ignore it if it has already been visited.
+  (\inlinekattis{nikola})
 \item Dijkstra's algorithm uses addition to combine the weights of
-  consecutive edges and \texttt{min} to pick the best path among
+  consecutive edges and \texttt{min} to pick the shortest path among
   parallel options.  However, there are other pairs of operations one
-  can use with the same basic algorithm template.  For example, using
-  \texttt{min}/\texttt{max} in place of \texttt{+}/\texttt{min} yields
-  an algorithm which finds the path with the maximum possible minimum
-  weight (\inlinekattis{vuk, crowdcontrol, muddyhike}).
+  can use with the same basic algorithm template.\footnote{The details
+  of which properties of the operations are needed for this to work
+  are too far outside the scope of this document; see \todo{XXX}}
+  \begin{itemize}
+  \item Using \texttt{min}/\texttt{max} in place of
+    \texttt{+}/\texttt{min} yields an algorithm which finds the path
+    with the maximum possible minimum weight (\inlinekattis{vuk,
+      crowdcontrol, muddyhike}).  For example, if the edge weights are
+    thought of as capacities, and the capacity of a path is equal to
+    the minimum capacity of any of its edges (\emph{i.e.} the
+    bottleneck) then this corresponds to finding maximum-capacity
+    paths.  One must be careful to:
+    \begin{itemize}
+    \item update the comparison operation for the priority queue to
+      use \texttt{min} instead of \texttt{max} (\emph{e.g.} by
+      switching to \texttt{dist[v] - dist[u]} instead of
+      \texttt{dist[u] - dist[v]}),
+    \item initialize all the entries of \texttt{dist} to an
+      appropriate identity value for \texttt{max} such as \texttt{0},
+      \texttt{-1}, or \texttt{-INF} instead of \texttt{INF},
+    \item change the definition of \texttt{nextDist} to use
+      \texttt{min} instead of \texttt{+}, and
+    \item change the comparison of \texttt{nextDist} and
+      \texttt{dist[next]} to use \texttt{>} instead of \texttt{<}.
+    \end{itemize}
+  \item If we have a directed graph with edge weights corresponding to
+    probabilities, where the probability of a path is defined as the
+    product of the probabilities of its edges, then Dijkstra's algorithm
+    with \texttt{*}/\texttt{max} finds highest-probability paths.
+    Similar modifications have to be made as in the previous example.
+  \end{itemize}
+\item One can modify the basic algorithm to keep track of extra
+  information, such as the \emph{number} of shortest paths from the
+  start to any given node: add to the count when finding a new path
+  equal in weight to the previous best-known path; reset the count
+  when finding a shorter path than previously known
+  (\inlinekattis{visualgo}).
 \end{itemize}
-
-\todo{Generalizing to other semirings e.g. max/min.}
 
 \section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
 
@@ -1093,7 +1144,7 @@ $O(E \sqrt{V})$.
 
 \chapter{Dynamic Programming}
 
-\kattis{balanceddiet, drivinglanes}
+\kattis{balanceddiet, drivinglanes, walkforest}
 
 \todo{subset sum}
 \todo{knapsack, longest common subsequence}
