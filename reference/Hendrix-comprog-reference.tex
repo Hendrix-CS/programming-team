@@ -615,7 +615,7 @@ input in Python:
 \section{Pair}
 
 Java has a \texttt{Pair} class in \texttt{javafx.util.Pair}, but one
-can't necessarily assume that this will be available in a conteset
+can't necessarily assume that this will be available in a contest
 environment.  Creating a simple class to store two values together is
 easy enough, but if one wants to use pairs as keys or values in a set
 or map structure then it's necessary to also implement
@@ -1042,15 +1042,16 @@ few.
   indices to vertices and use a \texttt{Map} or two to keep track of
   the assignment.  Then run Dijkstra using the assigned vertex indices
   and translate the result back to the original vertices.
-\item If the priority queue contains objects which inherently store
-  their own priority (\emph{i.e.} comparing two items requires only
-  looking at fields of the items, \emph{not} looking up values in some
-  external array such as \texttt{dist}), then it is often an
-  optimization to simply call \texttt{pq.add(next)} without calling
-  \texttt{pq.remove(next)} first. The priority queue will end up with
-  multiple copies of the same node, each with a different priority,
-  but this is not a problem; when removing the next node from the PQ
-  just ignore it if it has already been visited.
+\item If the priority queue contains objects whose priority never
+  changes once they are put in the priority queue (note that the
+  example code in Figure~\ref{fig:dijkstra} does \emph{not} have this
+  property, since \texttt{Integer}s in the PQ are compared by the
+  value stored in the external array \texttt{dist}, which can change)
+  then it can be an optimization to simply call \texttt{pq.add(next)}
+  without calling \texttt{pq.remove(next)} first. The priority queue
+  will end up with multiple copies of the same node, each with a
+  different priority, but this is not a problem; when removing the
+  next node from the PQ just ignore it if it has already been visited.
   (\inlinekattis{nikola})
 \item Dijkstra's algorithm uses addition to combine the weights of
   consecutive edges and \texttt{min} to pick the shortest path among
