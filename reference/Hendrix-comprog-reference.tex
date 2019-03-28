@@ -996,7 +996,7 @@ Some options/variants:
 \section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
 \kattis{bigtruck, blockcrusher, george, getshorty, kitchen,
-  shortestpath1, shortestpath2, walkway}
+  shortestpath1, shortestpath2, showroom, walkway}
 
 Dijkstra's algorithm is the standard algorithm for solving the
 \emph{single-source shortest path} problem in weighted, directed
@@ -1516,6 +1516,25 @@ See also list of formulas.
 feature of many competitive programming problems.
 
 \begin{itemize}
+\item There is a trick for reading in a grid of characters which can
+  save a bit of coding effort.  The ``traditional'' way to read a grid of
+  characters would be something like:
+  \begin{minted}{java}
+    char[][] grid = new char[R][C];
+    for (int r = 0; r < R; r++) {
+        String line = in.nextLine();
+        for (int c = 0; c < C; c++) {
+            grid[r][c] = line.charAt(c);
+        }
+    }
+  \end{minted}
+  However, it is possible to assign each row of the 2D array all at
+  once, like so:
+  \begin{minted}{java}
+    char[][] grid = new char[R][C];
+    for (int r = 0; r < R; r++)
+        grid[r] = in.nextLine().toCharArray();
+  \end{minted}
 \item In many cases the grid should be thought of as a graph where
   each cell is a vertex which is connected by edges to its neighbors.
   Note that in these cases one rarely wants to explicitly construct
