@@ -16,13 +16,17 @@ public class TreeBag<E extends Comparable<E>> implements Iterable<E> {
             totalSize--;
         }
     }
-    public int size() { return totalSize; }
+    public int size()        { return totalSize; }
     public boolean isEmpty() { return map.isEmpty(); }
-    public int count(E e) { return map.containsKey(e) ? map.get(e) : 0; }
-    public E first() { return map.firstKey(); }
-    public E last() { return map.lastKey(); }
-    public E pollFirst() { E e = first(); remove(e); return e; }
-    public E pollLast() { E e = last(); remove(e); return e; }
+    public int count(E e)    { return map.containsKey(e) ? map.get(e) : 0; }
+    public E first()         { return map.firstKey(); }
+    public E last()          { return map.lastKey(); }
+    public E pollFirst()     { E e = first(); remove(e); return e; }
+    public E pollLast()      { E e = last(); remove(e); return e; }
+    public E floor(E e)      { return map.floorKey(e); }
+    public E ceiling(E e)    { return map.ceilingKey(e); }
+    public E lower(E e)      { return map.lowerKey(e); }
+    public E higher(E e)     { return map.higherKey(e); }
     public Iterator<E> iterator() {
         return new Iterator<E>() {
             Iterator<E> it = map.keySet().iterator();
