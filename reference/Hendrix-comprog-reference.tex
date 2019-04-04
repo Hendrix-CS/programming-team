@@ -1000,10 +1000,11 @@ vertices such that whenever there is an edge from $u$ to $v$, $u$
 comes before $v$ in the list; $G$ has a topological sort if and only
 if it is acyclic.
 
-There are two main methods to do a topological sort.  Method 1 is to
-repeatedly remove nodes with no incoming edges (or dually, nodes with
-no outgoing edges).  Empirically this seems to be faster than Method
-2, but is perhaps a bit more code.  Pseudocode is as follows:
+There are two main methods to do a topological sort.  Method 1 (Kahn's
+Algorithm) is to repeatedly remove nodes with no incoming edges (or
+dually, nodes with no outgoing edges).  Empirically this seems to be
+faster than Method 2, but is perhaps a bit more code.  Pseudocode is
+as follows:
 
 \begin{center}
 \begin{minipage}{0.8\textwidth}
