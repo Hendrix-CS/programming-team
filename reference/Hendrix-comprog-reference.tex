@@ -989,9 +989,51 @@ Some options/variants:
   (weakly) connected components; identify bipartite graphs/odd cycles
   (detect cross-edges with map of level sets)}
 
-\section{DFS, SCCs, topological sorting} \label{sec:dfs}
+\section{DFS and SCCs} \label{sec:dfs}
 
 \todo{Code for DFS, start/finish labelling, top sorting, Tarjan's SCC algorithm}
+
+\section{Topological sorting} \label{sec:topsort}
+
+A \emph{topological sort} of a directed graph $G$ is a list of
+vertices such that whenever there is an edge from $u$ to $v$, $u$
+comes before $v$ in the list; $G$ has a topological sort if and only
+if it is acyclic.
+
+There are two main methods to do a topological sort.  Method 1 is to
+repeatedly remove nodes with no incoming edges (or dually, nodes with
+no outgoing edges).  Empirically this seems to be faster than Method
+2, but is perhaps a bit more code.  Pseudocode is as follows:
+
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\begin{algorithm}[H]
+  \begin{algorithmic}[1]
+    \Require Directed graph $G = (V,E)$.
+    \State $T \gets$ empty list (to store topsort)
+    \State $Z \gets$ empty queue (to store nodes with $0$ indegree)
+    \State $\mathit{in} \gets$ dictionary mapping all vertices to
+    their indegree
+    \State Put all vertices with indegree $0$ into $Z$
+    \While{$Z$ is not empty}
+      \State $v \gets Z.\mathit{dequeue}$
+      \State append $v$ to $T$
+      \For{each $u$ adjacent to $v$}
+        \State decrement $\mathit{in}[u]$
+        \If{$\mathit{in}[u] = 0$}
+          \State add $u$ to $Z$
+        \EndIf
+      \EndFor
+    \EndWhile
+  \end{algorithmic}
+  \caption{{\sc TopSort}(G)}
+  \label{alg:topsort}
+\end{algorithm}
+\end{minipage}
+\end{center}
+
+\todo{add example code}
+\todo{write about method 2 via DFS}
 
 \section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
