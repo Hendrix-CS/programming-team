@@ -998,7 +998,12 @@ Some options/variants:
 A \emph{topological sort} of a directed graph $G$ is a list of
 vertices such that whenever there is an edge from $u$ to $v$, $u$
 comes before $v$ in the list; $G$ has a topological sort if and only
-if it is acyclic.
+if it is acyclic.  Topological sorting can thus be used to detect the
+presence of cycles. It is also often used in conjunction with dynamic
+programming: if we need to compute some value each vertex
+such that the value can be computed once we already know the values
+for all the outgoing (or incoming) neighbors, topological sort gives
+us the right order for computing the values.
 
 There are two main methods to do a topological sort.  Method 1 (Kahn's
 Algorithm) is to repeatedly remove nodes with no incoming edges (or
@@ -1033,9 +1038,44 @@ as follows:
 \end{minipage}
 \end{center}
 
+If the queue becomes empty before all vertices have been added to the
+topsort, then a cycle exists.
+
 \todo{add example code}
-\todo{write about method 2 via DFS}
-\todo{mention topsort + DP}
+
+The second method is to do a recursive DFS: simply add each vertex to
+a list just \emph{after} recursively processing all its neighbors;
+this yields a topsort in reverse order.
+
+\begin{center}
+  \begin{minipage}{0.8\textwidth}
+    \begin{algorithm}[H]
+      \begin{algorithmic}[1]
+        \Function{TopSort-DFS}{G}
+        \State $T \gets$ empty list/stack to hold topsort
+        \ForAll{$v \in V$}
+        \If{$v$ is not visited}
+        \Call{DFS}{$v$, $T$}
+        \EndIf
+        \EndFor
+        \State \Return{$T$}
+        \EndFunction \\
+
+        \Function{DFS}{$x$, $T$}
+        \State Mark $x$ visited
+        \ForAll{$(x,y) \in E$}
+          \If{$y$ is not visited}
+            \Call{DFS}{$y$, $T$}
+          \EndIf
+        \EndFor
+        \State Add $x$ to $T$
+        \EndFunction
+      \end{algorithmic}
+      \caption{Topological sort via DFS}
+      \label{alg:topsort-dfs}
+    \end{algorithm}
+  \end{minipage}
+\end{center}
 
 \section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
