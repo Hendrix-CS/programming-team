@@ -995,12 +995,18 @@ Some options/variants:
 
 \section{Topological sorting} \label{sec:topsort}
 
+\kattis{builddeps, easyascab, eatingeverything, excavatorexpedition,
+  mravi, promotions, reactivity, runningmom, succession}
+
+% , ccsc18.topicx
+
 A \emph{topological sort} of a directed graph $G$ is a list of
 vertices such that whenever there is an edge from $u$ to $v$, $u$
 comes before $v$ in the list; $G$ has a topological sort if and only
 if it is acyclic.  Topological sorting can thus be used to detect the
 presence of cycles. It is also often used in conjunction with dynamic
-programming: if we need to compute some value each vertex
+programming (\inlinekattis{eatingeverything, excavatorexpedition,
+  mravi}): if we need to compute some value each vertex
 such that the value can be computed once we already know the values
 for all the outgoing (or incoming) neighbors, topological sort gives
 us the right order for computing the values.
@@ -1041,7 +1047,8 @@ as follows:
 If the queue becomes empty before all vertices have been added to the
 topsort, then a cycle exists.
 
-\todo{add example code}
+For a sample implementation of this algorithm, see the solution to
+\inlinekattis{succession} at \url{https://github.com/Hendrix-CS/programming-team/blob/master/solved/Succession.java}.
 
 The second method is to do a recursive DFS: simply add each vertex to
 a list just \emph{after} recursively processing all its neighbors;
