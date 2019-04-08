@@ -206,9 +206,47 @@ you can use \fulllink{sec:fastio}.
 
 \section{Math}
 
-\todo{Java \javadoc{lang}{Math} class}
+The standard \javadoc{lang}{Math} class contains useful standard
+mathematical constants and operations.  All are \texttt{static}, so
+they can be accessed by prefixing their names with \texttt{Math.}, \ie
+\texttt{Math.cos}.
+\begin{itemize}
+\item Constants \texttt{E} and \texttt{PI} represent (floating-point
+  approximations of) $e$ and $\pi$.
+\item \texttt{abs} finds the absolute value.
+\item \texttt{min} and \texttt{max} find the min or max of two
+  values. A common trick for saving a bit of typing is to use
+  something like
+  \begin{minted}{java}
+    m = Math.max(m, val);
+  \end{minted}
+  if you need \texttt{m} to accumulate the maximum of a set of values.
+\item \texttt{round} rounds a floating-point number to the nearest
+  integer. \texttt{ceil} and \texttt{floor} round up and down,
+  respectively.  Note that whereas \texttt{round}
+  returns a \texttt{long} when given a \texttt{double}, for some
+  reason \texttt{ceil} and \texttt{floor} both return
+  \texttt{double}, so you may need to cast the results:
+  \begin{minted}{java}
+    double x = ...
+    long n = (long)Math.floor(x);
+  \end{minted}
+\item \texttt{exp(x)} computes $e^x$.  \texttt{log(x)} computes $\ln x$.
+\item \texttt{sqrt} computes the square root.  \texttt{hypot(x,y)}
+  computes $\sqrt{x^2 + y^2}$.
+\item \texttt{pow(a, b)} computes $a^b$.
+\item \texttt{sin}, \texttt{cos}, \texttt{tan}, \texttt{acos},
+  \texttt{asin}, \texttt{atan} do what you would expect. Note also
+  \texttt{atan2(y,x)} which returns an angle $\theta$ such that
+  it converts rectangular coordinates $(x,y)$ into polar coordinates
+  $(r, \theta)$.  This is almost like \texttt{atan(y/x)} except that
+  it avoids division by zero and handles all four quadrants properly.
+\item \texttt{toDegrees} and \texttt{toRadians} convert angles from
+  radians to degrees and degrees to radians, respectively.
+\end{itemize}
 
-\section{String/StringBuilder}
+
+\section{String}
 
 \kattis{battlesimulation, bing, connectthedots, itsasecret, shiritori,
 suffixarrayreconstruction}
@@ -225,7 +263,7 @@ sequences of characters.  Some useful \texttt{String} methods include:
 \item \texttt{charAt(i)} yields the \texttt{char} at index \texttt{i}.
 \item \texttt{toCharArray()} converts to a \texttt{char[]}, which can
   be convenient if you need to do a lot of indexing (\texttt{[i]}
-  instead of \texttt{charAt(i)}
+  instead of \texttt{charAt(i)})
 \item \texttt{split(String)} splits a string into a \texttt{String[]}
   of pieces between occurrences of the splitting string.
 \item \texttt{endsWith(String)}, \texttt{startsWith(String)},
@@ -235,7 +273,7 @@ sequences of characters.  Some useful \texttt{String} methods include:
 Below is shown a solution to \inlinekattis{sumoftheothers}, which uses
 \texttt{split} followed by \texttt{Integer.parseInt} to read the
 integers on each line (necessary in this case because the input does
-not specify how many integers will be on each line).
+not specify how many integers will be on each line, although this is atypical).
 
 \code{java/sumOfTheOthers.java}
 
@@ -247,9 +285,26 @@ string must be copied with each append operation.  In this situation,
 either pre-allocate a sufficiently large \texttt{char[]}, or use
 the \javadoc{lang}{StringBuilder} class.
 
-\todo{Example of using \texttt{StringBuilder}.}
+\section{StringBuilder}
 
 \kattis{itsasecret, joinstrings}
+
+\javadoc{util}{StringBuilder} is a \emph{mutable} string class which
+supports efficient append and modification operations.  If you need to
+build up a long string by incrementally appending text bit by bit, you
+should use \texttt{StringBuilder} instead of using \texttt{String}
+directly.  \texttt{StringBuilder} also supports a \texttt{reverse()}
+method (unlike \texttt{String}).
+
+As a simple example, the below code prints \texttt{1234567891011121314151617181920}.
+
+\begin{minted}{java}
+  StringBuilder sb = new StringBuilder();
+  for (int i = 1; i <= 20; i++) {
+      sb.append("" + i);
+  }
+  System.out.println(sb.reverse());
+\end{minted}
 
 \section{Arrays}
 
