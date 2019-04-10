@@ -426,6 +426,27 @@ selection of problems above).
 \section{Comparator}
 \label{sec:comparator}
 
+A \javadoc{util}{Comparator} is used to specify a custom ordering on
+some type, potentially different than its ``natural'' ordering.
+Typically a \texttt{Comparator} can be passed as an optional argument
+to things that require an ordering.  For example, given an
+\texttt{ArrayList<Integer> arr}, one can use
+\texttt{Collections.sort(arr)} to sort it in increasing numeric order.
+If a different order is wanted, one can pass a \texttt{Comparator} as
+the second argument to \texttt{sort}, as in
+\begin{minted}{java}
+Collections.sort(arr, Collections.reverseOrder());
+\end{minted}
+to sort in descending order, or
+\begin{minted}{java}
+Collections.sort(arr, (i,j) -> q[i] - q[j]);
+\end{minted}
+to sort a list of \emph{indices} by the corresponding value in an
+array \texttt{q}.  A \texttt{Comparator} can also be used as an extra
+argument to the constructor when creating a data structure that
+depends on ordering, such as a \texttt{PriorityQueue},
+\texttt{TreeSet}, or \texttt{TreeMap}.
+
 \todo{Constructing Comparators via lambda; constructing via things
   like \texttt{comparing}, \texttt{thenComparing}.
   \texttt{Collections.reverseOrder()}.  Use for sorting, PQs,
