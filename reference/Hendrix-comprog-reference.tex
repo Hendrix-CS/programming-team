@@ -1189,6 +1189,8 @@ has a basic implementation.
   an \fulllink{sec:adj-pq}.  In some situations you can also simply
   call \texttt{add} without calling \texttt{remove}; see the
   discussion below.
+
+  \todo{using adjust, you have to decide whether to 'add' or 'adjust'}
 \end{warning}
 
 There are many possible variants of this basic template; here are a
@@ -1271,6 +1273,8 @@ few.
 \todo{Create a union-find; sort all the edges by size; for each edge
   smallest to largest, pick it and connect its endpoints if they
   aren't already connected.}
+
+\section{Eulerian paths} \label{sec:eulerian-path}
 
 \section{Max flow}
 
@@ -1994,9 +1998,10 @@ inclusion in this document.)
 \item Divide \& conquer algorithm for counting inversions.
   \kattis{excursion, froshweek, ultraquicksort}
 \item 2-SAT
+\item SAT with DPLL?
 \item LCA queries: Tarjan's OLCA; via RMQ; binary lifting (\inlinekattis{tourists})
 \item Convolutions with Fast Fourier Transform / Number Theoretic
-  Transform (\inlinekattis{tiles, aplusb})
+  Transform (\inlinekattis{tiles, aplusb, kinversions})
 \end{itemize}
 
 \chapter{Resources} \label{chap:resources}
