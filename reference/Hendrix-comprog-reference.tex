@@ -988,7 +988,7 @@ representation of an undirected graph.
 \section{Breadth-First Search}
 \label{sec:bfs}
 
-\kattis{ballsandneedles, brexit, buttonbashing, collapse, grapevine, horrorlist, mazemakers}
+\kattis{ballsandneedles, brexit, buttonbashing, collapse, erdosnumbers, grapevine, horrorlist, mazemakers}
 
 Breadth-first search (BFS) can be used to find single-source shortest
 paths (\emph{i.e.} shortest paths from a particular starting vertex to
@@ -1276,7 +1276,7 @@ few.
 
 \section{Eulerian paths} \label{sec:eulerian-path}
 
-\section{Max flow}
+\section{Max flow/min cut}
 
 \kattis{copsandrobbers,escapeplan,gopher2,guardianofdecency,marblestree,maxflow,mincut,paintball,pianolessons,waif}
 
@@ -1322,9 +1322,100 @@ $O(E \sqrt{V})$.
 \todo{knapsack, longest common subsequence}
 \todo{longest increasing subsequence ($O(n^2)$ and $O(n \lg n)$, see \url{https://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming})}
 
-\chapter{Strings}
+\chapter{Sequences and strings}
 
-\todo{Write this section!}
+\section{Longest Increasing Subsequence (LIS)}
+
+\kattis{increasingsubsequence,longincsubseq,manhattanmornings}
+
+A \emph{subsequence} of a sequence is a subset of elements, taken in
+order, but not necessarily contiguous.  (By contrast, a contiguous
+subset of elements is often referred to as a \emph{subinterval}.)  For
+example, $[1, 3, 4, 7]$ is a subsequence of
+$[1, 2, 3, 4, 5, 6, 7, 8]$.  Given a sequence of integers (or any
+elements which can be ordered), the \emph{longest increasing
+  subsequence} (LIS) problem is to find the longest subsequence which
+is in strictly increasing order.  For example, given the sequence
+$[9,2,8,10,5,4,20,16,7,1]$, one increasing subsequence is
+$[2, 5, 16]$, but it is not the longest.  There are several increasing
+subsequences of length $4$, such as $[2,8,10,16]$, and it turns out
+that this is the longest possible.
+
+Conceptually, to compute the LIS of a sequence, we build a
+\emph{downravel}, a set of nonincreasing subsequences which partition
+the original sequence.  We keep these subsequences as a list of stacks, and
+maintain the invariant that their top elements are always
+sorted from smallest to biggest.  We iterate through the elements of
+$S$ in order, and push each onto the leftmost possible stack whose top
+is $\geq$ the element being added.
+
+\begin{center}
+  \begin{minipage}{0.8\textwidth}
+    \begin{algorithm}[H]
+      \begin{algorithmic}[1]
+        \Function{Downravel}{S}
+        \State $D \gets$ empty list of stacks
+        \ForAll{$x \in S$}
+          \State $k \gets$ first stack in $D$ whose top is $\geq x$
+          \If{no such $k$ exists}
+            \State Add a new singleton stack containing $x$ to the end
+            of $D$
+          \Else
+            \State Push $x$ onto $k$
+          \EndIf
+          \EndFor
+        \State \Return{$D$}
+        \EndFunction
+      \end{algorithmic}
+      \caption{Building a downravel of a sequence $S$}
+      \label{alg:downravel}
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+
+XXX picture(s)?
+
+The length of the LIS is the same as the length of the downravel $D$.
+Naively, this runs in $O(n^2)$ time, since for each of the the $n$
+elements in $S$, we have to search through up to $O(n)$ stacks in $D$
+to find the right one to push.  However, there are several possible
+optimizations.
+
+\begin{itemize}
+\item First, although the stacks are conceptually helpful, we do not
+  actually need to store them. It's enough to simply store the current
+  top element of each stack.  So instead of having a list of stacks we
+  just have a list of elements.
+\item Second, since this list will always be sorted from smallest to
+  biggest, we can use a binary search to find the proper place to push
+  each new element.  This brings the running time down to a very
+  respectable $O(n \lg n)$.
+\end{itemize}
+
+What if we want not just the \emph{length} of the LIS but the LIS
+itself?
+
+\begin{itemize}
+\item First of all, we need to modify $D$ so it stores not the elements
+  themselves but their indices in $S$.  This requires a bit of extra
+  indirection while doing a binary search for the correct place to put
+  each new element.
+\item We keep an extra array $\mathit{back}$ such that
+  $\mathit{back}[i]$ stores the index of an element that could come
+  before $S[i]$ in a LIS up to and including $S[i]$.  Every time we
+  put a new element $S[i]$ into $D$, we set $\mathit{back[i]}$ to the
+  previous value in $D$---that is, the index of the element currently
+  on top of the previous stack in the list.
+\item After running the algorithm we start with the item represented by
+  the last entry in $D$, and then keep following $\mathit{back}$ links
+  to get each previous item.  This yields a LIS in reverse order.
+\end{itemize}
+
+XXX example, pictures
+
+XXX Java code
+
+\section{Longest Common Subsequence (LCS)}
 
 \section{Z-algorithm}
 
@@ -1553,10 +1644,10 @@ bigger than the lookup table.
 
 \kattis{insert, anagramcounting, nine, secretsanta, kingscolors, howmanyzeros}
 
-\todo{Basic principles of combinatorics.  Code for computing binomial
-  coefficients. Multinomial coefficients.}
-
-\todo{mod $10^9 + 7$.}
+\todo{Basic principles of combinatorics.  mod $10^9 + 7$. Code for
+  computing binomial coefficients. Multinomial coefficients. Large
+  binomial coefficients modulo a prime (modular inverse factorial
+  tables, Lucas's theorem).}
 
 \begin{warning}
   Remember to use \texttt{long} if you need an answer
@@ -1940,6 +2031,10 @@ in \texttt{prefix} to the identity element instead of zero.
   $O(\lg n)$ updates)} \label{sec:segment-trees}
 
 \todo{Segment trees.}
+
+\section{Cycle finding} \label{sec:cycle-finding}
+
+\todo{Floyd's algorithm, Brent's algorithm}
 
 \chapter{Formulas} \label{chap:formulas}
 
