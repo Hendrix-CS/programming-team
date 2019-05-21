@@ -449,8 +449,7 @@ depends on ordering, such as a \texttt{PriorityQueue},
 
 \todo{Constructing Comparators via lambda; constructing via things
   like \texttt{comparing}, \texttt{thenComparing}.
-  \texttt{Collections.reverseOrder()}.  Use for sorting, PQs,
-  TreeSet/Map.}
+  \texttt{Collections.reverseOrder()}.}
 
 \section{PriorityQueue}
 \label{sec:pq}
@@ -532,8 +531,8 @@ There are two main classes implementing \texttt{Set}:
     (And either one is probably going to be faster than sorting and
     \emph{then} removing duplicates.)
   \item If you need to put objects of a custom class into a set, it is
-    typically much easier to implement \texttt{Comparable} for your
-    class and use a \texttt{TreeSet} than it is to override
+    sometimes easier to implement \texttt{Comparable} for your class
+    and use a \texttt{TreeSet} than it is to override
     \texttt{hashCode} and use a \texttt{HashSet}.  The $O(\lg n)$
     difference is rarely, if ever, going to be the difference between
     AC and TLE, so you should use whichever approach will be easier to
@@ -598,10 +597,7 @@ As with \texttt{Set}, there are two main classes implementing
 For the purposes of programming contests, \texttt{TreeMap} and
 \texttt{HashMap} are basically interchangeable.  \texttt{HashMap} is
 faster in theory but a factor of $\lg n$ is not that much, and
-\texttt{HashMap} has its own overhead costs.  As with sets, if you
-need to use a custom class as keys in a \texttt{Map}, it's much easier
-to implement \texttt{Comparable} and use a \texttt{TreeMap} than it is
-to implement \texttt{hashCode} and \texttt{equals}.
+\texttt{HashMap} has its own overhead costs.
 
 \begin{itemize}
 \item To iterate over the keys of a map, use \texttt{keySet}:
@@ -626,31 +622,66 @@ to implement \texttt{hashCode} and \texttt{equals}.
 
 \section{BigInteger} \label{sec:bigint}
 
-\todo{Examples.  Useful methods, constructors (gcd, mod, base conversion!).}
-
 \kattis{basicremains}
+
+\javadoc{math}{BigInteger} represents arbitrarily large integer
+values, though it's not actually needed all that often You can import
+it as \texttt{java.math.BigInteger}.
+
+\begin{itemize}
+\item To turn an \texttt{int} or \texttt{long} into a
+  \texttt{BigInteger}, use \texttt{BigInteger.valueOf}.
+\item \texttt{BigInteger} also provides the constants
+  \texttt{BigInteger.ZERO}, \texttt{.ONE}, \texttt{.TWO}, and
+  \texttt{.TEN}.
+\item To do arithmetic, use methods such as \texttt{add},
+  \texttt{subtract}, and \texttt{multiply}, which all return their
+  result as a new \texttt{BigInteger}:
+  \begin{minted}{java}
+    BigInteger a = ...
+    BigInteger b = ...
+    BigInteger c = a.add(b.multiply(BigInteger.TEN));  // c = a + b*10
+  \end{minted}
+\item \texttt{BigInteger} can occasionally be useful in scenarios
+  other than representing large numbers, because of its useful utility
+  methods such as \texttt{gcd} and its ability to convert between
+  different bases.
+\end{itemize}
 
 \section{Sorting}
 \label{sec:sorting}
 
-\todo{Basic template for implementing Comparable}
-\todo{Arrays.sort, Collections.sort}
-\todo{Sorting with a custom \texttt{Comparator}}
-\subsection*{Explicit sorting algorithms}
-\todo{Include code for basic sorting implementations (in case it's
-  useful to code them up explicitly so they can be enhanced with extra
-  info): bubble sort, insertion sort?, mergesort?, quicksort?)}
-\subsection*{Radix sort}
-\label{sec:radix-sort}
-\todo{radix sort}
+\begin{itemize}
+\item You can sort an array using \texttt{Arrays.sort(array)}.
+\item You can sort a list-like collection (such as an
+  \texttt{ArrayList}) using \texttt{Collections.sort(list)}.
+\item These \texttt{sort} methods also take an optional
+  \fulllink{sec:comparator}.
+\end{itemize}
 
-\section{BitSet} \label{sec:bitset}
+You should rarely, if ever, have to code your own sorting algorithms;
+the exception is when you need to \emph{enhance} a sorting algorithm
+to keep track of some extra information while sorting (for example,
+look up the divide-and-conquer algorithm for counting inversions).
 
-\todo{Basic examples of BitSet use.}
+It is relatively common that one needs to sort according to some key,
+but carry along additional information with the keys.  The easiest way
+to do this is to make a small class to contain all the relevant
+information, then implement the \texttt{Comparable} interface.
+\begin{minted}{java}
+class Person implements Comparable<Person> {
+    int age; String name;
+    public Person(int age, String name) { this.age = age; this.name = name; }
+    int compareTo(Person p) { return this.age - p.age; }
+}
 
-\kattis{primesieve}
+ArrayList<Person> people = ...
+Collections.sort(people);  // sort by age, carrying names along too
+\end{minted}
 
 \section{Fast I/O} \label{sec:fastio}
+
+\kattis{avoidland, cd}
 
 Typically ACM ICPC problems are designed so \texttt{Scanner} and
 \texttt{System.out.println} are fast enough to read and write the
@@ -659,8 +690,6 @@ relatively slow since they are unbuffered (every single read and write
 happens immediately).  Occasionally it can be useful to have faster
 I/O; indeed, a few problems on Kattis cannot be solved in Java without
 using this.
-
-\kattis{avoidland, cd}
 
 \begin{warning}
   Be sure to call \texttt{flush()} at the end of your program
@@ -692,12 +721,15 @@ input in Python:
 
 Java has a \texttt{Pair} class in \texttt{javafx.util.Pair}, but one
 can't necessarily assume that this will be available in a contest
-environment.  Creating a simple class to store two values together is
-easy enough, but if one wants to use pairs as keys or values in a set
-or map structure then it's necessary to also implement
-\texttt{Comparable} and \texttt{hashCode}.
+environment.  The following simple class suffices to store pairs of
+values, which is especially useful in representing \eg coordinates in
+a 2D grid.  Note in a competitive programming context we don't bother
+adding getter and setter methods; the \texttt{a} and
+\texttt{b} fields are public so we can just access them directly.
 
-\todo{make a little Pair class, comparable and hashable}
+\code{data-structures/Pair.java}
+
+\todo{Comparable pairs?}
 
 \section{Bag}
 
@@ -755,12 +787,15 @@ recurses down the trie, but it is sufficient for some problems.
 
 \code{data-structures/Trie.java}
 
-Tries are intimately connected with MSD \fulllink{sec:radix-sort},
-which can be thought of as equivalent to building a trie and then
-traversing it in order.  However, no implementation of radix sort
-actually builds an intermediate trie.  Sometimes it is helpful to
-think about a problem in terms of a trie, but never actually
-implement/materialize the trie at all (\inlinekattis{herkabe}).
+Tries are intimately connected with MSD radix sort, which can be
+thought of as equivalent to building a trie and then traversing it in
+order.  However, no implementation of radix sort actually builds an
+intermediate trie.  Sometimes it can be helpful to think about a
+problem in terms of a trie, but never actually implement/materialize
+the trie at all (\inlinekattis{herkabe}): just do a modified radix
+sort, first grouping strings by their first character, then recursing
+on each group, keeping track of needed auxiliary information
+(\eg depth) along the way.
 
 \section{Adjustable priority queue}
 \label{sec:adj-pq}
@@ -794,9 +829,9 @@ See \fulllink{sec:range-queries}.
 
 \section{Complete search}
 
-\kattis{bing, classpicture, coloring, dancerecital, lektira, freefood, gepetto,
-  kastenlauf, mjehuric, paintings, prozor, rectanglesurrounding,
-  reducedidnumbers, reseto, sheldon, shuffling,
+\kattis{bing, classpicture, coloring, cycleseasy, dancerecital,
+  lektira, freefood, gepetto, kastenlauf, mjehuric, paintings, prozor,
+  rectanglesurrounding, reducedidnumbers, reseto, sheldon, shuffling,
   weakvertices, wheels, transportationplanning}
 
 See CP3 for a fuller discussion of complete search, aka brute force,
@@ -1315,6 +1350,7 @@ $O(E \sqrt{V})$.
   Turn each vertex into a new edge.}
 
 \chapter{Dynamic Programming}
+\label{chap:dyn-prog}
 
 \kattis{balanceddiet, drivinglanes, walkforest}
 
@@ -1328,7 +1364,7 @@ $O(E \sqrt{V})$.
 
 \kattis{increasingsubsequence,longincsubseq,manhattanmornings,signals}
 
-A \emph{subsequence} of a sequence is a subset of elements, taken in
+A \emph{subsequence} of a sequence is a subset of the elements, taken in
 order, but not necessarily contiguous.  (By contrast, a contiguous
 subset of elements is often referred to as a \emph{subinterval}.)  For
 example, $[1, 3, 4, 7]$ is a subsequence of
@@ -1341,13 +1377,13 @@ $[2, 5, 16]$, but it is not the longest.  There are several increasing
 subsequences of length $4$, such as $[2,8,10,16]$, and it turns out
 that this is the longest possible.
 
-Conceptually, to compute the LIS of a sequence, we build a
+Conceptually, to compute the LIS of a sequence, we first build a
 \emph{downravel}, a set of nonincreasing subsequences which partition
-the original sequence.  We keep these subsequences as a list of stacks, and
-maintain the invariant that their top elements are always
+the original sequence.  We keep these subsequences as a list of
+stacks, and maintain the invariant that their top elements are always
 sorted from smallest to biggest.  We iterate through the elements of
-$S$ in order, and push each onto the leftmost possible stack whose top
-is $\geq$ the element being added.
+$S$ and push each onto the leftmost possible stack whose top is
+$\geq$ the element being added.
 
 \begin{center}
   \begin{minipage}{0.8\textwidth}
@@ -1373,10 +1409,10 @@ is $\geq$ the element being added.
   \end{minipage}
 \end{center}
 
-XXX picture(s)?
+\todo{add some pictures?}
 
 The length of the LIS is the same as the length of the downravel $D$.
-Naively, this runs in $O(n^2)$ time, since for each of the the $n$
+Na\"ively, this runs in $O(n^2)$ time, since for each of the the $n$
 elements in $S$, we have to search through up to $O(n)$ stacks in $D$
 to find the right one to push.  However, there are several possible
 optimizations.
@@ -1392,8 +1428,8 @@ optimizations.
   respectable $O(n \lg n)$.
 \end{itemize}
 
-What if we want not just the \emph{length} of the LIS but the LIS
-itself?
+Of course, we might want not just the \emph{length} of the LIS but an
+actual LIS itself.
 
 \begin{itemize}
 \item First of all, we need to modify $D$ so it stores not the elements
@@ -1411,11 +1447,36 @@ itself?
   to get each previous item.  This yields a LIS in reverse order.
 \end{itemize}
 
-XXX example, pictures
+\todo{include some examples and pictures}
 
-XXX Java code
+\code{sequence/LISCompact.java}
 
-\section{Longest Common Subsequence (LCS)}
+\section{Longest Common Subsequence (LCS) via LIS}
+\kattis{inflagrantedelicto, princeandprincess}
+
+Given two sequences, the \emph{longest common subsequence} (LCS)
+problem is to find the longest sequence which is a subsequence of
+both. This comes up in quite a few real-world applications including
+DNA processing and diffing (\emph{i.e.} what Github does when it shows you
+which lines have changed).
+
+Most generally, the LCS of two sequences with lengths $m$ and $n$ can
+be computed via \fulllink{chap:dyn-prog} in $O(mn)$ time.  However, in
+the special case that the sequences do not have too many repeated
+elements, it is possible to solve it more quickly, as follows.
+
+Suppose the sequences are called $A$ and $B$.
+\begin{itemize}
+\item Construct all pairs of indices $(i,j)$ such that $A[i] = B[j]$,
+  that is, all pairs of locations where $A$ and $B$ agree.
+\item Sort these pairs lexicographically, that is, sort them first by
+  $i$ and break ties by $j$.
+\item Now make an array consisting of just the $j$ values from these
+  sorted pairs.
+\item A longest increasing subsequence in this array of $j$ values
+  gives the length of a LCS of $A$ and $B$.  (Exercise for the reader:
+  why does this work?)
+\end{itemize}
 
 \section{Z-algorithm}
 
@@ -1666,7 +1727,7 @@ bigger than the lookup table.
 
 \chapter{Bit Tricks} \label{chap:bittricks}
 
-\kattis{bits, classpicture, flipfive, font, gepetto, hypercube, mazemakers,
+\kattis{bits, classpicture, data, flipfive, font, gepetto, hypercube, mazemakers,
   pagelayout, pebblesolitaire, satisfiability, turningtrominos}
 
 \texttt{int} values are represented as a sequence of 32 bits;
@@ -1749,6 +1810,7 @@ Java has built-in operators to manipulate values at the bit level:
   counter.}
 
 \todo{LSB, LSZ, MSB, pop count, iterating through sub-subsets}
+\url{https://cp-algorithms.com/algebra/all-submasks.html}
 
 \todo{BitSet instead of array of booleans.}
 
@@ -1768,12 +1830,14 @@ See also list of formulas.
   area (parallelogram, triangle, Heron's formula), polygon area,
   right/left turn, inside/outside testing.}  \todo{Lines/rays (point +
   vector).  Line intersection. Segment intersection. Closest point on
-  a line/segment. Point/line distance.}
+  a line/segment. Point/line distance.} \todo{law of cosines.}
 % -- Distance from point p to line defined by p1, p2 is absolute value
 % -- of parallelogram area defined by p, p1, p2 divided by distance
 % -- between p1, p2.  Proof: rearrange triangle area formula A = bh/2 to
 % -- solve for h.
 \todo{Convex hull.}
+
+\url{https://codeforces.com/blog/entry/48868}
 
 \chapter{Miscellaneous}
 
