@@ -1310,6 +1310,112 @@ few.
 
 \section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
 
+\kattis{crosscountry, allpairspath, shoppingmalls, transportationplanning, units}
+
+The \emph{all-pairs shortest path} problem is to find the shortest
+path in a (directed, weighted) graph between \emph{any} pair of
+vertices.  Typically the idea is to precompute some table(s)
+and then be able to quickly look up any pair of vertices to find the
+distance between them.  This could be done by running \emph{e.g.}
+Dijkstra's algorithm once from every vertex, but that takes at least
+$O(VE \log V)$ (which is $O(V^3 \log V)$ for a dense graph) and
+doesn't work if there are negative edge weights. The Floyd-Warshall
+algorithm runs in $O(V^3)$ no matter how many edges there, can
+handle negative edge weights, and is just a few lines of code.
+
+Note this only works when $|V|$ is small enough for a cubic algorithm
+to fit in the time limits, typically something like $|V| \leq 400$,
+though I have seen examples with $|V|$ even up to $1000$ that work.
+Each individual loop of Floyd-Warshall is only a few operations so the
+constant factor is very small.
+
+Assume the vertices in $G$ are labelled $\{0, \dots, n-1\}$.  Create a
+2D matrix of distances $d$ and initialize it like so:
+\[ d[i][j] =
+  \begin{cases}
+    0      & \text{if $i = j$} \\
+    w_{ij} & \text{if there is an edge $i \to j$} \\
+    \infty & \text{otherwise}
+  \end{cases}
+\]
+If there can be multiple edges from $i$ to $j$, be sure to set
+$d[i][j]$ to the \emph{minimum} of all the edge weights. In practice,
+for $\infty$, just use a value that is much larger than any other
+values that could occur in the problem.
+
+Then the Floyd-Warshall algorithm is as follows.  We iterate $k$ from
+$0$ to $n-1$; $k$ represents the intermediate vertex we will consider.
+Then for every possible pair of vertices $u$ and $v$, we check if
+there is a way to get from $u$ to $k$ and a way to get from $k$ to
+$v$, and the sum of these distances is less than the current shortest
+distance from $u$ to $v$.  If so, we update it.
+
+\begin{minted}{java}
+for (int k = 0; k < n; k++)
+  for (int u = 0; u < n; u++)
+    for (int v = 0; v < n; v++)
+      if (d[u][k] < INF && d[k][v] < INF)
+        d[u][v] = Math.min(d[u][v], d[u][k] + d[k][v]);
+\end{minted}
+
+After running the above loops, $d[i][j]$ will contain the length of
+the shortest path from $i$ to $j$.  If there is no path from $i$ to
+$j$ then the length will be $\infty$.  Analyzing the running time of
+this algorithm is a Data Structures student's dream: there are
+literally three nested loops which each iterate $|V|$ times, so the
+running time is $O(V^3)$.
+
+Variants:
+
+\begin{itemize}
+\item If you want to detect the presence of negative cycles, you can
+  use the fact that after running the main algorithm, $d[i][i] < 0$ if
+  and only if vertex $i$ is contained in some negative cycle.  Hence
+  if there are no negative numbers along the diagonal of the matrix,
+  the graph is negative-cycle-free.  However, if there are
+  negative cycles then the distances found may not be valid (if there
+  is a negative cycle along a path from $u$ to $v$ then one could travel
+  around the cycle any number of times before finally going to $v$).
+
+\item If you actually want to distinguish negative-cycle-free paths
+  (for which the computed minimum distance is valid) from others, you
+  can run the following additional code, which propagates information
+  about negative cycles:
+
+  \begin{minted}{java}
+    for (int u = 0; u < n; u++)
+      for (int v = 0; v < n; v++)
+        for (int k = 0; d[u][v] != -INF && k < n; k++)
+          if (d[u][k] < INF && d[k][k] < 0 && d[k][v] < INF)
+            d[u][v] = -INF;
+  \end{minted}
+
+  For each pair of vertices $u, v$, we check all possible intermediate
+  nodes $k$. If there is a path $u \to k$ and a path $k \to v$,
+  and $k$ is part of some negative cycle, then we set the distance
+  from $u$ to $v$ to $-\infty$ to signify that the length of a path
+  from $u$ to $v$ can be arbitrarily small.
+
+\item Sometimes you want to know not only the \emph{length} of the
+  shortest path, but the actual shortest path itself.  This can be
+  accomplished by keeping a 2D array $\mathit{next}$ such that
+  $\mathit{next}[i][j]$ stores the next vertex along the shortest path
+  from $i$ to $j$.  Initialize $\mathit{next}[i][j]$ to $j$ whenever
+  there is an edge from $i$ to $j$ (it does not matter what value it
+  has otherwise).  Then update the \texttt{if} statement in the inner
+  loop as follows:
+  \begin{minted}{java}
+    if (d[u][k] < INF && d[k][v] < INF && d[u][k] + d[k][v] < d[u][v]) {
+      d[u][v] = d[u][k] + d[k][v];
+      next[u][v] = next[u][k];
+    }
+  \end{minted}
+  Now after running the algorithm, the shortest path from $u$ to $v$
+  can be recovered by looking up $u_2 = \mathit{next}[u][v]$, then
+  $u_3 = \mathit{next}[u_2][v]$, and so on, until $v$ is reached.
+
+\end{itemize}
+
 \section{Min spanning trees (Kruskal)} \label{sec:kruskal}
 
 \kattis{drivingrange, islandhopping, jurassicjigsaw, lostmap, minspantree, treehouses}
