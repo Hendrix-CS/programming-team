@@ -681,7 +681,7 @@ Collections.sort(people);  // sort by age, carrying names along too
 
 \section{Fast I/O} \label{sec:fastio}
 
-\kattis{avoidland, cd}
+\kattis{avoidland, cd, ozljeda}
 
 Typically ACM ICPC problems are designed so \texttt{Scanner} and
 \texttt{System.out.println} are fast enough to read and write the
@@ -729,7 +729,12 @@ adding getter and setter methods; the \texttt{a} and
 
 \code{data-structures/Pair.java}
 
-\todo{Comparable pairs?}
+Below is a variant which implements the \texttt{Comparable}
+interface. \texttt{CPair} objects sort in lexicographic order: first
+by the first component, and then ties in the first component are
+broken by the second component.
+
+\code{data-structures/CPair.java}
 
 \section{Bag}
 
@@ -888,7 +893,7 @@ answer, it's worth considering whether you can binary search for it.
 \subsection*{Binary search on an integer interval}
 \label{sec:unbounded-binary-search}
 
-\kattis{guess, freeweights, inversefactorial, reservoir}
+\kattis{guess, eko, freeweights, inversefactorial, reservoir}
 
 Suppose we again have a function $f$ and want to find a value $n$ such
 that $f(n)$ is equal to some target value $t$---except that $f$ is defined
@@ -1197,7 +1202,7 @@ this yields a topsort in reverse order.
 
 \section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
 
-\kattis{bigtruck, blockcrusher, george, getshorty, kitchen,
+\kattis{bigtruck, blockcrusher, coffeedate, george, getshorty, kitchen,
   shortestpath1, shortestpath2, showroom, walkway}
 
 Dijkstra's algorithm is the standard algorithm for solving the
@@ -1297,6 +1302,10 @@ few.
   equal in weight to the previous best-known path; reset the count
   when finding a shorter path than previously known
   (\inlinekattis{visualgo}).
+\item Dijkstra can also deal with edges whose weight depends on the
+  time they are reached (think of \emph{e.g.} bus routes, where you
+  may have to wait a while for the next bus to come depending on what
+  time you reach the stop). (\inlinekattis{coffeedate})
 \end{itemize}
 
 \section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
@@ -1803,16 +1812,84 @@ Java has built-in operators to manipulate values at the bit level:
   on the left regardless of the initial bit of $n$.
 \end{itemize}
 
-\subsection*{Bit strings for states}
+Out of these basic operators XXX
 
-\todo{Using bitstrings to compactly represent sets/states/adjacent
-  neighbors.  Building a set, iterating through all subsets with
-  counter.}
+\begin{itemize}
+\item To iterate through all possible subsets of an $n$-element set
+  (represented by an $n$-bit mask), just use a counter:
+\begin{minted}{java}
+  for (int S = 0; S < (1 << n); S++) {
+      // process subset S
+  }
+\end{minted}
+As the value of $S$ progresses from $0$ through $2^n - 1$, it will
+take on every possible pattern of $n$ bits.
 
-\todo{LSB, LSZ, MSB, pop count, iterating through sub-subsets}
+\item To check whether a particular bit is turned on, mask out
+  everything except that particular bit and check whether the result
+  is $0$.  For example, to check whether bit $j$ is set to $1$ in $S$:
+\begin{minted}{java}
+  if ((S & (1 << j)) != 0) ...
+\end{minted}
+  Be careful: the precedence of \verb|&| is actually lower than that of
+  \verb|!=|, so you need a bunch of parentheses.
+
+\item The \emph{least significant bit} (LSB) of a value \texttt{S} can
+  be extracted using the expression \verb|S & (-S)|.  The result is a
+  value with only a single bit set, corresponding to the LSB of $S$.
+  For example, if $S = 10001011000$, then \verb|S & (-S)| will be
+  $00000001000$.  It's worth taking a minute to convince yourself that
+  this works, keeping in mind that to negate a value in $2$'s
+  complement representation, you invert all the bits and then add one.
+
+  One way this can be used is when iterating over all subsets of a
+  set: for each subset, instead of iterating over all elements and
+  checking whether each one is in the subset, one can quickly iterate
+  through only the elements which are actually in the subset.  In some
+  cases this can yield a big constant-factor speedup.
+  \begin{minted}{java}
+    for (int S = 0; S < (1 << n); S++) {
+        int T = S;  // Save a copy of current subset S into T
+
+        // Iterate through all elements of T
+        while (T != 0) {
+            int X = T & (-T);  // Find last element X of T
+            ...                // process X
+            T ^= X;            // Remove X to move on to the next element
+        }
+    }
+  \end{minted}
+
+  Another place this technique is used is in the implementation of
+  Fenwick trees \link{sec:fenwick}.
+
+\item The \emph{least significant zero} (LSZ) can be computed by first
+  inverting all the bits, then finding the LSB.
+
+\item There is no quick way to compute the \emph{most significant bit}
+  (MSB), which amounts to finding the logarithm base 2 (rounded down).
+  The simplest is to keep shifting right until reaching 1, keeping a
+  count of the number of shifts required.
+
+\item The \emph{popcount} operation counts the number of 1 bits in a
+  number, and sometimes comes in useful (\inlinekattis{bits,
+    iboard, enviousexponents, pebblesolitaire}).  It can be accessed
+  via the \texttt{Long.bitCount(...)} or
+  \texttt{Integer.bitCount(...)} functions.  Note that processors
+  typically have a special popcount instruction, so this should be
+  very fast---certainly much faster than manually looping through the
+  bits of a number and counting how many are set to 1.
+
+\item Iterating through all the sub-subsets of a subset
+  \url{https://cp-algorithms.com/algebra/all-submasks.html}
+\end{itemize}
+
+\todo{iterating through sub-subsets}
 \url{https://cp-algorithms.com/algebra/all-submasks.html}
 
 \todo{BitSet instead of array of booleans.}
+
+\kattis{ith}
 
 \chapter{Geometry} \label{chap:geometry}
 
@@ -2043,7 +2120,7 @@ exercise to solve it using the above approach.
 \todo{Include link to discussion in CP3}
 
 \subsection{Fenwick trees (inverse required; $O(\lg n)$ queries;
-  $O(\lg n)$ updates)}
+  $O(\lg n)$ updates)} \label{sec:fenwick}
 
 \kattis{fenwick, supercomputer, turbo, moviecollection, dailydivision}
 
@@ -2147,6 +2224,7 @@ inclusion in this document.)
 \item Exact Set Cover with Algorithm X/dancing links (\inlinekattis{programmingteamselection})
 \item Matrix powers
   \kattis{diceandladders,driving,linearrecurrence,mortgage,overlappingmaps,squawk,timing}
+\item Markov chains \kattis{lostinthewoods,gruesomecave}
 \item Min cost max flow
 \item Max flow with minimum and maximum capacities
 \item Discrete logarithms with baby step/giant step
