@@ -1122,7 +1122,7 @@ comes before $v$ in the list; $G$ has a topological sort if and only
 if it is acyclic.  Topological sorting can thus be used to detect the
 presence of cycles. It is also often used in conjunction with dynamic
 programming (\inlinekattis{eatingeverything, excavatorexpedition,
-  mravi}): if we need to compute some value each vertex
+  mravi}): if we need to compute some value of each vertex
 such that the value can be computed once we already know the values
 for all the outgoing (or incoming) neighbors, topological sort gives
 us the right order for computing the values.
@@ -1362,7 +1362,7 @@ After running the above loops, $d[i][j]$ will contain the length of
 the shortest path from $i$ to $j$.  If there is no path from $i$ to
 $j$ then the length will be $\infty$.  Analyzing the running time of
 this algorithm is a Data Structures student's dream: there are
-literally three nested loops which each iterate $|V|$ times, so the
+literally three nested loops which each iterate exactly $|V|$ times, so the
 running time is $O(V^3)$.
 
 Variants:
@@ -1378,9 +1378,9 @@ Variants:
   around the cycle any number of times before finally going to $v$).
 
 \item If you actually want to distinguish negative-cycle-free paths
-  (for which the computed minimum distance is valid) from others, you
-  can run the following additional code, which propagates information
-  about negative cycles:
+  (for which the computed minimum distance is valid) from others
+  (\inlinekattis{allpairspath}), you can run the following additional
+  code, which propagates information about negative cycles:
 
   \begin{minted}{java}
     for (int u = 0; u < n; u++)
