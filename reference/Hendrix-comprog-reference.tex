@@ -263,7 +263,7 @@ sequences of characters.  Some useful \texttt{String} methods include:
 \item \texttt{charAt(i)} yields the \texttt{char} at index \texttt{i}.
 \item \texttt{toCharArray()} converts to a \texttt{char[]}, which can
   be convenient if you need to do a lot of indexing (\texttt{[i]}
-  instead of \texttt{charAt(i)})
+  instead of \texttt{charAt(i)}).
 \item \texttt{split(String)} splits a string into a \texttt{String[]}
   of pieces between occurrences of the splitting string.
 \item \texttt{endsWith(String)}, \texttt{startsWith(String)},
@@ -421,7 +421,18 @@ Queues are very commonly used in implementing \fulllink{sec:bfs} and
 in simulations of various sorts (for examples of the latter, see the
 selection of problems above).
 
-\todo{Sample code using \texttt{Queue}/\texttt{ArrayDeque}}
+As a simple example of the syntax for creating and using a queue, the
+below code puts the numbers 1 through 10 in a queue and then extracts
+them to print them out in the same order.
+\begin{minted}{java}
+Queue<Integer> q = new ArrayDeque<>();
+for (int i = 1; i <= 10; i++) {
+  q.add(i);
+}
+while (!q.isEmpty()) {
+  System.out.println(q.remove());
+}o
+\end{minted}
 
 \section{Comparator}
 \label{sec:comparator}
@@ -466,9 +477,9 @@ any situation where we need to do an ``online sort'', that is, we need
 to get items in order from smallest to biggest, but more items may
 continue to arrive/be generated as we go.
 
-Methods you should \emph{not} use with \texttt{PriorityQueue} include
-\texttt{remove(Object)} and \texttt{contains(Object)}, which take
-linear time.
+Methods you should generally \emph{not} use with
+\texttt{PriorityQueue} include \texttt{remove(Object)} and
+\texttt{contains(Object)}, which take linear time.
 
 The default constructor makes an empty min-PQ.  If you want to use a
 different ordering, there is another constructor which takes a
@@ -484,6 +495,9 @@ different ordering, there is another constructor which takes a
   \begin{minted}{java}
     PriorityQueue<Integer> pq = new PriorityQueue<>((a,b) -> dist[a] - dist[b]);
   \end{minted}
+  Code like the above is used in Dijkstra's algorithm where we want to
+  compare vertices by their best recorded distance from the start
+  vertex.
 \end{itemize}
 
 Traditional presentations of priority queues often have a
@@ -518,7 +532,8 @@ There are two main classes implementing \texttt{Set}:
 \item \javadoc{util}{TreeSet} is implemented using a balanced binary
   tree (a red-black tree, in fact), and supports \texttt{add},
   \texttt{remove}, and \texttt{contains} in guaranteed $O(\lg n)$
-  time.  However, it has several other advantages over a \texttt{HashSet}:
+  time.  Of course this is slower than \texttt{HashSet}; however,
+  \texttt{TreeSet} has several other advantages:
   \begin{itemize}
   \item Since the elements are stored in order in the tree, iterating
     over a \texttt{TreeSet} is guaranteed to yield the items in order
@@ -625,8 +640,9 @@ faster in theory but a factor of $\lg n$ is not that much, and
 \kattis{basicremains}
 
 \javadoc{math}{BigInteger} represents arbitrarily large integer
-values, though it's not actually needed all that often You can import
-it as \texttt{java.math.BigInteger}.
+values, though it's not actually needed all that often. You can import
+it as \texttt{java.math.BigInteger}.  For combinatorics problems where
+the answer is going to be a big number, consider using Python instead.
 
 \begin{itemize}
 \item To turn an \texttt{int} or \texttt{long} into a
@@ -681,7 +697,7 @@ Collections.sort(people);  // sort by age, carrying names along too
 
 \section{Fast I/O} \label{sec:fastio}
 
-\kattis{avoidland, cd, ozljeda}
+\kattis{avoidland, cd, minspantree, ozljeda}
 
 Typically ACM ICPC problems are designed so \texttt{Scanner} and
 \texttt{System.out.println} are fast enough to read and write the
@@ -758,6 +774,7 @@ to make a practical difference.
 \code{data-structures/TreeBag.java}
 
 \section{Union-find}
+\label{sec:union-find}
 
 \kattis{forestfires, kastenlauf, ladice, numbersetseasy, unionfind, virtualfriends,
   watersheds, wheresmyinternet}
@@ -888,24 +905,25 @@ description, but sometimes the thing being searched for is more
 subtle.  Whenever a problem asks for a floating-point number as the
 answer, it's worth considering whether you can binary search for it.
 
-\todo{Example code?}
-
 \subsection*{Binary search on an integer interval}
 \label{sec:unbounded-binary-search}
 
 \kattis{guess, eko, freeweights, inversefactorial, reservoir}
 
-Suppose we again have a function $f$ and want to find a value $n$ such
-that $f(n)$ is equal to some target value $t$---except that $f$ is defined
-on the \emph{integers} instead of the real numbers.  We can again use
-binary search---but we have to be much more careful about potential
-off-by-one errors.
+Suppose we again have a monotonic function $f$ and want to find a
+value $n$ such that $f(n)$ is equal to some target value $t$---except
+that $f$ is defined on the \emph{integers} instead of the real
+numbers.  We can again use binary search, but we have to be much more
+careful about potential off-by-one errors.
 
 \newcommand{\vlo}{\mathit{lo}}
 \newcommand{\vhi}{\mathit{hi}}
 \newcommand{\vmid}{\mathit{mid}}
 
 \begin{itemize}
+\item Remember that to do binary search \emph{in a sorted array} $a$,
+  that is, find the index $i$ such that $a[i]$ is equal to some target
+  value, one can just use \texttt{Arrays.binarySearch}.
 \item In the basic version, we simply want to find $n$ such that
   $f(n) = t$, or report that no such $n$ exists.  In this case it
   works well to use a half-open interval, that is, we maintain the
@@ -953,6 +971,13 @@ Consider the following problem: given an increasing function $f$ and a
 target value $t$, find the smallest positive value of $x$ such that
 $f(x) \geq t$. (The domain of $f$ can be either the reals or the
 integers.)
+
+The idea is to start by finding an appropriate upper bound using
+repeated doubling: starting at $u = 1$, evaluate $f(u)$; if it is less
+than $t$, double $u$ and repeat.  Keep doubling $u$ until finding the
+first such value of $u$ (that is, the first power of two) such that
+$f(u) \geq t$.  Then do a traditional binary search on the range
+$[1,u]$.
 
 \todo{Find some example Kattis problems that need an initial unbounded
   search?}
@@ -1420,11 +1445,63 @@ Variants:
 
 \kattis{drivingrange, islandhopping, jurassicjigsaw, lostmap, minspantree, treehouses}
 
-\todo{Create a union-find; sort all the edges by size; for each edge
-  smallest to largest, pick it and connect its endpoints if they
-  aren't already connected.}
+Kruskal's algorithm is the go-to algorithm for computing a minimum
+spanning tree (MST).  It is relatively straightforward to code, given
+an implementation of a \fulllink{sec:union-find} data structure.
+
+\begin{itemize}
+\item Create an initial union-find structure \texttt{uf} with one entry
+  corresponding to each vertex.
+\item Sort the edges of the graph by weight.  Typically, one makes a
+  small \texttt{class} to store an edge (it may store \emph{e.g.} the
+  two endpoints of the edge and its weight), which implements
+  \texttt{Comparable} in such a way that \texttt{compareTo} compares
+  the weights.  Then one can simply make an \texttt{ArrayList} of edge
+  objects and call \texttt{Collections.sort} on it.
+\item Iterate through the edges from smallest to largest weight.
+\item For each edge, check whether its endpoints are already connected
+  (\texttt{uf.find(x) == uf.find(y)}).  If not, connect them
+  (\texttt{uf.union(x,y)}) and add the edge to the MST.  (If so,
+  discard the edge and move on to the next.)
+\item Stop as soon as the number of chosen edges is one less than the
+  number of vertices.
+\end{itemize}
+
+Given an efficient union-find implementation, the running time is
+dominated by the time to sort the edges, $O(E \lg E)$.
+
+An example solution for \inlinekattis{minspantree} is shown in Figure~\ref{fig:minspantree}.
+\begin{figure}
+  \small
+  \code{graph/MinSpanTree.java}
+  \caption{Sample solution for minspantree} \label{fig:minspantree}
+\end{figure}
 
 \section{Eulerian paths} \label{sec:eulerian-path}
+
+\kattis{railroad2, eulerianpath, catenyms}
+
+An \term{Eulerian path} is one which traverses every edge exactly once
+(but may visit vertices multiple times).  An \term{Eulerian circuit}
+is an Eulerian path which starts and ends at the same vertex.
+
+Checking whether an Eulerian path/circuit \emph{exists} is simple:
+
+\begin{itemize}
+\item An undirected graph has an Eulerian path if and only if it is
+  connected and exactly zero or two vertices have odd degree, and all
+  the rest have even degree.  If all vertices have even degree then it
+  the Eulerian path is actually a cycle.
+\item A \emph{directed} graph has an Eulerian path if and only if it
+  is strongly connected, and every vertex has equal in- and
+  out-degrees, except possibly two, one of which must have one more
+  incoming edge than outgoing, and the other has one more outgoing
+  edge than incoming.  If all vertices have equal in- and out-degree
+  then the Eulerian path is actually a cycle.
+\end{itemize}
+
+To \emph{find} an Eulerian path, use Hierholzer's
+Algorithm. \todo{Explain, example code.}
 
 \section{Max flow/min cut}
 
@@ -1437,9 +1514,9 @@ weights (typically integers) are thought of as representing
 possible amount of \emph{flow} which can move through the network
 between given source and sink vertices, subject to the constraints
 that the flow on any edge is no greater than the capacity, and the sum
-of incoming flows equals outgoing flows at every vertex other than the
-source or sink.  Flow networks can be used to model a wide variety of
-problems.
+of incoming flows equals the sum of outgoing flows at every vertex
+other than the source or sink.  Flow networks can be used to model a
+wide variety of problems.
 
 \todo{Enumerate a few problem types: item assignment; max bipartite
   matching; min cut}
