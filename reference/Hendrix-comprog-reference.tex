@@ -1,4 +1,4 @@
-% -*- compile-command: "pdflatex -shell-escape Hendrix-comprog-reference.tex" -*-
+% -*- compile-command: "rubber -d --unsafe Hendrix-comprog-reference.tex" -*-
 
 \documentclass[10pt]{book}
 
@@ -1481,15 +1481,16 @@ An example solution for \inlinekattis{minspantree} is shown in Figure~\ref{fig:m
 
 \kattis{railroad2, eulerianpath, catenyms}
 
-An \term{Eulerian path} is one which traverses every edge exactly once
-(but may visit vertices multiple times).  An \term{Eulerian circuit}
+An \emph{Eulerian path} is one which traverses every edge exactly once
+(but may visit vertices multiple times).  An \emph{Eulerian circuit}
 is an Eulerian path which starts and ends at the same vertex.
 
-Checking whether an Eulerian path/circuit \emph{exists} is simple:
+Checking whether an Eulerian path/circuit \emph{exists}
+(\inlinekattis{railroad2}) is relatively simple:
 
 \begin{itemize}
 \item An undirected graph has an Eulerian path if and only if it is
-  connected and exactly zero or two vertices have odd degree, and all
+  connected, and exactly zero or two vertices have odd degree, and all
   the rest have even degree.  If all vertices have even degree then it
   the Eulerian path is actually a cycle.
 \item A \emph{directed} graph has an Eulerian path if and only if it
@@ -1500,8 +1501,18 @@ Checking whether an Eulerian path/circuit \emph{exists} is simple:
   then the Eulerian path is actually a cycle.
 \end{itemize}
 
-To \emph{find} an Eulerian path, use Hierholzer's
-Algorithm. \todo{Explain, example code.}
+In other words, first check whether the graph is connected using
+\fulllink{sec:dfs} or \fulllink{sec:bfs}.  Then compute the (in/out)
+degrees of every vertex and check how many are even/odd (for
+undirected graphs) or how many have matching in/out degrees (for
+directed).
+
+To \emph{find} an Eulerian path, use Hierholzer's Algorithm. In an
+undirected graph, start at a vertex with odd degree, (or at any vertex
+if there are no odd-degree vertices); in a directed graph, start at
+the vertex whose outdegree is one greater than the indegree (or any
+vertex if all have equal in/out-degree).  \todo{Explain, example
+  code.}
 
 \section{Max flow/min cut}
 
@@ -1515,31 +1526,76 @@ possible amount of \emph{flow} which can move through the network
 between given source and sink vertices, subject to the constraints
 that the flow on any edge is no greater than the capacity, and the sum
 of incoming flows equals the sum of outgoing flows at every vertex
-other than the source or sink.  Flow networks can be used to model a
-wide variety of problems.
+other than the source or sink.
 
-\todo{Enumerate a few problem types: item assignment; max bipartite
-  matching; min cut}
+\subsection{Flow network problem types}
 
-\todo{choose directed/undirected edges carefully!}
+\begin{itemize}
+\item Certain types of problems about optimally assigning items or
+  resources subject to some constraints can be solved by finding a
+  maximum flow in an appropriate flow network
+  (\inlinekattis{escapeplan, gopher2, pianolessons, waif}).
+\item Maximum matchings in a bipartite graph can be found by creating
+  two new virtual nodes, a source node with a connection to every
+  vertex in the left-hand set and a sink node with a connection from
+  every vertex in the right-hand set.  Set all edge capacities to 1;
+  then a maximum flow corresponds to a maximum matching in the graph
+  (\inlinekattis{guardianofdecency, paintball})
+\item A famous theorem asserts that the maximum flow on a network
+  corresponds exactly to the \emph{minimum cut}, which is the minimum
+  ``bottleneck'', \emph{i.e.} the minimum possible sum of capacities
+  of a set of edges that splits the graph into two halves
+  (\inlinekattis{mincut, copsandrobbers}).
+\end{itemize}
 
-\todo{Requires vertices $0 \dots n-1$: either carefully keep track of
-  which numbers are for which vertices, or use lookup tables}
+\subsection{Flow network variants}
 
-Dinitz' Algorithm is probably the best all-around algorithm to use for
+\begin{itemize}
+\item Flow networks must have a single source node and a single sink
+  node.  You can model multiple sources/sinks simply by adding a new
+  virtual source and/or sink node and connecting it to all the
+  source/sink nodes with infinite capacity edges.
+\item To model networks where the \emph{vertices} have capacities,
+  just split each vertex into two vertices with an edge in between
+  them having the given vertex capacity.  All the incoming edges
+  connect to the first new vertex and all the outgoing edges emanate
+  from the second new vertex.
+\item \todo{Minimum-cost max flow: use Edmonds-Karp with Dijkstra?}
+\end{itemize}
+
+\subsection{Dinitz' Algorithm}
+
+Dinitz' Algorithm\footnote{You may also see it spelled ``Dinic's
+  Algorithm'' but this is not the preferred spelling of its inventor,
+  Yefim Dinitz.} is probably the best all-around algorithm to use for
 solving max flow problems in competitive programming.  It takes
 $O(V^2 E)$ in theory (although is often much faster in practice).  In
 the special case where we are modelling a bipartite matching problem,
 Dinitz' Algorithm reduces to the Hopcroft-Karp algorithm which runs in
 $O(E \sqrt{V})$.
 
+Some general guidelines for using the max flow code below:
+\begin{itemize}
+\item Be very careful to decide which edges should be directed and
+  which should be undirected; this makes a big difference, and the
+  code given below requires calling \texttt{addDirEdge} or
+  \texttt{addEdge} appropriately (calling \texttt{addEdge} is
+  \emph{not} the same as calling \texttt{addDirEdge} once in each
+  direction!).
+\item The vertices of the graph must be labelled $0 \dots n-1$.
+  Typically they have some other labels which are specified as part of
+  the problem.  You must carefully keep track of which entities in the
+  problem map to which vertex indices, either via some formulas or
+  using some lookup tables.
+\end{itemize}
+
+
+{\small
 \code{flow/Dinitz.java}
+}
 
 \todo{Include a sample solution using a flow network}
 
-\todo{Variants: Multiple sources/sinks? Use trick of adding a new
-  source/sink with infinite capacity edges. Vertex capacities?
-  Turn each vertex into a new edge.}
 
 \chapter{Dynamic Programming}
 \label{chap:dyn-prog}
@@ -1643,7 +1699,7 @@ actual LIS itself.
 
 \code{sequence/LISCompact.java}
 
-\section{Longest Common Subsequence (LCS) via LIS}
+\section{LCS via LIS}
 \kattis{inflagrantedelicto, princeandprincess}
 
 Given two sequences, the \emph{longest common subsequence} (LCS)
@@ -1846,11 +1902,11 @@ table. Each time we discover a prime $p$ we ``cross out'' all the
 multiples of $p$ in the table; we know a number is prime if it hasn't
 yet been crossed out by the time we get to.  This takes time
 $O(n \log \log n)$ (essentially linear time) to construct a table for
-$1 \dots n$.  The code below uses a \texttt{BitSet} \link{sec:bitset},
-which uses less memory than an array of \texttt{boolean}s. Constructing
-a \texttt{PrimeSieve} of size $10^8$ should take about a second and
-use only about 12 MB of memory; constructing smaller prime sieves
-should be quite fast.  Even a \texttt{PrimeSieve} of size
+$1 \dots n$.  The code below uses a \javadoc{util}{BitSet} which uses less
+memory than an array of \texttt{boolean}s. Constructing a
+\texttt{PrimeSieve} of size $10^8$ should take about a second and use
+only about 12 MB of memory; constructing smaller prime sieves should
+be quite fast.  Even a \texttt{PrimeSieve} of size
 \texttt{Integer.MAX\_VALUE}, \ie $\approx 2 \cdot 10^9$, will fit
 quite easily in memory, although constructing it will probably take
 too long for most contest problems.  (However, there may be occasional
@@ -1995,7 +2051,8 @@ Java has built-in operators to manipulate values at the bit level:
   on the left regardless of the initial bit of $n$.
 \end{itemize}
 
-Out of these basic operators XXX
+Here is a list of some non-obvious but sometimes useful things that
+can be done with bitmasks:
 
 \begin{itemize}
 \item To iterate through all possible subsets of an $n$-element set

@@ -3,7 +3,7 @@ import java.util.*;
 class Edge implements Comparable<Edge> {
     int from, to, weight;
     public Edge(int _from, int _to, int _weight) {
-        if (_from < _to) { from = _from; to = _to; }
+        if (_from < _to) { from = _from; to = _to; }  // problem requires vertices sorted
         else             { from = _to; to = _from; }
         weight = _weight;
     }
@@ -27,7 +27,6 @@ public class MinSpanTree {
 
             // ----- Kruskal's algorithm -----
             Collections.sort(edges);  // sort by weight
-
             UnionFind uf = new UnionFind(n);
             ArrayList<Edge> mstEdges = new ArrayList<Edge>();
 
