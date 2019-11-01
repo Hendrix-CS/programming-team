@@ -1600,7 +1600,7 @@ Some general guidelines for using the max flow code below:
 \chapter{Dynamic Programming}
 \label{chap:dyn-prog}
 
-\kattis{balanceddiet, drivinglanes, walkforest}
+\kattis{balanceddiet, drivinglanes, ticketpricing, walkforest}
 
 \todo{subset sum}
 \todo{knapsack, longest common subsequence}
@@ -1741,7 +1741,7 @@ first.)  It runs in logarithmic time.  The \emph{extended Euclidean
   algorithm} not only finds the GCD $g$ of $a$ and $b$, but also finds
 integers $x$ and $y$ such that $ax + by = g$.
 
-\kattis{fairwarning, jughard, kutevi, candydistribution}
+\kattis{fairwarning, jughard, kutevi, candydistribution, diagonalcut}
 
 \code{math/GCD.java}
 
@@ -1947,27 +1947,92 @@ bigger than the lookup table.
 \kattis{eulersnumber, factstone, howmanydigits, lastfactorialdigit,
   inversefactorial, loworderzeros, factovisors}
 
-\todo{Computing factorials; size using logs, etc.  Divisors of factorial.}
+$n! = 1 \cdot 2 \cdots n$ is the number of ways of arranging $n$ things
+in a sequence.  Computing $n!$ is straightforward with a loop,
+although note that
+\begin{itemize}
+\item $12! = 479001600$ is the largest factorial that fits in a 32-bit
+  \texttt{int}, and
+\item $20! = 2432902008176640000$ is the largest factorial that fits
+  in a 64-bit \texttt{long}.
+\end{itemize}
+
+Note that
+$\log(n!) = \log(1 \cdot 2 \cdots n) = \log 1 + \log 2 + \dots + \log
+n$ which is occasionally handy.  For example, the number of base-10
+digits needed to represent a number $n$ is
+$\lfloor \log_{10} n \rfloor$, so by summing logs instead of computing
+a factorial and then taking the log, you can figure out how many
+digits are in very large factorials even when the numbers themselves
+would not fit in a \texttt{long} (\inlinekattis{howmanydigits}).
 
 \section{Combinatorics} \label{sec:combinatorics}
 
 \kattis{insert, anagramcounting, nine, secretsanta, kingscolors, howmanyzeros}
 
-\todo{Basic principles of combinatorics.  mod $10^9 + 7$. Code for
-  computing binomial coefficients. Multinomial coefficients. Large
-  binomial coefficients modulo a prime (modular inverse factorial
-  tables, Lucas's theorem).}
+Some basic principles of combinatorics:
+\begin{itemize}
+\item If two sets of choices are completely disjoint, add their sizes
+  to get the total number of choices.  For example, the number of
+  subsets of $\{1, \dots, n\}$ is equal to the number of subsets that
+  do contain $3$ plus the number that don't.
+\item If two sets of choices are independent, multiply their sizes to
+  get the total number of combinations.  For example, if we can pick
+  one of five different shirts and independently pick one of seven
+  different hats, we have 35 possible outfit choices.
+\item Often, the answer to a combinatorics problem will be very large,
+  so the problem asks for the answer modulo $10^9 + 7$ (the smallest
+  prime bigger than $10^9$), which fits in a 32-bit \texttt{int}.
+  Since taking remainders commutes with addition and multiplication,
+  just reduce via mod at every step to make sure that the intermediate
+  values never overflow.
+  \begin{warning}
+    Although the \emph{sum} of two values under $10^9 + 7$ will fit in
+    a 32-bit \texttt{int}, their \emph{product} will not.  If you need
+    an answer modulo $10^9 + 7$ but computing the answer involves
+    multiplication, you must use 64-bit (\texttt{long}) values to
+    make sure the intermediate steps do not overflow.
+  \end{warning}
+  For example, to compute $n! \pmod{10^9 + 7}$, make a \texttt{long}
+  accumulator initialized to $1$, and then loop from $1$ to $n$, on
+  each step multiplying by the current index and then taking the
+  remainder mod $10^9 + 7$.
+\end{itemize}
 
-\begin{warning}
-  Remember to use \texttt{long} if you need an answer
-  $\bmod (10^9 + 7)$ (which would fit in an \texttt{int}) but
-  computing the answer requires \emph{multiplying} $\bmod (10^9 + 7)$.
-\end{warning}
+\subsection{Binomial and multinomial coefficients}
+
+The binomial coefficient \[ \binom n k = \binom{n}{n-k} =
+  \frac{n!}{k!(n-k)!} \], aka the $k$th entry in the $n$th row (both
+counting from $0$) of Pascal's triangle, counts the number of ways to
+choose a set of $k$ things out of $n$ possibilities, and can be
+computed using the following code, which works up to $n=60$ (higher
+values of $n$ will cause overflow):
+
+\code[3][12]{math/Combinatorics.java}
+
+Some useful identities:
+\begin{itemize}
+\item $\binom n 0 = \binom n n = 1$ (there is only one way to choose
+  none of the items, or all of the items).
+\item $\binom n k = \binom{n-1}{k} + \binom{n-1}{k-1}$
+\end{itemize}
+
+The \emph{multinomial} coefficient \[ \binom{n}{k_1 \; k_2 \; \dots \;
+  k_l} = \frac{n!}{k_1!k_2! \cdots k_l!}, \] where $n = k_1 + k_2 +
+\dots + k_l$, represents the number of ways of partitioning a set of
+$n$ things into groups of sizes $k_1, k_2, \dots, k_l$.  Note that the
+usual binomial coefficient $\binom n k$ can be thought of as the
+multinomial coefficient $\binom{n}{k \; (n-k)}$.
+
+\todo{Computing multinomial coefficients.}
+
+\todo{Large binomial coefficients modulo a prime (modular inverse
+  factorial tables, Lucas's theorem).}
 
 \todo{Heap's Algorithm for generating all permutations; next
   permutation.  See Bit Tricks for generating all subsets.}
 
-\todo{PIE?}
+\todo{PIE}
 
 \section{Probability}
 
@@ -2457,8 +2522,9 @@ interested!  (And then of course write up what you have learned for
 inclusion in this document.)
 
 \begin{itemize}
-\item Chinese Remainder Theorem \kattis{heliocentric,
-    generalchineseremainder}
+\item Chinese Remainder Theorem (\inlinekattis{heliocentric,
+    generalchineseremainder})
+\item Divisors of $n!$ (\inlinekattis{factovisors})
 \item Gauss-Jordan elimination (\ie row reduction \ie solving linear
   systems) (\inlinekattis{primonimo})
 \item Exact Set Cover with Algorithm X/dancing links (\inlinekattis{programmingteamselection})
@@ -2477,8 +2543,7 @@ inclusion in this document.)
 \item 2-SAT
 \item SAT with DPLL?
 \item LCA queries: Tarjan's OLCA; via RMQ; binary lifting (\inlinekattis{tourists})
-\item Convolutions with Fast Fourier Transform / Number Theoretic
-  Transform (\inlinekattis{tiles, aplusb, kinversions})
+\item Convolutions with FFT/NTT (\inlinekattis{tiles, aplusb, kinversions})
 \end{itemize}
 
 \appendix
@@ -2487,19 +2552,37 @@ inclusion in this document.)
 
 \section{The Alphabet}
 
-\todo{put letter indices}
-
-\subsection{Uppercase}
-
-ABCDEFGHIJKLMNOPQRSTUVWXYZ
-
-\subsection{Lowercase}
-
-abcdefghijklmnopqrstuvwxyz
-
 \section{ASCII}
 
 \section{Primes}
+
+All primes up to 1000: \medskip
+
+\noindent 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73
+79 83 89 97 \\ 101 103 107 109 113 127 131 137 139 149 151 157 163 167
+173 179 181 191 193 197 199 \\ 211 223 227 229 233 239 241 251 257 263
+269 271 277 281 283 293 \\ 307 311 313 317 331 337 347 349 353 359 367
+373 379 383 389 397 \\ 401 409 419 421 431 433 439 443 449 457 461 463
+467 479 487 491 499 \\ 503 509 521 523 541 547 557 563 569 571 577 587
+593 599 \\ 601 607 613 617 619 631 641 643 647 653 659 661 673 677 683
+691 \\ 701 709 719 727 733 739 743 751 757 761 769 773 787 797 \\ 809 811
+821 823 827 829 839 853 857 859 863 877 881 883 887 \\ 907 911 919 929
+937 941 947 953 967 971 977 983 991 997
+
+\section{Pascal's Triangle}
+\label{sec:pascal}
+
+\[
+  \arraycolsep=1.5pt
+  \begin{array}{ccccccccccc}
+    & & & &  &1&  & & & & \\
+    & & & &1 & &1 & & & & \\
+    & & &1&  &2&  &1& & & \\
+    & &1& &3 & &3 & &1& & \\
+    &1& &4&  &6&  &4& &1& \\
+   1& &5& &10& &10& &5& &1 \\
+  \end{array}
+\]
 
 \chapter{Resources} \label{chap:resources}
 
