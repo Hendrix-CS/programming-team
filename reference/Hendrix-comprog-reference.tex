@@ -306,6 +306,13 @@ As a simple example, the below code prints \texttt{02918171615141312111019876543
   System.out.println(sb.reverse());
 \end{minted}
 
+\section{Character}
+
+\kattis{ummcode, softpasswords}
+
+\todo{Useful Character class methods like \texttt{isDigit},
+  \texttt{isAlphabetic}, etc.}
+
 \section{Arrays}
 
 \kattis{falcondive,freefood,traveltheskies}
@@ -695,6 +702,13 @@ ArrayList<Person> people = ...
 Collections.sort(people);  // sort by age, carrying names along too
 \end{minted}
 
+Occasionally, you need to sort an array of items, but also keep track
+of the original index of each item (\inlinekattis{keepitcool}).  To do
+this, you can use a technique like the above, where each object stores
+an item as well as its index in the original list, and sorts according
+to the item.  Then sorting the objects will sort the items, but each
+item carries along its original index.
+
 \section{Fast I/O} \label{sec:fastio}
 
 \kattis{avoidland, cd, minspantree, ozljeda}
@@ -752,17 +766,18 @@ broken by the second component.
 
 \code{data-structures/CPair.java}
 
-\section{Bag}
+\section{Bag/multiset}
 
 \kattis{cookieselection, kattissquest}
 
-A \emph{bag} is a collection of elements where order does not matter
-(like a set) but multiplicity does matter, \ie there can be duplicates
-and we need to keep track of how many duplicates there are of each
-item.  Bags are not needed often but can occasionally be useful.  It
-is not too hard to build a bag as a map from items to integer counts,
-but there are a few corner cases so it's worth copying a well-tested
-implementation instead of writing one from scratch.
+A \emph{bag}, aka \emph{multiset}, is a collection of elements where
+order does not matter (like a set) but multiplicity does matter, \ie
+there can be duplicates and we need to keep track of how many
+duplicates there are of each item.  Bags are not needed often but can
+occasionally be useful.  It is not too hard to build a bag as a map
+from items to integer counts, but there are a few corner cases so it's
+worth copying a well-tested implementation instead of writing one from
+scratch.
 
 The implementation below is based on a \javadoc{util}{TreeMap}
 \link{sec:map}, and hence supports operations like \texttt{first()}
@@ -1031,6 +1046,16 @@ the few remaining items manually.
 \chapter{Graphs}
 
 \section{Graph basics} \label{sec:graph-basics}
+
+\begin{itemize}
+\item Every edge in a \emph{directed} graph has an orientation,
+  \emph{i.e.} a ``from'' vertex and a ``to'' vertex.  Edges in an
+  \emph{undirected} graph have no orientation.
+\item \emph{Simple} graphs have at most one edge between any two
+  vertices, and no self-loops.  Most graph problems feature simple
+  graphs.  Sometimes, however, there can be loop edges from a vertex
+  back to itself and/or multiple edges between the same two vertices.
+\end{itemize}
 
 \todo{Directed, undirected, weighted, unweighted, self loops, multiple edges}
 \todo{characterization of trees}
@@ -2550,9 +2575,9 @@ inclusion in this document.)
 
 \chapter{Reference} \label{chap:reference}
 
-\section{The Alphabet}
+% \section{The Alphabet}
 
-\section{ASCII}
+% \section{ASCII}
 
 \section{Primes}
 
