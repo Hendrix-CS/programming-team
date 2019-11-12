@@ -1526,11 +1526,14 @@ Checking whether an Eulerian path/circuit \emph{exists}
   then the Eulerian path is actually a cycle.
 \end{itemize}
 
-In other words, first check whether the graph is connected using
-\fulllink{sec:dfs} or \fulllink{sec:bfs}.  Then compute the (in/out)
-degrees of every vertex and check how many are even/odd (for
-undirected graphs) or how many have matching in/out degrees (for
-directed).
+\todo{This is not correct.  Need to check if it's weakly connected
+  from start vertex if we want a path not a cycle.}
+\todo{Include sample code for eulerianpath?}
+In other words,
+first check whether the graph is connected using \fulllink{sec:dfs} or
+\fulllink{sec:bfs}.  Then compute the (in/out) degrees of every vertex
+and check how many are even/odd (for undirected graphs) or how many
+have matching in/out degrees (for directed).
 
 To \emph{find} an Eulerian path, use Hierholzer's Algorithm. In an
 undirected graph, start at a vertex with odd degree, (or at any vertex
