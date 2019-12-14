@@ -901,7 +901,8 @@ underlying idea of binary search applies in many more contexts.
 \subsection*{Binary search on a real interval}
 \label{sec:binary-search-real}
 
-\kattis{bottles, cheese, fencebowling, speed, suspensionbridges, tetration}
+\kattis{bottles, cheese, fencebowling, speed, suspensionbridges,
+  tetration, queenspatio}
 
 This is probably the most common form of binary search in competitive
 programming.  Given a function $f$ which is monotonic (\emph{i.e.}
@@ -927,7 +928,8 @@ answer, it's worth considering whether you can binary search for it.
 \subsection*{Binary search on an integer interval}
 \label{sec:unbounded-binary-search}
 
-\kattis{outofsorts, guess, eko, freeweights, inversefactorial, reservoir}
+\kattis{outofsorts, guess, eko, freeweights, inversefactorial,
+  reservoir, pullingtheirweight}
 
 Suppose we again have a monotonic function $f$ and want to find a
 value $n$ such that $f(n)$ is equal to some target value $t$---except
@@ -981,12 +983,15 @@ careful about potential off-by-one errors.
   until the interval has reached size $1$, and then return the sole
   remaining value.
 
+  \todo{Talk about how to find midpoint based on whether we want greatest or least}
   \todo{Example code}
   \todo{if we want \emph{biggest} value satisfying something, need to
     set mid to CEILING of (lo+hi)/2?}
 \end{itemize}
 
 \subsection*{Unbounded binary search}
+
+\kattis{queenspatio}
 
 Consider the following problem: given an increasing function $f$ and a
 target value $t$, find the smallest positive value of $x$ such that
