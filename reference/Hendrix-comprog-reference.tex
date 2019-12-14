@@ -2039,12 +2039,13 @@ Some basic principles of combinatorics:
 
 \subsection{Binomial and multinomial coefficients}
 
-The binomial coefficient \[ \binom n k = \binom{n}{n-k} =
-  \frac{n!}{k!(n-k)!} \], aka the $k$th entry in the $n$th row (both
-counting from $0$) of \fulllink{sec:pascal}, counts the number of ways to
-choose a set of $k$ things out of $n$ possibilities, and can be
-computed using the following code, which works up to $n=60$ (higher
-values of $n$ will cause overflow):
+The binomial coefficient
+\[ \binom n k = \binom{n}{n-k} = \frac{n!}{k!(n-k)!} \] counts the
+number of ways to choose a set of $k$ things out of $n$ possibilities;
+it is the $k$th entry in the $n$th row (both counting from $0$) of
+\fulllink{sec:pascal}.  $\binom n k$ can be computed using the
+following code, which works up to $n=60$ (higher values of $n$ will
+cause overflow):
 
 \code[3][12]{math/Combinatorics.java}
 
@@ -2055,12 +2056,14 @@ Some useful identities:
 \item $\binom n k = \binom{n-1}{k} + \binom{n-1}{k-1}$
 \end{itemize}
 
-The \emph{multinomial} coefficient \[ \binom{n}{k_1 \; k_2 \; \dots \;
-  k_l} = \frac{n!}{k_1!k_2! \cdots k_l!}, \] where $n = k_1 + k_2 +
-\dots + k_l$, represents the number of ways of partitioning a set of
-$n$ things into groups of sizes $k_1, k_2, \dots, k_l$.  Note that the
-usual binomial coefficient $\binom n k$ can be thought of as the
-multinomial coefficient $\binom{n}{k \; (n-k)}$.
+The \emph{multinomial} coefficient
+\[ \binom{n}{k_1 \; k_2 \; \dots \; k_l} = \frac{n!}{k_1!k_2! \cdots
+    k_l!}, \] where $n = k_1 + k_2 + \dots + k_l$, represents the
+number of ways of partitioning a set of $n$ things into
+\emph{distinguished} groups of sizes $k_1, k_2, \dots, k_l$.  Note
+that the usual binomial coefficient $\binom n k$ can be thought of as
+the multinomial coefficient $\binom{n}{k \; (n-k)}$, or more
+symmetrically, as $\binom{n}{a \; b}$ where $a+b = n$.
 
 \todo{Computing multinomial coefficients.}
 
