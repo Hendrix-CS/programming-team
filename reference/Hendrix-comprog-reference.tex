@@ -694,8 +694,8 @@ information, then implement the \texttt{Comparable} interface.
 \begin{minted}{java}
 class Person implements Comparable<Person> {
     int age; String name;
-    public Person(int age, String name) { this.age = age; this.name = name; }
-    int compareTo(Person p) { return this.age - p.age; }
+    public Person(int _age, String _name) { age = _age; name = _name; }
+    int compareTo(Person p) { return age - p.age; }
 }
 
 ArrayList<Person> people = ...
@@ -719,14 +719,15 @@ required input and output within the time limits.  However, these are
 relatively slow since they are unbuffered (every single read and write
 happens immediately).  Occasionally it can be useful to have faster
 I/O; indeed, a few problems on Kattis cannot be solved in Java without
-using this.
+using this. See Figure~\ref{fig:fastio} for a faster drop-in replacement for
+\texttt{Scanner}, adapted from the \texttt{Kattio} class provided by
+Kattis.
 
-\begin{warning}
-  Be sure to call \texttt{flush()} at the end of your program
-  or else some output might be lost!
-\end{warning}
-
-\code{java/Kattio.java}
+\begin{figure}
+  \small
+  \code{java/FastIO.java}
+  \caption{Fast I/O}  \label{fig:fastio}
+\end{figure}
 
 % \todo{Add \texttt{getLine()} method}
 
