@@ -26,6 +26,7 @@ public class AnnotateMD5 {
                 String line = f.nextLine();
                 String sig = md5Sig(line.replaceAll("\\s", ""));
                 System.out.print(line);
+                if (line.equals("")) { System.out.println(); continue; }
                 for (int i = line.length(); i < 80; i++) System.out.print(" ");
                 System.out.println(" // " + sig);
             }
