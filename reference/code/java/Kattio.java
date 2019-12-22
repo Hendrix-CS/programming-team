@@ -25,26 +25,11 @@ class Kattio extends PrintWriter {
         super(new BufferedOutputStream(o));
         r = new BufferedReader(new InputStreamReader(i));
     }
-
-    public boolean hasMoreTokens() {
-        return peekToken() != null;
-    }
-
-    public int getInt() {
-        return Integer.parseInt(nextToken());
-    }
-
-    public double getDouble() {
-        return Double.parseDouble(nextToken());
-    }
-
-    public long getLong() {
-        return Long.parseLong(nextToken());
-    }
-
-    public String getWord() {
-        return nextToken();
-    }
+    public boolean hasMoreTokens() { return peekToken() != null; }
+    public int getInt() { return Integer.parseInt(nextToken()); }
+    public double getDouble() { return Double.parseDouble(nextToken()); }
+    public long getLong() { return Long.parseLong(nextToken()); }
+    public String getWord() { return nextToken(); }
 
     private BufferedReader r;
     private String line;
