@@ -17,10 +17,6 @@ import java.util.*;
 import java.io.*;
 
 class FastIO extends PrintWriter {
-    public FastIO(InputStream i) {
-        super(new BufferedOutputStream(System.out));
-        r = new BufferedReader(new InputStreamReader(i));
-    }
     public FastIO(InputStream i, OutputStream o) {
         super(new BufferedOutputStream(o));
         r = new BufferedReader(new InputStreamReader(i));
@@ -32,9 +28,8 @@ class FastIO extends PrintWriter {
     public String next() { return nextToken(); }
 
     private BufferedReader r;
-    private String line;
+    private String line, token;
     private StringTokenizer st;
-    private String token;
 
     private String peekToken() {
         if (token == null)
@@ -50,8 +45,6 @@ class FastIO extends PrintWriter {
     }
 
     private String nextToken() {
-        String ans = peekToken();
-        token = null;
-        return ans;
+        String ans = peekToken(); token = null; return ans;
     }
 }
