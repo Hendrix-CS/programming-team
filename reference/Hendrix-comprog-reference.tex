@@ -711,7 +711,7 @@ item carries along its original index.
 
 \section{Fast I/O} \label{sec:fastio}
 
-\kattis{avoidland, cd, minspantree, ozljeda}
+\kattis{avoidland, cd, grandpabernie, minspantree, ozljeda}
 
 Typically ACM ICPC problems are designed so \texttt{Scanner} and
 \texttt{System.out.println} are fast enough to read and write the
@@ -867,7 +867,7 @@ See \fulllink{sec:range-queries}.
 
 \todo{Write about these?}
 
-\chapter{Search}
+\chapter{Enumeration and search}
 
 \section{Complete search}
 
@@ -890,6 +890,10 @@ a problem, but the problem is set up so that a subpart can be done via
 complete search, to keep the solution complexity from getting out of
 hand and allowing you to focus your efforts on the more
 ``interesting'' part of the problem.
+
+\todo{Generating all k-subsets with nested loops; generating all
+  subsets with bit vectors; generating all permutations (Heap's
+  algorithm, recursive backtracking)}
 
 \section{Binary search}
 \label{sec:binary-search}
@@ -2044,6 +2048,13 @@ Some basic principles of combinatorics:
   remainder mod $10^9 + 7$.
 \end{itemize}
 
+\subsection{Subsets and permutations}
+
+\todo{Number of subsets of set of size $n$ is $2^n$.  Number of
+  permutations is $n!$.  Explain how these follow from principle of
+  multiplication.  To actually generate all of them, see complete
+  search section, bit tricks, etc.}
+
 \subsection{Binomial and multinomial coefficients}
 
 The binomial coefficient
@@ -2076,9 +2087,6 @@ symmetrically, as $\binom{n}{a \; b}$ where $a+b = n$.
 
 \todo{Large binomial coefficients modulo a prime (modular inverse
   factorial tables, Lucas's theorem).}
-
-\todo{Heap's Algorithm for generating all permutations; next
-  permutation.  See Bit Tricks for generating all subsets.}
 
 \todo{PIE}
 
