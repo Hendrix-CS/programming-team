@@ -740,9 +740,12 @@ lightweight syntax make it attractive for certain kinds of problems.
 \section{Template}
 
 Below is a basic template showing how to read typical contest problem
-input in Python:
+input in Python 3:
 
 \pycode{python/template.py}
+
+Note that using \texttt{input()} in particular is only valid in Python
+3.  For Python 2, you can replace it by \verb|raw_input()|.
 
 \todo{Mention basic Python data structures such as set, deque, list methods}
 
