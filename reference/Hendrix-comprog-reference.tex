@@ -2271,9 +2271,50 @@ See also list of formulas.
 
 \todo{Points, vectors, angles.  Degrees/radians. \texttt{atan2}. Dot
   product. Rotation. Vector magnitude, norm (squared), normalize.
-  Perpendicular (generate, test).}  \todo{Cross product in 2D. Signed
-  area (parallelogram, triangle, Heron's formula), polygon area,
-  right/left turn, inside/outside testing.}  \todo{Lines/rays (point +
+  Perpendicular (generate, test).}  
+  \todo{Inside/outside testing.}  
+
+\section{Heron's Formula}
+	There is an easy way to calculate the area of a triangle from only its sidelengths $a,b,c$. We define the semi-perimeter $s = \frac{a+b+c}{3}$. The area is $\sqrt{s(s-a)(s-b)(s-c)}$. This is also useful for finding the area of quadrilaterals, if you can find the length of a diagonal and split it into two triangles.
+
+\section{Cross Product}
+Given two vectors $u, v$, the Cross Product $u \times v$ is the signed area of the parallelogram with points at the origin and the tips of $u$ and $v$. It is defined as $u \times v = u_xv_y - v_xu_y$.
+\begin{center}
+\includegraphics[width=3in]{images/Cross_product_parallelogram}
+\end{center}
+
+Note that this really requires 3D vectors in the definitions a typical Linear Algebra class uses, but when both input vectors are on the same plane the output can be described by a real number. Also, by 'signed', We mean that the result is positive if $v$ is counter-clockwise relative to $a$ and negative if clockwise. 
+
+We can calculate the area of a triangle from its three corners by shifting them all such that one of the points is at origin, and then taking half the absolute value of the cross product of the vectors corresponding to the other two points.
+
+\section {Polygon Area}
+
+Given that we have the way to calculate the area of a triangle from its corners, calculating the area of a polygon is mostly a matter of cutting it into triangles. The easiest way to do this is to take each adjacent pair and a third point inside the polygon to define the corners. However, we can simplify this. Our third point can be the origin (0,0) no matter where the polygon is. However, we have to make sure to consider the pairs of adjacent corners in counter-clockwise order and calculate the signed area of each triangle. This is called the Shoelace Formula, and works because the far side of the polygon will have positive sign while the close side will have negative sign and thus be cancelled out.
+
+\begin{center}
+\includegraphics[width=3in]{images/poly_area.png}
+\end{center}
+
+The only restriction that we have is that the edges must not self intersect. This is typically true in programming competitions, but it is good to check for. Note that we also have to account for the connection between the last and first point (here outside of the loop).
+
+\begin{minted}{java}
+	double cross(double[] u, double[] v) {
+		return u[0]*v[1] - v[0]*u[1];
+	}
+
+	double polyArea(double[][] points) {
+		double result = 0.0;
+
+		for (int i=1;i<points.length;i++) {
+			result += cross(points[i-1],points[i]);
+		}
+		result += cross(points[points.length-1],points[0]);
+		return result/2.0;
+	}
+\end{minted}
+
+
+  \todo{Lines/rays (point +
   vector).  Line intersection. Segment intersection. Closest point on
   a line/segment. Point/line distance.} \todo{law of cosines.}
 % -- Distance from point p to line defined by p1, p2 is absolute value
@@ -2283,6 +2324,8 @@ See also list of formulas.
 \todo{Convex hull.}
 
 \url{https://codeforces.com/blog/entry/48868}
+
+\url{https://vlecomte.github.io/cp-geo.pdf}
 
 \chapter{Miscellaneous}
 
