@@ -2283,19 +2283,19 @@ Given two vectors $u, v$, the Cross Product $u \times v$ is the signed area of t
 \includegraphics[width=3in]{images/Cross_product_parallelogram}
 \end{center}
 
-Note that this really requires 3D vectors in the definitions a typical Linear Algebra class uses, but when both input vectors are on the same plane the output can be described by a real number. Also, by 'signed', We mean that the result is positive if $v$ is counter-clockwise relative to $a$ and negative if clockwise. 
+Note that this really requires 3D vectors in the definitions a typical Linear Algebra class uses, but when both input vectors are on the same plane the output can be described by a real number. Also, by `signed', We mean that the result is positive if $v$ is counter-clockwise relative to $u$ and negative if clockwise. 
 
 We can calculate the area of a triangle from its three corners by shifting them all such that one of the points is at origin, and then taking half the absolute value of the cross product of the vectors corresponding to the other two points.
 
 \section {Polygon Area}
 
-Given that we have the way to calculate the area of a triangle from its corners, calculating the area of a polygon is mostly a matter of cutting it into triangles. The easiest way to do this is to take each adjacent pair and a third point inside the polygon to define the corners. However, we can simplify this. Our third point can be the origin (0,0) no matter where the polygon is. However, we have to make sure to consider the pairs of adjacent corners in counter-clockwise order and calculate the signed area of each triangle. This is called the Shoelace Formula, and works because the far side of the polygon will have positive sign while the close side will have negative sign and thus be cancelled out.
+Given that we have the way to calculate the area of a triangle from its corners, calculating the area of a polygon is mostly a matter of cutting it into triangles. The easiest way to do this is to take each adjacent pair and a third point inside the polygon to define the corners. However, we can simplify this. Our third point can be the origin (0,0) no matter where the polygon is, meaning we can eliminate the step of shifting all the points. But to make this work we have to make sure to consider the pairs of adjacent corners in counter-clockwise order and calculate the signed area of each triangle. This is called the Shoelace Formula, and works because the far side of the polygon will have positive sign while the close side will have negative sign and thus be cancelled out. 
 
 \begin{center}
 \includegraphics[width=3in]{images/poly_area.png}
 \end{center}
 
-The only restriction that we have is that the edges must not self intersect. This is typically true in programming competitions, but it is good to check for. Note that we also have to account for the connection between the last and first point (here outside of the loop).
+For the exact same reason, considering the points in clockwise order will give the correct answer but negative. The only restriction that we have is that the edges must not self intersect, in which case the polygon is `simple'. This is typically true in programming competitions, but it is good to check for. Note that we also have to account for the connection between the last and first point (here outside of the loop).
 
 \begin{minted}{java}
 	double cross(double[] u, double[] v) {
