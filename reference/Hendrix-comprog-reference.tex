@@ -2298,19 +2298,19 @@ Given that we have the way to calculate the area of a triangle from its corners,
 For the exact same reason, considering the points in clockwise order will give the correct answer but negative. The only restriction that we have is that the edges must not self intersect, in which case the polygon is `simple'. This is typically true in programming competitions, but it is good to check for. Note that we also have to account for the connection between the last and first point (here outside of the loop).
 
 \begin{minted}{java}
-	double cross(double[] u, double[] v) {
-		return u[0]*v[1] - v[0]*u[1];
-	}
+static double cross(double[] u, double[] v) {
+    return u[0] * v[1] - v[0] * u[1];
+}
 
-	double polyArea(double[][] points) {
-		double result = 0.0;
+static double polyArea(double[][] points) {
+    double result = 0.0;
 
-		for (int i=1;i<points.length;i++) {
-			result += cross(points[i-1],points[i]);
-		}
-		result += cross(points[points.length-1],points[0]);
-		return result/2.0;
-	}
+    for (int i = 1; i < points.length; i++) {
+        result += cross(points[i - 1], points[i]);
+    }
+    result += cross(points[points.length - 1], points[0]);
+    return result / 2.0;
+}
 \end{minted}
 
 
@@ -2321,7 +2321,51 @@ For the exact same reason, considering the points in clockwise order will give t
 % -- of parallelogram area defined by p, p1, p2 divided by distance
 % -- between p1, p2.  Proof: rearrange triangle area formula A = bh/2 to
 % -- solve for h.
-\todo{Convex hull.}
+
+\section{Convex Hull}
+The Convex Hull problem asks for the smallest Convex polygon which contains a specific set of points. The (easiest) algorithm to handle this is Andrew's Monotone Chain, which breaks the answer into two chains (representing the top and bottom halves of the answer). We first sort the points lexicographically (by x coordinates, breaking ties with y coordinates). If at any point the last 3 vertices in the chain make a clockwise turn that means that the 2nd is inside the hull, and the 1st and 3rd are the only ones required. We can construct the partial convex hull of the points with lower x value than points[i] by ensuring that it only consists of Counter-Clockwise turns. We then add the next point by eliminating vertices which are now inside considering our added point. Going through all the points results in the lower half of the chain, and we can then go in the reverse direction (right to left) to get the upper chain.
+
+\begin{center}
+\includegraphics[width=2.5in]{images/UpperAndLowerConvexHulls.png}
+\end{center}
+
+\begin{minted}{java}
+static double[] sub(double[] v, double[] u) {
+    return new double[] {
+        v[0] - u[0], v[1] - u[1]
+    };
+}
+static boolean ccw(double[] o, double[] u, double[] v) {
+    return cross(sub(u, o), sub(v, o)) > 0.0;
+}
+
+//Note: This code will probably need to be changed for edge cases like where only 1 or 2 points are given
+static double[][] convexHull(double[][] points) {
+    int n = points.length;
+    int k = 0;
+    double[][] H = new double[n * 2][2]; //chain could contain each point twice
+
+    Arrays.sort(points, Comparator.comparingDouble((double[] point) - > point[0])
+        .thenComparing(Comparator.comparingDouble((double[] point) - > point[1])));
+
+    for (int i = 0; i < n; ++i) {
+        while (k >= 2 && !ccw(H[k - 2], H[k - 1], points[i]))
+            k--;
+        H[k++] = points[i];
+    }
+    for (int i = n - 2, t = k + 1; i >= 0; i--) {
+        while (k >= t && !ccw(H[k - 2], H[k - 1], points[i]))
+            k--;
+        H[k++] = points[i];
+    }
+    //In most cases our chain will not contain every point, so we need to trim
+    //also, the final point is a duplicate of the first to represent the 'wrap around'
+    return Arrays.copyOfRange(H, 0, k - 1);
+}
+\end{minted}
+
+
+\section{Geometry References}
 
 \url{https://codeforces.com/blog/entry/48868}
 
