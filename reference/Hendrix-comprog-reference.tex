@@ -2269,10 +2269,36 @@ take on every possible pattern of $n$ bits.
 
 See also list of formulas.
 
-\todo{Points, vectors, angles.  Degrees/radians. \texttt{atan2}. Dot
-  product. Rotation. Vector magnitude, norm (squared), normalize.
-  Perpendicular (generate, test).}  
-  \todo{Inside/outside testing.}  
+\todo{Points, angles.  Degrees/radians. \texttt{atan2}. Rotation. Vector magnitude, norm (squared), normalize.
+  Perpendicular (generate, test).}
+
+\section{Vectors}
+
+Vectors are one of the most basic units required in many geometrical programming problems. Vectors are very similar to line or line segments, but the key difference is that a vector will have a certain direction in which it is pointing and a point that exists on the vector. The direction of a vector is given by a coordinate pair $(x_{d},y_{d})$. This coordinate pair does not indicate the position of the vector, but it does indicate the \emph{direction} of the vector. Vectors are also described by a given point $(x_{p}, y_{p})$ that the vector passes through. For example if we are given a vector with direction $(1,2)$ and point $(3,4)$, then we know that the vector will extend to the point $(x_{p}+x_{d},y_{p}+y_{d}) = (4,6)$ \emph{IF} the point is included in the vector's magnitude (length). Sometimes you're given an origin point for the vector and the point of the tip of that vector. In this case you need to calculate the direction of the vector yourself. The information about the vector that you need to use depends on the context of the problem. Calculating the dot product of two vectors requires finding their lengths and the angle between them. Calculating the cross product of two vectors requires vectors represented by points that have a common origin.
+
+               
+
+\section{Dot Product}
+
+The Dot Product of two vectors can be thought of as a measurement of how similar their directions are. The dot product of the length of two vectors $a$ and $b$ is defined as $a \cdot b = |a| \times |b| \times \cos{\theta}$. Let $\theta$ be defined as the amplitude of the angle between vectors $a$ and $b$ and $|a|$ and $|b|$ be defined as the lengths of the two vectors. The more similar the vectors' direction are to each other, the greater their dot product will be. If $\theta = \frac{\pi}{2}$, then the dot product of $a$ and $b$ or $a \cdot b$ equals 0. Therefore, if the vectors are perpendicular, then the dot product will be 0. If the angle between the vectors is acute, then the dot product will be positive. If the angle between the vectors is obtuse, then the dot product will be negative. The dot product can also be considered as the projection $p$ of $a$ onto $b$.
+
+\begin{center}
+\includegraphics[width=3in]{images/dot-product}
+\end{center}
+
+With this visualization, where $p$ is defined as the dot product of $a$ and $b$, it becomes evident why the dot product of two vectors is 0 when they are perpendicular. The dot product is often used in problems to test if two vectors are perpendicular. In practice if you are given two vectors $(v_x, v_y)$ and $(u_x, u_y)$, the calculation for dot product is simply $v_x \times u_x + v_y \times u_y$.
+ 
+\section{Shortest Distance from Point to Line}
+
+Calculating the shortest distance from a point to a line can be made relatively easy by using dot product. Let $l$ be the line and let $a$ be the point. Let's imagine that on the line $l$ there exists a point $x$. Let the distance from $a$ to $x$ be the shortest distance from $a$ to $l$. If the vector $ax$ is perpendicular to $l$, then the length of $ax$ represents the shortest distance from $l$ to $a$. If we treat $l$ like a vector $l_v$ then $l_v \cdot ax = 0$.
+
+ 
+Let $l_v = (p_x, p_y) + t \times (v_x, v_y)$. This is a simple equation for representing vectors. $(p_x, p_y)$ represents a point on the vector (usually the origin of the vector, but if you're specifically dealing with a line as we are, then the origin of the vector is irrelevant to the problem). The coordinate pair $(v_x, v_y)$ describe the direction of the vector (in many cases this corresponds to the slope of the line. See the section on vectors for more information). Let's have $t$ represent a coefficient. Lets say we want to find a point on $l_v$. Simple: $(p_x + t \times v_x, p_y + t \times v_y)$ where t is a real number (if $l$ was really a vector, which it is not, then it would matter to us if $t$ was positive or negative. If $t$ was negative and $l$ was truly a vector with origin at $(p_x, p_y)$ then $a$ would be \emph{behind} $l$, and, since vectors only go one direction, the closest point on the vector to $a$ would be $(p_x, p_y)$). So $(p_x + t \times v_x, p_y + t \times v_y)$ represents all of the points on $l$. If this represents \emph{all} of the points on $l$ then the coordinates of $x$ can be represented by $= (p_x + t \times v_x, p_y + t \times v_y)$. Therefore the \emph{direction} of $ax$ where $a = (x_a, y_a)$ is $(p_x + t \times v_x - x_a, p_y + t \times v_y - y_a)$.
+
+Now we have direction vectors of both $l_v$ and $ax$. We can now use the dot product on these two vectors to solve for $t$, and, once we have $t$, we can calculate the position of $x$ and use the vector distance formula to find the length of $ax$. By the definition of the dot product, we know that $l_v \cdot ax = v_x \times (p_x + t \times v_x - x_a) + v_y \times (p_y + t \times v_y - y_a) = 0$. Solving for $t$ leaves us with $t = \frac{-v_x \times (x_a - p_x) + v_y \times (y_a - p_y)}{v^{2}_x v^{2}_y}$. Now use the vector distance formula to find the shortest distance from $a$ to $l$. Distance $d = \sqrt{(p_x + t \times v_x - x_a)^2 + (p_y + t \times v_y - y_a)^2}$.
+
+TLDR; If you're in a rush and just need a quick formula, then the distance $d$ from a point $(x_0, y_0)$ to the line in standard form $ax + by + c = 0$ is $d = \frac{|a(x_0) + b(y_0) + c|}{\sqrt{a^2 + b^2}}$.
+
 
 \section{Heron's Formula}
 	There is an easy way to calculate the area of a triangle from only its sidelengths $a,b,c$. We define the semi-perimeter $s = \frac{a+b+c}{2}$. The area is $\sqrt{s(s-a)(s-b)(s-c)}$. This is also useful for finding the area of quadrilaterals, if you can find the length of a diagonal and split it into two triangles.
@@ -2315,8 +2341,7 @@ static double polyArea(double[][] points) {
 
 
   \todo{Lines/rays (point +
-  vector).  Line intersection. Segment intersection. Closest point on
-  a line/segment. Point/line distance.} \todo{law of cosines.}
+  vector).  Line intersection. Segment intersection.} \todo{law of cosines.}
 % -- Distance from point p to line defined by p1, p2 is absolute value
 % -- of parallelogram area defined by p, p1, p2 divided by distance
 % -- between p1, p2.  Proof: rearrange triangle area formula A = bh/2 to
@@ -2364,6 +2389,8 @@ static double[][] convexHull(double[][] points) {
 }
 \end{minted}
 
+
+\todo{Inside/outside testing.}
 
 \section{Geometry References}
 
