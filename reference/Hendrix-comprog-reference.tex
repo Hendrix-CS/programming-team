@@ -1175,10 +1175,25 @@ Some options/variants:
   (weakly) connected components; identify bipartite graphs/odd cycles
   (detect cross-edges with map of level sets)}
 
-\section{DFS and SCCs} \label{sec:dfs}
+\section{DFS} \label{sec:dfs}
+\kattis{caveexploration, birthday}
+\todo{Code for DFS and Articulation Points, start/finish labelling, recursive vs stack}
 
-\todo{Code for DFS, start/finish labelling, top sorting, Kosaraju's
-  SCC algorithm, recursive vs stack}
+Depth First Search (DFS) is very similar to BFS, but with the change that we fully explore one child before we move on to the next instead of interleaving them. Note that while this means we can't use it to calculate a sense of `depth' at each vertex, we can use it to split the graphs into `chunks' that are reachable from each child.
+
+Articulation points are defined as the vertices which are a chokepoint for all paths between two (or more) parts of the graph. That is, if they were removed then parts of the graph that were previously connected would be disconnected. Similarly, bridges are edges that would split the graph into more components if they are removed. Both of these can be detected with a slightly modified version of DFS to split the graph into bi-connected components (regions with two entirely different paths between vertices).
+
+\section{SCCs and 2-SAT}
+
+\kattis{loopycabdrivers, cantinaofbabel, pieceittogether, cleaningpipes}
+\todo { Kosaraju's SCC algorithm, Finding explicit 2-SAT solutions}
+Strongly Connected Components are components of a graph in which all pairs of vertices can reach each other in either direction. The vital thing to recognize is that if we think of entire SCCs as vertices in a larger DAG (because if the condensed graph had cycles then it must have a way to return to where you started).
+
+
+A problem which is solvable with SCCs is looking for a simultaneous solution to a group of `or' questions on a set of boolean values. The core idea is to construct a graph with two nodes for each boolean (representing it being provably true or provably false). If we have a constraint $a_1 \lor a_2$ this is equivalent to saying `if $a_1$ is false then $a_2$ must be true' and `if $a_2$ is false then $a_1$ must be true'. Because of that we add two edges between $\neg a_1$ and $a_2$ and $\neg a_2$ and $a_1$. The SCCs in this graph represent values which each imply each other if any of them are true. Thus, if there is any variable which is in the same SCC as its negation there is a contradiction in the constraints and no solution exists.  
+
+
+
 
 \section{Topological sorting} \label{sec:topsort}
 
