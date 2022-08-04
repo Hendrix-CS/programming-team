@@ -18,14 +18,10 @@ public class FactorSieve {
                 smallest[p] = p;
     }
 
-    public boolean isPrime(int n) {
-        return n > 1 && smallest[n] == n;
-    }
-
-    public ArrayList<Integer> factor(int n) {
-        ArrayList<Integer> factors = new ArrayList<>();
-        while ((n & 1) == 0) { factors.add(2); n >>= 1; }
-        int d = 3;
+    public ArrayList<Long> factor(long n) {
+        ArrayList<Long> factors = new ArrayList<>();
+        while ((n & 1L) == 0) { factors.add(2L); n >>= 1L; }
+        long d = 3;
         // Pull out factors until n is small enough to look up
         while (d*d <= n && n >= smallest.length) {
             if (n % d == 0) {
@@ -37,9 +33,9 @@ public class FactorSieve {
         }
         // Now just look up remaining factors in the table
         if (n < smallest.length) {
-            while (smallest[n] != n) {
-                factors.add(smallest[n]);
-                n /= smallest[n];
+            while (smallest[(int)n] != n) {
+                factors.add((long)(smallest[(int)n]));
+                n /= smallest[(int)n];
             }
         }
         if (n != 1) factors.add(n);
