@@ -53,6 +53,8 @@
 \NewDocumentCommand{\code}{O{}O{}m}{\inputminted[linenos=true,mathescape,firstline=#1,lastline=#2,autogobble]{java}{code/#3}}
 \newcommand{\pycode}[1]{\inputminted[linenos=true,mathescape]{python}{code/#1}}
 
+\newcommand{\py}[1]{\mintinline{python}{#1}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Links
 
@@ -151,6 +153,135 @@ input in Python 3:
 \pycode{python/template.py}
 
 \todo{Mention basic Python data structures such as set, deque, list methods}
+
+\section{Math}
+
+The standard \py{math} class contains useful standard mathematical
+constants and operations.  Typically we write
+\begin{verbatim}
+import math
+\end{verbatim}
+and then access functions by prefixing them with \py{math.}
+\begin{itemize}
+\item XXX basic math and comparison operators
+\item $\pi$ is \py{math.pi}, and $e$ is \py{math.e}.  Also,
+  \py{math.exp(x)} computes $e^x$.
+\item \py{abs} finds the absolute value.
+\item \py{min} and \py{max} find the min or max of multiple
+  values, or a list of values.
+\item \py{math.comb(n,k)} is the number of ways to choose $k$
+  items out of $n$ (\emph{i.e.} a binomial coefficient $\binom n k$).
+\item \py{math.factorial(n)} is $n! = 1 \cdot 2 \cdot \dots \cdot
+  n$.
+\item \py{math.floor}, \py{math.ceiling}, and
+  \py{round} round values down, up, or to the nearest integer
+  respectively.  \py{round(n,d)} rounds $n$ to $d$ decimal places.
+\item \py{math.sin}, \py{math.cos}, \py{math.tan},
+  \py{math.asin}, \py{math.acos}, \py{math.atan} compute
+  standard trig functions, and all expect arguments in
+  radians. \py{math.atan2(y,x)} computes the angle to the point
+  $(x,y)$.
+\item \py{math.degrees} converts from radians to degrees, and
+  \py{math.radians} does the opposite.
+\item \py{math.log(x)} computes the natural log of $x$;
+  \py{math.log(x,b)} computes $\log_b x$.
+\item \py{math.dist(p,q)} computes the Euclidean distance between
+  the points $p$ and $q$ in $n$ dimensions, represented by tuples or
+  lists of length $n$.
+\item \py{math.hypot(x,y,\dots)} computes the Euclidean distance from
+  the origin to the $n$-dimensional point $(x,y,\dots)$.
+\item \py{math.sqrt(x)} is $\sqrt{x}$.
+\item \py{math.pow(x,y)} computes $x^y$.
+\end{itemize}
+
+\section{Lists}
+
+\begin{itemize}
+\item Indexing (with negative indices)
+\item slices [lo,hi)
+\item \py{append} $O(1)$
+\item \py{pop()} from end is $O(1)$
+\item \py{pop(0)} is $O(n)$
+\item \py{item in lst} tests whether \py{item} is an element of the
+  list \py{lst}, but takes $O(n)$ since it uses a linear search.  If
+  you want to be able to quickly check whether an item is an element
+  of a collection, use a \py{set} instead of a list.
+\item Convert with \py{list}
+\item Sorting, \py{.sort()} vs \py{sorted} (sort with \py{reverse =
+    true}, sort by custom key)
+\end{itemize}
+
+\section{Strings}
+
+Values of type \py{str} represent sequences of characters.  Strings in
+Python are sequences, so in some ways they are similar to lists,
+\emph{e.g.} strings can be concatenated with \py{+}, indexed,
+sliced, and iterated through using a \py{for} loop.
+
+Python does not have a separate character type; there are only
+one-character strings.
+
+Strings can be compared lexicographically (dictionary order) using
+standard comparison operators.
+
+\begin{itemize}
+\item The \py{split} splits a string into a list of strings:
+  \begin{itemize}
+  \item \py{s.split()}, with no arguments, splits \py{s} on
+    whitespace.  It is very common to use this while reading a line of
+    input, to split it into individual words/tokens.
+  \item \py{s.split(p)} splits \py{s} at every occurrence of \py{p}.
+    For example, \py{s.split(',')} would split on commas.
+  \end{itemize}
+\item As in Java, Python strings are immutable.  If you need to mutate
+  individual characters of a string, first convert the string into a
+  list of characters using \py{list(s)}.
+\item \py{d.join(lst)} joins the list of strings \py{lst} into a
+  single string, placing \py{d} in between each.  For example,
+  \py{';'.join(['hi', 'there', 'world']) == 'hi;there;world'}.  Turn a
+  list of characters back into a string using \py{''.join(chars)}.
+\item \py{s in t} tests whether the string \py{s} occurs as a
+  substring of \py{t}.
+\item \textbf{BEWARE:} since strings are immutable, adding to the end
+  of a string, as in \py{s += 'Q'}, takes $O(n)$ time.  Building an
+  entire string by adding characters to the end one at a time thus
+  takes $O(n^2)$ time!  Instead, \py{append} each character to a list
+  of characters, and then use \py{''.join(chars)} to turn the list
+  into a string at the end.
+\end{itemize}
+
+\section{Loops}
+
+\begin{itemize}
+\item for loops
+\item \py{enumerate}
+\item \py{range}
+\end{itemize}
+
+\section{Stack}
+
+XXX can use a list as a stack; just append and pop
+
+\section{Queue}
+
+XXX use \py{deque}
+
+\section{Priority queue}
+
+\section{Set}
+
+The built-in \py{set} type stores a collection of values where each
+item occurs at most once, where we also do not care about the order.
+\py{set} uses a hash table so supports $O(1)$ \py{add}, \py{remove},
+and membership testing.
+
+\begin{itemize}
+\item Use \py{len(s)} to get the size of a set in $O(1)$.
+\item Use \py{in} to test whether a value is contained in a set.
+\end{itemize}
+
+To continue iterating until a set becomes empty, you can write
+
 
 \chapter{Java Reference}
 
