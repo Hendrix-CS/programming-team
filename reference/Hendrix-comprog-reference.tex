@@ -52,6 +52,7 @@
 
 \NewDocumentCommand{\code}{O{}O{}m}{\inputminted[linenos=true,mathescape,firstline=#1,lastline=#2,autogobble]{java}{code/#3}}
 \newcommand{\pycode}[1]{\inputminted[linenos=true,mathescape]{python}{code/#1}}
+\newcommand{\pysolved}[1]{\inputminted[linenos=true,mathescape]{python}{../solved/#1}}
 
 \newcommand{\py}[1]{\mintinline{python}{#1}}
 
@@ -152,8 +153,6 @@ input in Python 3:
 
 \pycode{python/template.py}
 
-\todo{Mention basic Python data structures such as set, deque, list methods}
-
 \section{Math}
 
 The standard \py{math} class contains useful standard mathematical
@@ -194,22 +193,41 @@ and then access functions by prefixing them with \py{math.}
 \item \py{math.pow(x,y)} computes $x^y$.
 \end{itemize}
 
-\section{Lists}
+\section{Lists/Tuples}
 
 \begin{itemize}
+\item Python lists are written using square brackets and commas:
+  \py{[1,2,3,4,5]}.
+\item Python tuples are written using commas and no square brackets:
+  \py{1,2,3,4,5}.
+\item Lists are \emph{mutable} (they can be appended to, popped from,
+  modified \dots) and tuples are \emph{immutable} (so they can be used as
+  dictionary keys).
+\item You can assign multiple elements of XXX
 \item Indexing (with negative indices)
 \item slices [lo,hi)
 \item \py{append} $O(1)$
 \item \py{pop()} from end is $O(1)$
-\item \py{pop(0)} is $O(n)$
-\item \py{item in lst} tests whether \py{item} is an element of the
-  list \py{lst}, but takes $O(n)$ since it uses a linear search.  If
-  you want to be able to quickly check whether an item is an element
-  of a collection, use a \py{set} instead of a list.
+\item Split up a string using \py{split}
 \item Convert with \py{list}
 \item Sorting, \py{.sort()} vs \py{sorted} (sort with \py{reverse =
     true}, sort by custom key)
 \end{itemize}
+
+XXX write about list comprehensions
+
+XXX how to make 2D lists, avoid gotcha with references
+
+\begin{warning}
+  \py{item in lst} tests whether \py{item} is an element of the
+  list \py{lst}, but takes $O(n)$ since it uses a linear search.  If
+  you want to be able to quickly check whether an item is an element
+  of a collection, use a \py{set} instead of a list.
+\end{warning}
+
+\begin{warning}
+  \py{pop(0)} is $O(n)$! Use a \py{deque} if you want a queue.
+\end{warning}
 
 \section{Strings}
 
@@ -242,27 +260,68 @@ standard comparison operators.
   list of characters back into a string using \py{''.join(chars)}.
 \item \py{s in t} tests whether the string \py{s} occurs as a
   substring of \py{t}.
-\item \textbf{BEWARE:} since strings are immutable, adding to the end
-  of a string, as in \py{s += 'Q'}, takes $O(n)$ time.  Building an
-  entire string by adding characters to the end one at a time thus
-  takes $O(n^2)$ time!  Instead, \py{append} each character to a list
-  of characters, and then use \py{''.join(chars)} to turn the list
-  into a string at the end.
 \end{itemize}
+
+\begin{warning}
+  Since strings are immutable, adding to the end of a string, as in
+  \py{s += 'Q'}, takes $O(n)$ time.  Building an entire string by
+  adding characters to the end one at a time thus takes $O(n^2)$
+  time!  Instead, \py{append} each character to a list of
+  characters, and then use \py{''.join(chars)} to turn the list into
+  a string at the end.
+\end{warning}
 
 \section{Loops}
 
 \begin{itemize}
-\item for loops
-\item \py{enumerate}
-\item \py{range}
+\item \py{for} loops can be used to iterate through the elements of a
+  collection (such as a list, \py{set}, or \py{deque}), the characters
+  of a string, the keys of a dictionary.
+\item \py{enumerate} can be used to loop through the elements of a
+  collection \emph{and} their indices at the same time.  For example:
+  \begin{minted}{python}
+    for i,e in enumerate("ABC"):
+      print(f'Element {e} was at index {i}.')
+  \end{minted}
+  Notice that the index comes first, then the element.
+\item \py{range(n)} generates the sequence of integers from $0$
+  through $n-1$.  For example,
+  \begin{minted}{python}
+    for i in range(6):
+      print(i)
+  \end{minted}
+  prints the numbers 0 through 5.  Sometimes \py{range} can be used if
+  you just want to repeat an action a certain number of times.  For
+  example:
+  \begin{minted}{python}
+    n = int(input())
+    for _ in range(n):
+      print("hey")
+  \end{minted}
+\item \py{reversed} iterates through the elements of a collection in
+  reverse order, for example:
+  \begin{minted}{python}
+    for x in reversed("ABC"):
+      print(x)
+  \end{minted}
 \end{itemize}
 
 \section{Stack}
 
-XXX can use a list as a stack; just append and pop
+\kattis{backspace, delimitersoup, islands, pairingsocks, reservoir, restaurant, symmetricorder,
+  throwns, zagrade}
 
-\section{Queue}
+Python does not have any special built-in class for stacks; you can
+simply use a list as a stack, with the end of the list corresponding
+to the top of the stack.  Use the \py{append} method for pushing and
+the \py{pop} method for popping, both of which take $O(1)$ time.  See
+the below example solution code for \inlinekattis{backspace}.
+
+\pysolved{backspace.py}
+
+\section{Queue/\py{deque}}
+
+\kattis{eenymeeny, coconut, ferryloading4, integerlists, shuffling}
 
 XXX use \py{deque}
 
@@ -277,7 +336,9 @@ and membership testing.
 
 \begin{itemize}
 \item Use \py{len(s)} to get the size of a set in $O(1)$.
-\item Use \py{in} to test whether a value is contained in a set.
+\item Use \py{in} to test whether a value is contained in a set ($O(1)$).
+\item Use \py{pop()} to remove and return one arbitrary element from
+  the set.
 \end{itemize}
 
 To continue iterating until a set becomes empty, you can write
@@ -507,7 +568,7 @@ dealing with parentheses, or nesting more generally
 \section{Queue/ArrayDeque}
 \label{sec:queue}
 
-\kattis{eenymeeny, brexit, coconut, ferryloading4, integerlists, shuffling}
+\kattis{eenymeeny, coconut, ferryloading4, integerlists, shuffling}
 
 \javadoc{util}{Queue}, unlike \javadoc{util}{Stack}, is not a class
 but an interface.  There are several classes implementing the
