@@ -50,7 +50,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Inline code
 
-\NewDocumentCommand{\code}{O{}O{}m}{\inputminted[linenos=true,mathescape,firstline=#1,lastline=#2,autogobble]{java}{code/#3}}
+\newcommand{\code}[1]{\inputminted[linenos=true,mathescape]{java}{code/#1}}
+\newcommand{\partcode}[3]{\inputminted[linenos=true,mathescape,firstline=#1,lastline=#2,autogobble]{java}{code/#3}}
 \newcommand{\pycode}[1]{\inputminted[linenos=true,mathescape]{python}{code/#1}}
 \newcommand{\pysolved}[1]{\inputminted[linenos=true,mathescape]{python}{../solved/#1}}
 
@@ -336,19 +337,19 @@ and membership testing.
 
 \begin{itemize}
 \item Use \py{len(s)} to get the size of a set in $O(1)$.
-\item Use \py{in} to test whether a value is contained in a set ($O(1)$).
+\item Use \py{in} to test whether a value is contained in a set in $O(1)$.
 \item Use \py{pop()} to remove and return one arbitrary element from
   the set.
+\item Sets have a ``truth value'' indicating whether they are
+  nonempty, so you can write \py{while s:} to iterate until the set
+  \py{s} is empty.
 \end{itemize}
-
-To continue iterating until a set becomes empty, you can write
-
 
 \chapter{Java Reference}
 
 \section{Template}
 
-\code{java/Template.java}
+\pycode{java/Template.java}
 
 \section{Scanner}
 
@@ -2133,7 +2134,7 @@ since we can get from $b^{2^k}$ to $b^{2^{k+1}}$ just by squaring.
     modulo $m$ back into the range of an \texttt{int}.
   \end{warning}
 
-\code[2][10]{math/ModExp.java}
+\partcode{2}{10}{math/ModExp.java}
 
 Note this correctly computes $0^0 = 1$.  It would be possible to add a
 special case for when $b = 0$ and $e \neq 1$, to avoid multiplying $0$
@@ -2183,13 +2184,13 @@ appropriate for numbers up to the maximum size of an \texttt{int}
 ($\approx 2 \cdot 10^9$); running it on inputs up to the maximum size
 of a \texttt{long} is likely to be too slow.
 
-\code[2][10]{math/IsPrime.java}
+\partcode{2}{10}{math/IsPrime.java}
 
 The following method takes $O(\sqrt n)$ to factor a number into its
 prime factorization, also using trial division.  The returned prime
 factors will be sorted from smallest to biggest.
 
-\code[4][18]{math/Factor.java}
+\partcode{4}{18}{math/Factor.java}
 
 \subsection{Sieving}
 
@@ -2318,7 +2319,7 @@ it is the $k$th entry in the $n$th row (both counting from $0$) of
 following code, which works up to $n=60$ (higher values of $n$ will
 cause overflow):
 
-\code[3][12]{math/Combinatorics.java}
+\partcode{3}{12}{math/Combinatorics.java}
 
 Some useful identities:
 \begin{itemize}
