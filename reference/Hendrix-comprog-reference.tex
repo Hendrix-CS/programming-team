@@ -201,6 +201,12 @@ and then access functions by prefixing them with \py{math.}
   \py{[1,2,3,4,5]}.
 \item Python tuples are written using commas and no square brackets:
   \py{1,2,3,4,5}.
+  \begin{itemize}
+  \item This is ambiguous when passing a tuple to a function.
+    \py{f(x,y)} means passing two arguments to the function \py{f}.
+    To instead pass a single argument which is a tuple, use extra
+    parentheses around the tuple, like \py{f((x,y))}.
+  \end{itemize}
 \item Lists are \emph{mutable} (they can be appended to, popped from,
   modified \dots) and tuples are \emph{immutable} (so they can be used as
   dictionary keys).
@@ -327,6 +333,8 @@ the below example solution code for \inlinekattis{backspace}.
 XXX use \py{deque}
 
 \section{Priority queue}
+
+XXX use \py{heapq}
 
 \section{Set}
 
