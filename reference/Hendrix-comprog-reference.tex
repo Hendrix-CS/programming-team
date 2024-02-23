@@ -158,10 +158,14 @@ input in Python 3:
 
 \section{Input}
 
-\py{input()}
+Usually, you should use \py{input()} to read one line of input at a
+time.  The strings resulting from \py{input()} do \emph{not} include a
+newline character.
 
-Reading until EOF: use \py{sys.stdin.readline()} and check if it
-returns empty string.
+If you need to read until EOF, use \py{sys.stdin.readline()} instead
+of \py{input()} and check if it returns the empty string.  Strings
+resulting from \py{sys.stdin.readline()} \emph{do} include a trailing
+newline character.
 
 \section{Math}
 
@@ -172,7 +176,6 @@ import math
 \end{verbatim}
 and then access functions by prefixing them with \py{math.}
 \begin{itemize}
-\item XXX basic math and comparison operators
 \item $\pi$ is \py{math.pi}, and $e$ is \py{math.e}.  Also,
   \py{math.exp(x)} computes $e^x$.
 \item \py{abs} finds the absolute value.
