@@ -5,3 +5,5 @@ reference/_minted*
 *.out
 *.toc
 *~
+*.rubbercache
+
