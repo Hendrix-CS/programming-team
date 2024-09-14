@@ -1,0 +1,150 @@
+/* Font imports and family definitions */
+
+@import url("https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700");
+
+/* https://stackoverflow.com/a/56467997 */
+html {
+  scroll-padding-top: 70px; /* height of sticky header */
+}
+
+body {
+  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  padding-top: 54px;
+}
+
+@media (min-width: 992px) {
+  body {
+    padding-top: 56px;
+  }
+}
+
+/* Color definitions */
+
+:root {
+   --main-color:#cb4f0c;
+   --dull-color:#ac3911;
+   --light-bg:#f2f2f2;
+}
+
+
+/* https://www.geeksforgeeks.org/how-to-change-navigation-bar-color-in-bootstrap/ */
+
+/* Modify the background color */
+.navbar-custom {
+    background-color: var(--main-color);
+}
+
+/* Modify brand and text color */
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: white;
+}
+
+a {
+  color: var(--main-color);
+  text-decoration: none;
+  background-color: transparent;
+  -webkit-text-decoration-skip: objects;
+}
+
+a:hover {
+  color: var(--dull-color);
+  text-decoration: underline;
+}
+
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+
+.internal-header:before {
+  display: block;
+  content: " ";
+  margin-top: -75px;
+  height: 75px;
+  visibility: hidden;
+}
+
+/* From Codecademy Make-A-Website */
+.jumbotron {
+  display: flex;
+  align-items: center;
+  background-image: url('../images/progteam_hcpc_cropped.jpg');
+  background-size: cover;
+  color: #ffffff;
+  min-height: 400px;
+  text-shadow: 0.25px 0.25px 0.25px #000000;
+}
+
+.jumbotron h2 {
+  font-size: 60px;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+.jumbotron h3 {
+  margin: 0 0 20px;
+  color: #ffffff;
+}
+
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    width: 95%;
+}
+
+table th{
+	padding: 3px;
+  background-color: var(--light-bg);
+  /*  border:2px solid #000000; */
+}
+
+table td{
+	padding: 3px;
+  /*  border:1px solid #000000; */
+}
+
+/* https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped */
+tr:nth-child(even) {background-color: var(--light-bg);}
+
+.instructor {
+	background-color: var(--light-bg);
+	margin: 5px;
+	padding: 10px;
+	text-align: center;
+  color: #000000;
+  text-shadow: none;
+
+}
+
+blockquote{
+	margin: 30px;
+	padding: 10px;
+	background-color: var(--light-bg);
+}
+
+/* https://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html */
+.alert {
+    overflow: hidden;
+}
+
+.alert-warning {
+    color: #444;
+}
+
+div.alert code {
+    background-color: transparent !important;
+}
+
+.note code, .alert code, .warning code {
+    color: inherit;
+    padding: 0px;
+}
+
+.alert {
+    margin-bottom:10px;
+    margin-top:10px;
+}

@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+  <div class="container">
+    <a href="http://hendrix-cs.github.io"><img src="{{ site.baseurl}}/assets/images/macslogo.png" height="30"></a>&nbsp;
+    <a class="navbar-brand" href="{{ site.baseurl}}/index.html">{{ site.number }}: {{ site.semester }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto">
+
+        {% if site.navigation[0] %}
+          {% for item in site.navigation %}
+            {% if item.title %}
+            <li class="nav-item dropdown">
+              <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="{{ site.baseurl}}/#myview" id="download">{{ item.title }}<span class="caret"></span></div>
+              <div class="dropdown-menu" aria-labelledby="download">
+                {% if item.subfolderitems[0] %}
+                    {% for entry in item.subfolderitems %}
+                    <a class="dropdown-item" href="{{ site.baseurl}}/{{ entry.url }}">{{ entry.page }}</a>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+            <li class="nav-item">
+              {% assign foo = item.url | slice: 0, 4 %}
+              {% if foo == "http") %}
+              <a class="nav-link" href="{{ item.url }}">{{ item.page }}</a>
+              {% else %}
+              <a class="nav-link" href="{{ site.baseurl }}/{{ item.url }}">{{ item.page }}</a>
+              {% endif %}
+            </li>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div>
+</div>
+
+<div>
+</div>

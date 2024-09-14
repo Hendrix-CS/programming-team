@@ -1,0 +1,24 @@
+    <!-- Footer -->
+    <footer class="py-4 navbar-custom">
+      <div class="container">
+        <p class="m-0 text-center text-white"><small>Copyright &copy; Hendrix Computer Science {{ site.semester }}</small></p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    {% if site.hypothesis %}
+      <script src="https://hypothes.is/embed.js" async></script>
+    {% endif %}
+    <script>
+      //https://codepen.io/lkp/pen/bdPbQx
+        $( document ).ready(function() {
+             var navMain = $(".navbar-collapse");
+
+             navMain.on("click", "a", null, function () {
+                 navMain.collapse('hide');
+             });
+        });
+    </script>

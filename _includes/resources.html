@@ -1,0 +1,9 @@
+<div class="row">
+{% for res in include.content %}
+  <div class="col-md-{{ 12 | divided_by: include.content.size | at_least: 3}}"
+       style="text-align: center">
+    <img src="{{site.baseurl}}/{{ res.image }}" height="100" alt="{{ res.name }}" border="1">
+    <p><a href="{{ res.url }}">{{ res.name }}</a><br></p>
+  </div>
+{% endfor %}
+</div>

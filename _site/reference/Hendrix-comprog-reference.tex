@@ -1,0 +1,3088 @@
+% -*- compile-command: "rubber -d --unsafe Hendrix-comprog-reference.tex" -*-
+
+\documentclass[10pt]{book}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+
+\pagestyle{fancy}
+
+% \lhead{\leftmark}
+% \rhead{\rightmark}
+
+% \lfoot{Hendrix Programming Team Reference}
+% \rfoot{\thepage}
+
+% TODO: make fancy header with page number and section etc.
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={green!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\usepackage{titlepic}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+
+\usepackage[newfloat]{minted}
+\usepackage{etoolbox}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{xspace}
+\usepackage{pifont}
+\usepackage{xparse}
+
+\usepackage{algorithm, algorithmicx}
+\usepackage[noend]{algpseudocode}
+
+\usepackage{caption}
+\DeclareCaptionLabelFormat{algnonumber}{Algorithm}
+\captionsetup[algorithm]{labelformat=algnonumber}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Inline code
+
+\newcommand{\code}[1]{\inputminted[linenos=true,mathescape]{java}{code/#1}}
+\newcommand{\partcode}[3]{\inputminted[linenos=true,mathescape,firstline=#1,lastline=#2,autogobble]{java}{code/#3}}
+\newcommand{\pycode}[1]{\inputminted[linenos=true,mathescape]{python}{code/#1}}
+\newcommand{\pysolved}[1]{\inputminted[linenos=true,mathescape]{python}{../solved/#1}}
+
+\newcommand{\py}[1]{\mintinline{python}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Links
+
+\newcommand*{\fulllink}[1]{\hyperref[{#1}]{\nameref*{#1}~(\S\ref*{#1}, page~\pageref*{#1})}}
+\newcommand*{\link}[1]{\hyperref[{#1}]{(\S\ref*{#1}, page~\pageref*{#1})}}
+
+\newcommand{\javalogo}{\includegraphics[height=0.9\baselineskip]{Java}}
+\newcommand*{\javadoclink}[2]{\href{https://docs.oracle.com/javase/10/docs/api/java/#1/#2.html}{\texttt{#2}}}
+\newcommand*{\javadoc}[2]{\javalogo\ \javadoclink{#1}{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Kattis
+
+\newcommand{\kattislogo}{\raisebox{-0.2em}{\includegraphics[height=0.9\baselineskip]{Kattis}}}
+
+\newcommand{\kattislist}[1]{%
+  \def\nextitem{\def\nextitem{, }}
+  \renewcommand*{\do}[1]{\nextitem\kattislink{##1}}
+  \docsvlist{#1}
+}
+
+\newcommand{\kattis}[1]{%
+  \begin{mdframed}
+    \kattislogo
+    \kattislist{#1}
+  \end{mdframed}
+}
+
+\newcommand{\kattislink}[1]{\href{https://open.kattis.com/problems/#1}{\texttt{#1}}}
+
+\newcommand{\inlinekattis}[1]{\kattislogo\!\!\kattislist{#1}\!}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Todos
+
+\newif\iftodos
+\todostrue
+\newcommand{\todo}[1]{\iftodos\textcolor{red}{[TODO: #1]}\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Warning
+
+\newenvironment{warning}
+{\par\begin{mdframed}[linewidth=2pt,linecolor=red]%
+    \begin{list}{}{\leftmargin=1cm
+        \labelwidth=\leftmargin}\item[\Large\ding{43}]}
+    {\end{list}\end{mdframed}\par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Misc
+
+\newcommand{\eg}{\emph{e.g.}\xspace}
+\newcommand{\ie}{\emph{i.e.}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Hendrix Programming Team Reference}
+\titlepic{\includegraphics[width=3in]{Hendrix-logo}}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\chapter{Newcomers' Guide, or How To Get Good at Competitive Programming in 7 Easy Steps} \label{chap:newcomers}
+
+\begin{enumerate}
+\item Visit \url{http://open.kattis.com}, sign up for a free account,
+  and solve lots of low-difficulty (1.x rating) problems.  (Click on
+  ``Problems'' and sort by difficulty ascending order.)
+\item No seriously, lots of them. You should aim to solve at least 50
+  easy problems to start.
+\item Start reading through this guide, one small section at a time.
+  Don't be afraid to just skim past things that are confusing at
+  first. Try solving some of the problems linked from each section.
+\item Listen to more experienced team members coding/explaining
+  solutions to more difficult problems.  Then see if you can recreate
+  the solutions on your own.
+\item Solve lots of problems.  Solve problems when procrastinating
+  from other work.  Solve problems during breaks.  Try a mix of easier
+  and harder problems.
+\item \dots
+\item profit!
+\end{enumerate}
+
+\chapter{Python Reference} \label{chap:python}
+
+Python's built-in support for arbitrary-size integers (using
+\texttt{BigInteger} in Java is a pain!) and built-in dictionaries with
+lightweight syntax make it attractive for certain kinds of problems.
+
+\section{Template}
+
+Below is a basic template showing how to read typical contest problem
+input in Python 3:
+
+\pycode{python/template.py}
+
+\section{Input}
+
+Usually, you should use \py{input()} to read one line of input at a
+time.  The strings resulting from \py{input()} do \emph{not} include a
+newline character.
+
+If you need to read until EOF, use \py{sys.stdin.readline()} instead
+of \py{input()} and check if it returns the empty string.  Strings
+resulting from \py{sys.stdin.readline()} \emph{do} include a trailing
+newline character.
+
+\section{Math}
+
+The standard \py{math} class contains useful standard mathematical
+constants and operations.  Typically we write
+\begin{verbatim}
+import math
+\end{verbatim}
+and then access functions by prefixing them with \py{math.}
+\begin{itemize}
+\item $\pi$ is \py{math.pi}, and $e$ is \py{math.e}.  Also,
+  \py{math.exp(x)} computes $e^x$.
+\item \py{abs} finds the absolute value.
+\item \py{min} and \py{max} find the min or max of multiple
+  values, or a list of values.
+\item \py{math.comb(n,k)} is the number of ways to choose $k$
+  items out of $n$ (\emph{i.e.} a binomial coefficient $\binom n k$).
+\item \py{math.factorial(n)} is $n! = 1 \cdot 2 \cdot \dots \cdot
+  n$.
+\item \py{math.floor}, \py{math.ceiling}, and
+  \py{round} round values down, up, or to the nearest integer
+  respectively.  \py{round(n,d)} rounds $n$ to $d$ decimal places.
+\item \py{math.sin}, \py{math.cos}, \py{math.tan},
+  \py{math.asin}, \py{math.acos}, \py{math.atan} compute
+  standard trig functions, and all expect arguments in
+  radians. \py{math.atan2(y,x)} computes the angle to the point
+  $(x,y)$.
+\item \py{math.degrees} converts from radians to degrees, and
+  \py{math.radians} does the opposite.
+\item \py{math.log(x)} computes the natural log of $x$;
+  \py{math.log(x,b)} computes $\log_b x$.
+\item \py{math.dist(p,q)} computes the Euclidean distance between
+  the points $p$ and $q$ in $n$ dimensions, represented by tuples or
+  lists of length $n$.
+\item \py{math.hypot(x,y,\dots)} computes the Euclidean distance from
+  the origin to the $n$-dimensional point $(x,y,\dots)$.
+\item \py{math.sqrt(x)} is $\sqrt{x}$.
+\item \py{math.pow(x,y)} computes $x^y$.
+\end{itemize}
+
+\section{Lists/Tuples}
+
+\begin{itemize}
+\item Python lists are written using square brackets and commas:
+  \py{[1,2,3,4,5]}.
+\item Python tuples are written using commas and no square brackets:
+  \py{1,2,3,4,5}.
+  \begin{itemize}
+  \item This is ambiguous when passing a tuple to a function.
+    \py{f(x,y)} means passing two arguments to the function \py{f}.
+    To instead pass a single argument which is a tuple, use extra
+    parentheses around the tuple, like \py{f((x,y))}.
+  \end{itemize}
+\item Lists are \emph{mutable} (they can be appended to, popped from,
+  modified \dots) and tuples are \emph{immutable} (so they can be used as
+  dictionary keys).
+\item You can assign multiple elements of XXX
+\item Indexing (with negative indices)
+\item slices [lo,hi)
+\item \py{append} $O(1)$
+\item \py{pop()} from end is $O(1)$
+\item Split up a string using \py{split}
+\item Convert with \py{list}
+\item Sorting, \py{.sort()} vs \py{sorted} (sort with \py{reverse =
+    true}, sort by custom key)
+\end{itemize}
+
+XXX write about list comprehensions
+
+XXX how to make 2D lists, avoid gotcha with references
+
+\begin{warning}
+  \py{item in lst} tests whether \py{item} is an element of the
+  list \py{lst}, but takes $O(n)$ since it uses a linear search.  If
+  you want to be able to quickly check whether an item is an element
+  of a collection, use a \py{set} instead of a list.
+\end{warning}
+
+\begin{warning}
+  \py{pop(0)} is $O(n)$! Use a \py{deque} if you want a queue.
+\end{warning}
+
+\section{Strings}
+
+Values of type \py{str} represent sequences of characters.  Strings in
+Python are sequences, so in some ways they are similar to lists,
+\emph{e.g.} strings can be concatenated with \py{+}, indexed,
+sliced, and iterated through using a \py{for} loop.
+
+Python does not have a separate character type; there are only
+one-character strings.
+
+Strings can be compared lexicographically (dictionary order) using
+standard comparison operators.
+
+\begin{itemize}
+\item The \py{split} splits a string into a list of strings:
+  \begin{itemize}
+  \item \py{s.split()}, with no arguments, splits \py{s} on
+    whitespace.  It is very common to use this while reading a line of
+    input, to split it into individual words/tokens.
+  \item \py{s.split(p)} splits \py{s} at every occurrence of \py{p}.
+    For example, \py{s.split(',')} would split on commas.
+  \end{itemize}
+\item As in Java, Python strings are immutable.  If you need to mutate
+  individual characters of a string, first convert the string into a
+  list of characters using \py{list(s)}.
+\item \py{d.join(lst)} joins the list of strings \py{lst} into a
+  single string, placing \py{d} in between each.  For example,
+  \py{';'.join(['hi', 'there', 'world']) == 'hi;there;world'}.  Turn a
+  list of characters back into a string using \py{''.join(chars)}.
+\item \py{s in t} tests whether the string \py{s} occurs as a
+  substring of \py{t}.
+\end{itemize}
+
+\begin{warning}
+  Since strings are immutable, adding to the end of a string, as in
+  \py{s += 'Q'}, takes $O(n)$ time.  Building an entire string by
+  adding characters to the end one at a time thus takes $O(n^2)$
+  time!  Instead, \py{append} each character to a list of
+  characters, and then use \py{''.join(chars)} to turn the list into
+  a string at the end.
+\end{warning}
+
+\section{Loops}
+
+\begin{itemize}
+\item \py{for} loops can be used to iterate through the elements of a
+  collection (such as a list, \py{set}, or \py{deque}), the characters
+  of a string, the keys of a dictionary.
+\item \py{enumerate} can be used to loop through the elements of a
+  collection \emph{and} their indices at the same time.  For example:
+  \begin{minted}{python}
+    for i,e in enumerate("ABC"):
+      print(f'Element {e} was at index {i}.')
+  \end{minted}
+  Notice that the index comes first, then the element.
+\item \py{range(n)} generates the sequence of integers from $0$
+  through $n-1$.  For example,
+  \begin{minted}{python}
+    for i in range(6):
+      print(i)
+  \end{minted}
+  prints the numbers 0 through 5.  Sometimes \py{range} can be used if
+  you just want to repeat an action a certain number of times.  For
+  example:
+  \begin{minted}{python}
+    n = int(input())
+    for _ in range(n):
+      print("hey")
+  \end{minted}
+\item \py{reversed} iterates through the elements of a collection in
+  reverse order, for example:
+  \begin{minted}{python}
+    for x in reversed("ABC"):
+      print(x)
+  \end{minted}
+\end{itemize}
+
+\section{Stack}
+
+\kattis{backspace, delimitersoup, islands, pairingsocks, reservoir, restaurant, symmetricorder,
+  throwns, zagrade}
+
+Python does not have any special built-in class for stacks; you can
+simply use a list as a stack, with the end of the list corresponding
+to the top of the stack.  Use the \py{append} method for pushing and
+the \py{pop} method for popping, both of which take $O(1)$ time.  See
+the below example solution code for \inlinekattis{backspace}.
+
+\pysolved{backspace.py}
+
+\section{Queue/\py{deque}}
+
+\kattis{eenymeeny, coconut, ferryloading4, integerlists, shuffling}
+
+XXX use \py{deque}
+
+
+\pysolved{integerlists.py}
+
+\section{Priority queue}
+
+XXX use \py{heapq}
+
+\section{Set}
+
+The built-in \py{set} type stores a collection of values where each
+item occurs at most once, where we also do not care about the order.
+\py{set} uses a hash table so supports $O(1)$ \py{add}, \py{remove},
+and membership testing.
+
+\begin{itemize}
+\item Use \py{len(s)} to get the size of a set in $O(1)$.
+\item Use \py{in} to test whether a value is contained in a set in $O(1)$.
+\item Use \py{pop()} to remove and return one arbitrary element from
+  the set.
+\item Sets have a ``truth value'' indicating whether they are
+  nonempty, so you can write \py{while s:} to iterate until the set
+  \py{s} is empty.
+\end{itemize}
+
+\chapter{Java Reference}
+
+\section{Template}
+
+\pycode{java/Template.java}
+
+\section{Scanner}
+
+\javadoc{util}{Scanner} is relatively slow but should usually be sufficient
+for most purposes.  If the input or output is relatively large (> 1MB)
+and you suspect the time taken to read or write it may be a hindrance,
+you can use \fulllink{sec:fastio}.
+
+\begin{warning}
+  Be sure to read the warning in the comment below about calling
+  \texttt{nextLine()} after \texttt{nextInt()} and the like!
+\end{warning}
+
+\code{java/ScannerExample.java}
+
+\section{Math}
+
+The standard \javadoc{lang}{Math} class contains useful standard
+mathematical constants and operations.  All are \texttt{static}, so
+they can be accessed by prefixing their names with \texttt{Math.}, \ie
+\texttt{Math.cos}.
+\begin{itemize}
+\item Constants \texttt{E} and \texttt{PI} represent (floating-point
+  approximations of) $e$ and $\pi$.
+\item \texttt{abs} finds the absolute value.
+\item \texttt{min} and \texttt{max} find the min or max of two
+  values. A common trick for saving a bit of typing is to use
+  something like
+  \begin{minted}{java}
+    m = Math.max(m, val);
+  \end{minted}
+  if you need \texttt{m} to accumulate the maximum of a set of values.
+\item \texttt{round} rounds a floating-point number to the nearest
+  integer. \texttt{ceil} and \texttt{floor} round up and down,
+  respectively.  Note that whereas \texttt{round}
+  returns a \texttt{long} when given a \texttt{double}, for some
+  reason \texttt{ceil} and \texttt{floor} both return
+  \texttt{double}, so you may need to cast the results:
+  \begin{minted}{java}
+    double x = ...
+    long n = (long)Math.floor(x);
+  \end{minted}
+\item \texttt{exp(x)} computes $e^x$.  \texttt{log(x)} computes $\ln x$.
+\item \texttt{sqrt} computes the square root.  \texttt{hypot(x,y)}
+  computes $\sqrt{x^2 + y^2}$.
+\item \texttt{pow(a, b)} computes $a^b$.
+\item \texttt{sin}, \texttt{cos}, \texttt{tan}, \texttt{acos},
+  \texttt{asin}, \texttt{atan} do what you would expect. Note also
+  \texttt{atan2(y,x)} which returns an angle $\theta$ such that
+  it converts rectangular coordinates $(x,y)$ into polar coordinates
+  $(r, \theta)$.  This is almost like \texttt{atan(y/x)} except that
+  it avoids division by zero and handles all four quadrants properly.
+\item \texttt{toDegrees} and \texttt{toRadians} convert angles from
+  radians to degrees and degrees to radians, respectively.
+\end{itemize}
+
+
+\section{String}
+
+\kattis{battlesimulation, bing, connectthedots, itsasecret, shiritori,
+suffixarrayreconstruction}
+
+The \javadoc{lang}{String} type can be used in Java to represent
+sequences of characters.  Some useful \texttt{String} methods include:
+\begin{itemize}
+\item concatenation (\texttt{+})
+\item \texttt{substring(i)} yields the substring starting at index
+  \texttt{i} up to the end of the string
+\item \texttt{substring(i,j)} yields the substring starting at
+  \texttt{i} (inclusive) and ending \emph{just before} \texttt{j}
+  (same as Python slices).
+\item \texttt{charAt(i)} yields the \texttt{char} at index \texttt{i}.
+\item \texttt{toCharArray()} converts to a \texttt{char[]}, which can
+  be convenient if you need to do a lot of indexing (\texttt{[i]}
+  instead of \texttt{charAt(i)}).
+\item \texttt{split(String)} splits a string into a \texttt{String[]}
+  of pieces between occurrences of the splitting string.
+\item \texttt{endsWith(String)}, \texttt{startsWith(String)},
+  \texttt{indexOf(String)}, and \texttt{replace(...)} can occasionally be useful.
+\end{itemize}
+
+Below is shown a solution to \inlinekattis{sumoftheothers}, which uses
+\texttt{split} followed by \texttt{Integer.parseInt} to read the
+integers on each line (necessary in this case because the input does
+not specify how many integers will be on each line, although this is atypical).
+
+\code{java/sumOfTheOthers.java}
+
+\texttt{String}s are immutable, which means in particular that
+concatenation has to allocate an entirely new \texttt{String} and copy
+both arguments.  Hence repeatedly appending individual characters to
+the end of a \texttt{String} takes $O(n^2)$ time, since the entire
+string must be copied with each append operation.  In this situation,
+either pre-allocate a sufficiently large \texttt{char[]}, or use
+the \javadoc{lang}{StringBuilder} class.
+
+\section{StringBuilder}
+
+\kattis{itsasecret, joinstrings}
+
+\javadoc{util}{StringBuilder} is a \emph{mutable} string class which
+supports efficient append and modification operations.  If you need to
+build up a long string by incrementally appending text bit by bit, you
+should use \texttt{StringBuilder} instead of using \texttt{String}
+directly.  \texttt{StringBuilder} also supports a \texttt{reverse()}
+method (unlike \texttt{String}).
+
+As a simple example, the below code prints \texttt{0291817161514131211101987654321}.
+
+\begin{minted}{java}
+  StringBuilder sb = new StringBuilder();
+  for (int i = 1; i <= 20; i++) {
+      sb.append("" + i);
+  }
+  System.out.println(sb.reverse());
+\end{minted}
+
+\section{Character}
+
+\kattis{ummcode, softpasswords}
+
+\todo{Useful Character class methods like \texttt{isDigit},
+  \texttt{isAlphabetic}, etc.}
+
+\section{Arrays}
+
+\kattis{falcondive,freefood,traveltheskies}
+
+The basic syntax for creating a primitive array in Java is, for example,
+\begin{minted}{java}
+int[] array = new int[500];
+\end{minted}
+
+Some tips and tricks:
+\begin{itemize}
+\item Array indexing starts at 0; however, problems sometimes index
+  things from $1 \dots n$.  In such a situation it is usually a good
+  idea to simply create an array with one extra slot and leave index 0
+  unused.  The alternative (fiddling with indices by subtracting and
+  adding 1 in the right places) is quite error-prone.
+\item You can initialize an entire array to a given value using
+  \texttt{Arrays.fill(array, value)}.
+\item If you only want to initialize part of an array, use
+  \texttt{Arrays.fill(array, fromIndex, toIndex, value)} to fill the
+  array from \texttt{fromIndex} (inclusive) up to \texttt{toIndex}
+  (exclusive).
+\item You can sort the contents of an array in-place using
+  \href{https://docs.oracle.com/javase/10/docs/api/java/util/Arrays.html#sort(int\%5B\%5D)}{\texttt{Arrays.sort}};
+  see \fulllink{sec:sorting}.
+\item You can use \texttt{Arrays.binarySearch(array, key)} to look for
+  \texttt{key} within a sorted \texttt{array}.  Read
+  \href{https://docs.oracle.com/javase/10/docs/api/java/util/Arrays.html#binarySearch(int\%5B\%5D,int)}{the
+    documentation} to make sure you understand how to interpret the
+  return value.  See also \fulllink{sec:binary-search}.
+\item Other methods from the \javadoc{util}{Arrays} class may also
+  occasionally be useful.
+\item To iterate over the items in an array, you can use foreach
+  syntax:
+  \begin{minted}{java}
+    for (int item : array) {
+      // do something with i
+    }
+  \end{minted}
+\end{itemize}
+
+\section{ArrayList}
+
+\javadoc{util}{ArrayList} represents a standard dynamically-extensible
+array, doubling the underlying storage when it runs out of space so
+that appending takes $O(1)$ amortized time.  The \texttt{add},
+\texttt{get}, \texttt{set}, \texttt{size}, and \texttt{isEmpty}
+methods are useful, in addition to the ability to iterate over the
+elements in order.  Avoid methods such as \texttt{contains},
+\texttt{indexOf}, \texttt{remove}, and the version of \texttt{add}
+that takes an index, all of which take linear time.  (If you think you
+want any of these methods, it's probably a sign that you ought to be
+using a different data structure.)
+
+If you need to store a list/array and you know in advance exactly how
+much storage space you will need, then prefer using a primitive array
+which has less overhead as well as more concise syntax.  On the other
+hand, if you want to be able to dynamically extend a list by appending
+new elements to the end, use \texttt{ArrayList}.  (If you want to be
+able to dynamically extend a list on \emph{both} ends, use an
+\texttt{ArrayDeque} \link{sec:queue}.)
+
+\begin{minted}{java}
+ArrayList<Integer> lst = new ArrayList<>();
+lst.add(3); lst.add(19); lst.add(6);
+System.out.println(lst.get(2));   // prints 6
+lst.set(1, 12);                   // changes 19 to 12
+int sum = 0;
+for (Integer i: lst) {            // iterate through all items
+    sum += i;
+}
+System.out.println(sum);          // prints 3 + 12 + 6 = 21
+\end{minted}
+
+\section{Stack}
+
+\kattis{backspace, delimitersoup, islands, pairingsocks, reservoir, restaurant, symmetricorder,
+  throwns, zagrade}
+
+\javadoc{util}{Stack} provides a generic stack implementation with
+$O(1)$ operations.  Standard methods include \texttt{isEmpty},
+\texttt{push}, \texttt{pop}, \texttt{peek}, and \texttt{size}.  The
+code below shows a sample solution to \inlinekattis{backspace} using
+\javadoc{util}{Stack} (and \javadoc{util}{StringBuilder}).
+
+\code{java/backspace.java}
+
+Stacks are often used in implementing DFS \link{sec:dfs} as well as
+dealing with parentheses, or nesting more generally
+(\inlinekattis{pairingsocks}, \inlinekattis{islands},
+\inlinekattis{reservoir}).
+
+\section{Queue/ArrayDeque}
+\label{sec:queue}
+
+\kattis{eenymeeny, coconut, ferryloading4, integerlists, shuffling}
+
+\javadoc{util}{Queue}, unlike \javadoc{util}{Stack}, is not a class
+but an interface.  There are several classes implementing the
+\texttt{Queue} interface, but the best in the context of competitive
+programming is probably \javadoc{util}{ArrayDeque}, which in fact
+implements a \emph{double-ended queue} or \emph{deque}, providing
+$O(1)$ amortized addition and removal from both ends.
+
+The \texttt{add} and \texttt{remove} methods implement enqueueing and
+dequeueing.  To access both ends, use \texttt{addFirst},
+\texttt{addLast}, \texttt{removeFirst}, and \texttt{removeLast}, all
+of which run in $O(1)$ amortized time. (\texttt{add} is the same as
+\texttt{addLast} and \texttt{remove} is the same as
+\texttt{removeFirst}.)
+
+Queues are very commonly used in implementing \fulllink{sec:bfs} and
+in simulations of various sorts (for examples of the latter, see the
+selection of problems above).
+
+As a simple example of the syntax for creating and using a queue, the
+below code puts the numbers 1 through 10 in a queue and then extracts
+them to print them out in the same order.
+\begin{minted}{java}
+Queue<Integer> q = new ArrayDeque<>();
+for (int i = 1; i <= 10; i++) {
+  q.add(i);
+}
+while (!q.isEmpty()) {
+  System.out.println(q.remove());
+}
+\end{minted}
+
+\section{Comparator}
+\label{sec:comparator}
+
+A \javadoc{util}{Comparator} is used to specify a custom ordering on
+some type, potentially different than its ``natural'' ordering.
+Typically a \texttt{Comparator} can be passed as an optional argument
+to things that require an ordering.  For example, given an
+\texttt{ArrayList<Integer> arr}, one can use
+\texttt{Collections.sort(arr)} to sort it in increasing numeric order.
+If a different order is wanted, one can pass a \texttt{Comparator} as
+the second argument to \texttt{sort}, as in
+\begin{minted}{java}
+Collections.sort(arr, Collections.reverseOrder());
+\end{minted}
+to sort in descending order, or
+\begin{minted}{java}
+Collections.sort(arr, (i,j) -> q[i] - q[j]);
+\end{minted}
+to sort a list of \emph{indices} by the corresponding value in an
+array \texttt{q}.  A \texttt{Comparator} can also be used as an extra
+argument to the constructor when creating a data structure that
+depends on ordering, such as a \texttt{PriorityQueue},
+\texttt{TreeSet}, or \texttt{TreeMap}.
+
+\todo{Constructing Comparators via lambda; constructing via things
+  like \texttt{comparing}, \texttt{thenComparing}.
+  \texttt{Collections.reverseOrder()}.}
+
+\section{PriorityQueue}
+\label{sec:pq}
+
+\kattis{bank, ferryloading3, guessthedatastructure, knigsoftheforest, vegetables}
+
+A \javadoc{util}{PriorityQueue} allows adding new elements
+(\texttt{add}) and removing the \textbf{minimum} element
+(\texttt{remove}), both in $O(\lg n)$ time.  \texttt{peek} can also
+be used to get the minimum in $O(1)$ without removing it.  Priority
+queues are commonly used in Dijkstra's algorithm \link{sec:dijkstra},
+event-based simulations (\inlinekattis{ferryloading3}), and generally
+any situation where we need to do an ``online sort'', that is, we need
+to get items in order from smallest to biggest, but more items may
+continue to arrive/be generated as we go.
+
+Methods you should generally \emph{not} use with
+\texttt{PriorityQueue} include \texttt{remove(Object)} and
+\texttt{contains(Object)}, which take linear time.
+
+The default constructor makes an empty min-PQ.  If you want to use a
+different ordering, there is another constructor which takes a
+\javadoc{util}{Comparator}.
+\begin{itemize}
+\item For example, if you want a \textbf{max} priority queue, where
+  \texttt{remove()} yields the largest element, write something like
+  \begin{minted}{java}
+    PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+  \end{minted}
+\item If you want some other ordering, you can also use a lambda to
+  construct a \texttt{Comparator} on the fly, for example:
+  \begin{minted}{java}
+    PriorityQueue<Integer> pq = new PriorityQueue<>((a,b) -> dist[a] - dist[b]);
+  \end{minted}
+  Code like the above is used in Dijkstra's algorithm where we want to
+  compare vertices by their best recorded distance from the start
+  vertex.
+\end{itemize}
+
+Traditional presentations of priority queues often have a
+\emph{decrease key} operation which can decrease the priority of an
+item (or an \emph{adjust key} operation which can arbitrarily change
+the priority) and reestablish the data structure invariants in
+$O(\lg n)$ time; this operation is used, for example, in implementing
+Dijkstra's algorithm efficiently \link{sec:dijkstra}.  However, the
+Java \texttt{PriorityQueue} class has no such method.  One workaround
+is to simply call \texttt{remove} and then \texttt{add} so the item
+gets re-added with the new priority.  However, \texttt{remove} takes
+linear time, so this is not ideal, although in many cases it is still
+good enough.  For those (relatively rare) cases when an $O(\lg n)$
+decrease key operation is truly essential, see \fulllink{sec:adj-pq}.
+
+\section{Set}
+
+\kattis{boatparts, bookingaroom, engineeringenglish,
+  whatdoesthefoxsay, securedoors, bard, control}
+
+The \javadoc{util}{Set} interface represents a collection of items
+where each item occurs at most once. Operations supported by all
+\texttt{Set}s include \texttt{add}, \texttt{remove}, \texttt{contains},
+\texttt{size}/\texttt{isEmpty}.
+
+There are two main classes implementing \texttt{Set}:
+
+\begin{itemize}
+\item \javadoc{util}{HashSet} is implemented using a dynamically
+  expanding hash table.  It features $O(1)$ \texttt{add},
+  \texttt{remove}, and \texttt{contains}.
+\item \javadoc{util}{TreeSet} is implemented using a balanced binary
+  tree (a red-black tree, in fact), and supports \texttt{add},
+  \texttt{remove}, and \texttt{contains} in guaranteed $O(\lg n)$
+  time.  Of course this is slower than \texttt{HashSet}; however,
+  \texttt{TreeSet} has several other advantages:
+  \begin{itemize}
+  \item Since the elements are stored in order in the tree, iterating
+    over a \texttt{TreeSet} is guaranteed to yield the items in order
+    from smallest to biggest, whereas iterating over a
+    \texttt{HashSet} yields the items in an arbitrary order.  For
+    example, if you want to remove duplicates from a set of items and
+    then print them out in order, you might as well just throw them
+    all into a \texttt{TreeSet} instead of putting them in a
+    \texttt{HashSet} and then sorting (\inlinekattis{crowdcontrol}).
+    (And either one is probably going to be faster than sorting and
+    \emph{then} removing duplicates.)
+  \item If you need to put objects of a custom class into a set, it is
+    sometimes easier to implement \texttt{Comparable} for your class
+    and use a \texttt{TreeSet} than it is to override
+    \texttt{hashCode} and use a \texttt{HashSet}.  The $O(\lg n)$
+    difference is rarely, if ever, going to be the difference between
+    AC and TLE, so you should use whichever approach will be easier to
+    code.
+  \item \texttt{TreeSet} also supports the \javadoc{util}{OrderedSet}
+    and \javadoc{util}{NavigableSet} interfaces, which provide
+    additional methods like \texttt{first} and \texttt{last} (return
+    the smallest or largest element in the set), \texttt{headSet} and
+    \texttt{tailSet} (return the subset of all items less or greater
+    than a specified element), and \texttt{floor}, \texttt{ceiling},
+    \texttt{lower}, and \texttt{higher} (find the first item in the
+    set less/greater than a specified value).  This last set of
+    methods can be especially useful for some types of problems.
+    \kattis{closestsums, platforme, baloni, excellentengineers}
+  \end{itemize}
+
+\end{itemize}
+
+There is also a \javadoc{util}{LinkedHashSet} class which in addition
+to providing all the same features as a \texttt{HashSet}, also
+remembers the order in which the items were added; iterating over the
+set is guaranteed to yield the items in this order.  This is a bit
+more sophisticated than simply keeping an \texttt{ArrayList} and a
+\texttt{HashSet} side-by-side, in particular because a
+\texttt{LinkedHashSet} still supports $O(1)$ removal.  We currently do
+not know of any example problems which can be solved most easily using
+a \texttt{LinkedHashSet}, but it never hurts to be prepared!
+
+\section{Map}
+\label{sec:map}
+
+\kattis{awkwardparty, administrativeproblems, snowflakes, pizzahawaii, snowflakes}
+
+The \javadoc{util}{Map} interface represents a dictionary data
+structure associating keys to values.  Supported operations include
+\texttt{get(K)}, \texttt{put(K,V)}, \texttt{containsKey(K)},
+\texttt{remove(K)}, and \texttt{size/isEmpty}.
+
+As with \texttt{Set}, there are two main classes implementing
+\texttt{Map}:
+
+\begin{itemize}
+\item \javadoc{util}{HashMap} is implemented using a hash table, and
+  allows $O(1)$ \texttt{get}, \texttt{put}, \texttt{remove}, and
+  \texttt{containsKey}.
+
+\item \javadoc{util}{TreeMap} is implemented using a balanced binary
+  tree.  Many of the same comments apply as for \texttt{TreeSet}:
+  \begin{itemize}
+  \item All operations run in worst-case $O(\lg n)$ time.
+  \item Iterating over the keys in the map is guaranteed to return
+    them in order from smallest to biggest.
+  \item \texttt{TreeMap} also implements the \javadoc{util}{SortedMap}
+    interface (allowing one \emph{e.g.} to access the first or last
+    key or to get a submap of all the key/value pairs which lie in
+    between certain keys) and \javadoc{util}{NavigableMap} interface
+    (which lets you find the closest keys and values which are
+    smaller/bigger than a given query key).
+  \end{itemize}
+\end{itemize}
+
+For the purposes of programming contests, \texttt{TreeMap} and
+\texttt{HashMap} are basically interchangeable.  \texttt{HashMap} is
+faster in theory but a factor of $\lg n$ is not that much, and
+\texttt{HashMap} has its own overhead costs.
+
+\begin{itemize}
+\item To iterate over the keys of a map, use \texttt{keySet}:
+  \begin{minted}{java}
+    for (K key : map.keySet()) {
+      ...
+    }
+  \end{minted}
+\item To iterate over the values, use \texttt{values}:
+  \begin{minted}{java}
+    for (V val : map.values()) {
+      ...
+    }
+  \end{minted}
+\item You can also iterate over both at once:
+  \begin{minted}{java}
+    for (Map.Entry<K,V> e : map.entrySet()) {
+      ... e.getKey() ... e.getValue() ...
+    }
+  \end{minted}
+\end{itemize}
+
+\section{BigInteger} \label{sec:bigint}
+
+\kattis{basicremains}
+
+\javadoc{math}{BigInteger} represents arbitrarily large integer
+values, though it's not actually needed all that often. You can import
+it as \texttt{java.math.BigInteger}.  For combinatorics problems where
+the answer is going to be a big number, consider using Python instead.
+
+\begin{itemize}
+\item To turn an \texttt{int} or \texttt{long} into a
+  \texttt{BigInteger}, use \texttt{BigInteger.valueOf}.
+\item \texttt{BigInteger} also provides the constants
+  \texttt{BigInteger.ZERO}, \texttt{.ONE}, \texttt{.TWO}, and
+  \texttt{.TEN}.
+\item To do arithmetic, use methods such as \texttt{add},
+  \texttt{subtract}, and \texttt{multiply}, which all return their
+  result as a new \texttt{BigInteger}:
+  \begin{minted}{java}
+    BigInteger a = ...
+    BigInteger b = ...
+    BigInteger c = a.add(b.multiply(BigInteger.TEN));  // c = a + b*10
+  \end{minted}
+\item \texttt{BigInteger} can occasionally be useful in scenarios
+  other than representing large numbers, because of its useful utility
+  methods such as \texttt{gcd} and its ability to convert between
+  different bases.
+\end{itemize}
+
+\section{Sorting}
+\label{sec:sorting}
+
+\begin{itemize}
+\item You can sort an array using \texttt{Arrays.sort(array)}.
+\item You can sort a list-like collection (such as an
+  \texttt{ArrayList}) using \texttt{Collections.sort(list)}.
+\item These \texttt{sort} methods also take an optional
+  \fulllink{sec:comparator}.
+\end{itemize}
+
+You should rarely, if ever, have to code your own sorting algorithms;
+the exception is when you need to \emph{enhance} a sorting algorithm
+to keep track of some extra information while sorting (for example,
+look up the divide-and-conquer algorithm for counting inversions).
+
+It is relatively common that one needs to sort according to some key,
+but carry along additional information with the keys.  The easiest way
+to do this is to make a small class to contain all the relevant
+information, then implement the \texttt{Comparable} interface.
+\begin{minted}{java}
+class Person implements Comparable<Person> {
+    int age; String name;
+    public Person(int _age, String _name) { age = _age; name = _name; }
+    int compareTo(Person p) { return age - p.age; }
+}
+
+ArrayList<Person> people = ...
+Collections.sort(people);  // sort by age, carrying names along too
+\end{minted}
+
+Occasionally, you need to sort an array of items, but also keep track
+of the original index of each item (\inlinekattis{keepitcool}).  To do
+this, you can use a technique like the above, where each object stores
+an item as well as its index in the original list, and sorts according
+to the item.  Then sorting the objects will sort the items, but each
+item carries along its original index.
+
+\section{Fast I/O} \label{sec:fastio}
+
+\kattis{avoidland, cd, grandpabernie, minspantree, ozljeda}
+
+Typically ACM ICPC problems are designed so \texttt{Scanner} and
+\texttt{System.out.println} are fast enough to read and write the
+required input and output within the time limits.  However, these are
+relatively slow since they are unbuffered (every single read and write
+happens immediately).  Occasionally it can be useful to have faster
+I/O; indeed, a few problems on Kattis cannot be solved in Java without
+using this. See Figure~\ref{fig:fastio} for a faster drop-in replacement for
+\texttt{Scanner}, adapted from the \texttt{Kattio} class provided by
+Kattis.
+
+\begin{figure}
+  \small
+  \code{java/FastIO.java}
+  \caption{Fast I/O}  \label{fig:fastio}
+\end{figure}
+
+% \todo{Add \texttt{getLine()} method}
+
+\chapter{Limits}
+
+As a rule of thumb, you should assume about $10^8$ (= 100 million)
+operations per second.  If you can think of a straightforward brute
+force solution to a problem, you should check whether it is likely to
+fit within the time limit; if so, go for it!  Some problems are
+explicitly written to see if you will recognize this.  If a brute
+force solution won't fit, the input size can help guide you to search
+for the right algorithm running time.
+
+Example: suppose a problem requires you to find the length of a
+shortest path in a weighted graph.
+\begin{itemize}
+\item If the graph has $|V| = 400$ vertices, you should use
+  Floyd-Warshall \link{sec:floydwarshall}: it is the easiest to code and takes $O(V^3)$ time
+  which should be good enough.
+\item If the graph has $|V| = 4000$ vertices, especially if it doesn't
+  have all possible edges, you can use Dijkstra's algorithm
+  \link{sec:dijkstra}, which is $O(E \log V)$.
+\item If the graph has $|V| = 10^5$ vertices, you should look for some
+  special property of the graph which allows you to solve the problem
+  in $O(V)$ or $O(V \log V)$ time---for example, perhaps the graph is
+  a tree \link{sec:graph-basics}, so you can run a BFS/DFS \link{sec:dfs}
+  to find the unique path and then add up the weights.  An input size of
+  $10^5$ is a common sign that you are expected to use an $O(n \lg n)$
+  or $O(n)$ algorithm---it's big enough to make $O(n^2)$ too slow but
+  not so big that the time to do I/O makes a big difference.
+\end{itemize}
+
+\begin{table*}[h]\centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}lll@{}}\toprule
+    $n$ & Worst viable running time & Example \\
+    \midrule
+    $11$ & $O(n!)$ & Generating all permutations \link{sec:combinatorics} \\
+    $25$ & $O(2^n)$ & Generating all subsets \link{chap:bittricks} \\
+    $100$ & $O(n^4)$ & Some brute force algorithms \\
+    $400$ & $O(n^3)$ & Floyd-Warshall \link{sec:floydwarshall} \\
+    $10^4$ & $O(n^2)$ & Testing all pairs \\
+    $10^6$ & $O(n \lg n)$ & BFS/DFS; sort+greedy \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\kattis{bing, transportationplanning, dancerecital, prozor,
+  rectanglesurrounding, weakvertices}
+
+\begin{itemize}
+\item $2^{10} = 1024 \approx 10^3$.
+\item One \texttt{int} is 32 bits = 4 bytes. So \emph{e.g.} an array
+  of $10^6$ \texttt{int}s requires $< 4$ MB---no big deal since the
+  typical memory limit is $1$ GB.  Don't be afraid to make arrays with
+  millions of elements!
+\item \texttt{int} holds 32 bits; the largest \texttt{int} value is
+  \verb|Integer.MAX_VALUE| $ = 2^{31} - 1$, a bit more than
+  $2 \cdot 10^9$.
+\item \texttt{long} holds 64 bits; the largest
+  \texttt{long} value is \verb|Long.MAX_VALUE| $ = 2^{63} - 1$, a bit
+  more than $9 \cdot 10^{18}$. To write literal long values you can
+  add an \texttt{L} suffix, as in \texttt{long x = 1234567890123L;}.
+\item If you need larger values, use \fulllink{sec:bigint} or just use
+  Python~\link{chap:python}; see also \fulllink{sec:combinatorics}.
+\end{itemize}
+
+\kattis{different}
+
+\chapter{Data Structures}
+
+\section{Pair}
+
+Java has a \texttt{Pair} class in \texttt{javafx.util.Pair}, but one
+can't necessarily assume that this will be available in a contest
+environment.  The following simple class suffices to store pairs of
+values, which is especially useful in representing \eg coordinates in
+a 2D grid.  Note in a competitive programming context we don't bother
+adding getter and setter methods; the \texttt{a} and
+\texttt{b} fields are public so we can just access them directly.
+
+\code{data-structures/Pair.java}
+
+Below is a variant which implements the \texttt{Comparable}
+interface. \texttt{CPair} objects sort in lexicographic order: first
+by the first component, and then ties in the first component are
+broken by the second component.
+
+\code{data-structures/CPair.java}
+
+\section{Bag/multiset}
+
+\kattis{cookieselection, kattissquest}
+
+A \emph{bag}, aka \emph{multiset}, is a collection of elements where
+order does not matter (like a set) but multiplicity does matter, \ie
+there can be duplicates and we need to keep track of how many
+duplicates there are of each item.  Bags are not needed often but can
+occasionally be useful.  It is not too hard to build a bag as a map
+from items to integer counts, but there are a few corner cases so it's
+worth copying a well-tested implementation instead of writing one from
+scratch.
+
+The implementation below is based on a \javadoc{util}{TreeMap}
+\link{sec:map}, and hence supports operations like \texttt{first()}
+and \texttt{last()}.  If desired one could easily change the
+\texttt{TreeMap} to a \texttt{HashMap} and remove the methods which
+are no longer supported, although the factor of $O(\lg n)$ is unlikely
+to make a practical difference.
+
+\code{data-structures/TreeBag.java}
+
+\section{Union-find}
+\label{sec:union-find}
+
+\kattis{firetrucksarered, forestfires, kastenlauf, ladice, numbersetseasy, unionfind, virtualfriends,
+  watersheds, wheresmyinternet}
+
+A union-find structure can be used to keep track of a collection of
+disjoint sets, with the ability to quickly test whether two items are
+in the same set, and to quickly union two given sets into one.  It is
+used in Kruskal's Minimum Spanning Tree algorithm \link{sec:kruskal},
+and can also be useful on its own (see the above Kattis problems for
+examples).  \texttt{find} and \texttt{union} both take essentially
+constant amortized time.
+
+\code{data-structures/UnionFind.java}
+
+The above code can easily be enhanced to keep track of the number of
+sets (initialize to \texttt{n}; subtract one every time \texttt{union}
+hits the \texttt{ru != rv} case), or to keep track of the actual size
+of each set instead of just the rank/height (keep a size for each
+index; initialize all to 1; add sizes appropriately when doing
+\texttt{union}).
+
+\section{Tries}
+
+\kattis{boggle, heritage, herkabe, phonelist}
+
+The code below is a very simple implementation of a trie---there are
+many other methods that could be added, and it is not very efficient
+since it repeatedly uses the $O(n)$ \texttt{substring} operation as it
+recurses down the trie, but it is sufficient for some problems.
+
+\todo{More efficient/full-featured Trie class}
+
+\code{data-structures/Trie.java}
+
+Tries are intimately connected with MSD radix sort, which can be
+thought of as equivalent to building a trie and then traversing it in
+order.  However, no implementation of radix sort actually builds an
+intermediate trie.  Sometimes it can be helpful to think about a
+problem in terms of a trie, but never actually implement/materialize
+the trie at all (\inlinekattis{herkabe}): just do a modified radix
+sort, first grouping strings by their first character, then recursing
+on each group, keeping track of needed auxiliary information
+(\eg depth) along the way.
+
+\section{Adjustable priority queue}
+\label{sec:adj-pq}
+
+\kattis{flowerytrails, shopping}
+
+As discussed in \fulllink{sec:pq}, Java's \texttt{PriorityQueue} class
+has no way to efficiently alter the priority of an item already stored
+in the queue; simply removing and re-adding the item does the trick
+but takes $O(n)$ time.  The efficiency of this operation really does
+make a difference in the asymptotic performance of Dijkstra's
+algorithm \link{sec:dijkstra}, and occasionally it really needs to be
+$O(\lg n)$ in order to meet the time limits (\emph{e.g.}
+\inlinekattis{flowerytrails}). A suitable implementation of a priority
+queue with $O(\lg n)$ priority adjustment is shown below.  The key
+idea is to keep a hash table on the side which can be used to quickly
+find the index of any item stored in the priority queue; of course,
+the hash table has to be kept suitably updated whenever items are
+shuffled in the heap.  The \texttt{adjust(e)} method is used to inform
+the priority queue that the priority of item \texttt{e} has changed,
+so that the queue has an opportunity to move the item if necessary to
+reestablish the heap invariants.
+
+\code{data-structures/AdjustablePQ.java}
+
+\section{Segment trees and Fenwick trees}
+
+See \fulllink{sec:range-queries}.
+
+\section{Splay trees and/or treaps}
+
+\todo{Write about these?}
+
+\chapter{Enumeration and search}
+
+\section{Complete search}
+
+\kattis{bing, classpicture, coloring, cycleseasy, dancerecital,
+  lektira, freefood, gepetto, kastenlauf, mjehuric, paintings, prozor,
+  rectanglesurrounding, reducedidnumbers, reseto, sheldon, shuffling,
+  weakvertices, wheels, transportationplanning}
+
+See CP3 for a fuller discussion of complete search, aka brute force,
+and a list of relevant techniques (nested loops, recursive
+backtracking, \emph{etc.}).  Just remember that there's no need to
+code anything more sophisticated if a back-of-the-envelope analysis
+shows that a simple complete search will finish under the time
+limit. (Although some kinds of complete search can themselves be
+rather sophisticated.  For example, see \fulllink{chap:bittricks}.
+Some of the above problems are much harder than others!)
+
+Sometimes complete search isn't in and of itself the full solution to
+a problem, but the problem is set up so that a subpart can be done via
+complete search, to keep the solution complexity from getting out of
+hand and allowing you to focus your efforts on the more
+``interesting'' part of the problem.
+
+\todo{Generating all k-subsets with nested loops; generating all
+  subsets with bit vectors; generating all permutations (Heap's
+  algorithm, recursive backtracking)}
+
+\section{Binary search}
+\label{sec:binary-search}
+
+If you need to do a traditional binary search---that is, finding the
+index where a given element occurs in a sorted array---you should just
+use the standard \texttt{Arrays.binarySearch} method.  However, the
+underlying idea of binary search applies in many more contexts.
+
+\subsection*{Binary search on a real interval}
+\label{sec:binary-search-real}
+
+\kattis{bottles, cheese, fencebowling, speed, suspensionbridges,
+  tetration, queenspatio}
+
+This is probably the most common form of binary search in competitive
+programming.  Given a function $f$ which is monotonic (\emph{i.e.}
+always increasing, or always decreasing) on a given interval of the
+\emph{real} line $[a, b]$, find $a \leq x \leq b$ such that $f(x)$ is
+equal to some target value.  This can be accomplished by
+straightforward binary search: keep track of a current subinterval
+$[x_L, x_H]$; at each step, evaluate $f$ at the midpoint
+$m = (x_L + x_H)/2$ of the interval, and update $x_L$ or $x_H$ to $m$
+depending on whether the value of $f$ is too small or too big,
+respectively.  Iterate until $x_H - x_L$ is within an appropriate
+tolerance (or simply iterate a fixed number of times---$50$ should be
+plenty), and return $(x_L+x_H)/2$.  This is actually easier than
+traditional binary search since one doesn't have to worry about
+indexing, off-by-one errors, and the like.
+
+The main trick is to realize when this technique is applicable.
+Sometimes the function $f$ is plainly stated in the problem
+description, but sometimes the thing being searched for is more
+subtle.  Whenever a problem asks for a floating-point number as the
+answer, it's worth considering whether you can binary search for it.
+
+\subsection*{Binary search on an integer interval}
+\label{sec:unbounded-binary-search}
+
+\kattis{outofsorts, guess, eko, freeweights, inversefactorial,
+  reservoir, pullingtheirweight}
+
+Suppose we again have a monotonic function $f$ and want to find a
+value $n$ such that $f(n)$ is equal to some target value $t$---except
+that $f$ is defined on the \emph{integers} instead of the real
+numbers.  We can again use binary search, but we have to be much more
+careful about potential off-by-one errors.
+
+\newcommand{\vlo}{\mathit{lo}}
+\newcommand{\vhi}{\mathit{hi}}
+\newcommand{\vmid}{\mathit{mid}}
+
+\begin{itemize}
+\item Remember that to do binary search \emph{in a sorted array} $a$,
+  that is, find the index $i$ such that $a[i]$ is equal to some target
+  value, one can just use \texttt{Arrays.binarySearch}.
+\item In the basic version, we simply want to find $n$ such that
+  $f(n) = t$, or report that no such $n$ exists.  In this case it
+  works well to use a half-open interval, that is, we maintain the
+  invariant that possible values of $n$ lie in the interval
+  $[\vlo, \vhi)$, including $\vlo$ but \textbf{excluding}
+  $\vhi$.  This has the advantage that the size of the
+  remaining interval can be computed as simply $\vhi - \vlo$,
+  and an appropriate condition for the loop is $\vhi - \vlo > 0$.
+
+  The midpoint of $[\vlo, \vhi)$ can be computed as
+  $\vmid = (\vlo + \vhi)/2$;\footnote{Or
+    $\vmid = \vlo + (\vhi - \vlo)/2$, if you are worried about
+    $\vlo + \vhi$ overflowing, but this is unlikely to ever be an
+    issue in a competitive programming context.} $\vmid$ always
+  lies within the interval, even if $\vhi - \vlo = 1$ (the rounding
+  behavior of integer division plays a crucial role).
+
+  If $\vmid$ does not hold the target, one must then either update
+  $\vhi$ to $\vmid$, or $\vlo$ to $\vmid + 1$ (not $\vmid$!) depending
+  on whether the item at $\vmid$ is larger or smaller than the target,
+  respectively.
+
+  \todo{Example code}
+
+\item A slightly more sophisticated variant is where we need to find
+  the largest $n$ such that $f(n) \leq t$, or the smallest such that
+  $f(n) \geq t$, or something similar. This requires even more care.
+  In this situation it tends to be better to use a closed interval
+  $[\vlo, \vhi]$, and using great care to update $\vlo$ and $\vhi$
+  appropriately (to $\vmid - 1$, $\vmid$, or $\vmid+1$) depending on
+  the desired properties of the value being searched for.
+
+  In this scenario, when there can be duplicate values of $f(n)$, it's
+  not possible to stop the search early, since any given $n$ for which
+  $f(n) = t$ may not be the optimal one.  One must continue searching
+  until the interval has reached size $1$, and then return the sole
+  remaining value.
+
+  \todo{Talk about how to find midpoint based on whether we want greatest or least}
+  \todo{Example code}
+  \todo{if we want \emph{biggest} value satisfying something, need to
+    set mid to CEILING of (lo+hi)/2?}
+\end{itemize}
+
+\subsection*{Unbounded binary search}
+
+\kattis{queenspatio}
+
+Consider the following problem: given an increasing function $f$ and a
+target value $t$, find the smallest positive value of $x$ such that
+$f(x) \geq t$. (The domain of $f$ can be either the reals or the
+integers.)
+
+The idea is to start by finding an appropriate upper bound using
+repeated doubling: starting at $u = 1$, evaluate $f(u)$; if it is less
+than $t$, double $u$ and repeat.  Keep doubling $u$ until finding the
+first such value of $u$ (that is, the first power of two) such that
+$f(u) \geq t$.  Then do a traditional binary search on the range
+$[1,u]$.
+
+\todo{Find some example Kattis problems that need an initial unbounded
+  search?}
+
+\section{Ternary search}
+
+\kattis{brocard, euclideantsp, infiniteslides, janitortroubles, dailydivision}
+
+Ternary search can be used to find the minimum or maximum of a
+function which is concave or convex on a given interval (that is, the
+function only decreases until the minimum and then only increases, or
+vice versa).  Binary search does not apply in this case, since just by
+looking at the value of the function at the midpoint of the interval,
+it is impossible to know whether we should recurse on the left or
+right half of the interval.
+
+Suppose we are currently considering the interval $[L,R]$ and looking
+for the minimum of a function $f$ on the interval.  We compute the two
+points $1/3$ and $2/3$ of the way through the interval, namely
+$m_L = (2L + R)/3$ and $m_R = (L + 2R)/3$.
+\begin{itemize}
+\item If $m_L < m_R$, then we know the minimum can't be to the right
+  of $m_R$ (because then it would increase from $m_L$ to $m_R$ and
+  then decrease---but we assume the function decreases until the minimum
+  and then only increases after that).  Hence, we can recurse on the
+  interval $[L, m_R]$.
+\item If $m_L > m_R$, we can likewise recurse on $[m_L, R]$.
+\item If $m_L = m_R$, we can recurse on $[m_L, m_R]$ (though lumping
+  this case in with either of the above two cases works fine and
+  requires writing less code).
+\end{itemize}
+In any case, we decrease the size of the interval by at least $1/3$
+with each iteration, so we need only a logarithmic number of
+iterations relative to the ratio between the starting interval size
+and the desired accuracy.
+
+\todo{Example code}
+
+\subsection*{Integer ternary search}
+
+When ternary searching over an interval of \emph{integers}, much of
+the same advice applies as for binary search (see the previous
+section).  However, care must be taken with the stopping conditions;
+depending on exactly how the recursion works it is possible to end up
+in a scenario where it loops infinitely on an interval of size 1 or 2.
+Even if it is possible to come up with an elegant design that does
+not require any special cases, it may be easiest to simply stop the
+loop when the interval has size 2 or smaller, and then simply check
+the few remaining items manually.
+
+\chapter{Graphs}
+
+\section{Graph basics} \label{sec:graph-basics}
+
+\begin{itemize}
+\item Every edge in a \emph{directed} graph has an orientation,
+  \emph{i.e.} a ``from'' vertex and a ``to'' vertex.  Edges in an
+  \emph{undirected} graph have no orientation.
+\item \emph{Simple} graphs have at most one edge between any two
+  vertices, and no self-loops.  Most graph problems feature simple
+  graphs.  Sometimes, however, there can be loop edges from a vertex
+  back to itself and/or multiple edges between the same two vertices.
+\end{itemize}
+
+\todo{Directed, undirected, weighted, unweighted, self loops, multiple edges}
+\todo{characterization of trees}
+\todo{New virtual source/sink node trick}
+
+\kattis{chopwood}
+
+\section{Graph representation}
+
+\todo{Adjacency matrix, adjacency maps.  Edge objects. Implicit
+  graphs.}
+
+Figure~\ref{fig:horrorlist} has a sample solution for
+\inlinekattis{horrorlist} which builds an adjacency map
+representation of an undirected graph.
+
+\todo{State space search with complex states: make a class, implement
+  Comparable, use TreeMap}
+
+\section{Breadth-First Search}
+\label{sec:bfs}
+
+\kattis{ballsandneedles, brexit, buttonbashing, collapse,
+  erdosnumbers, grapevine, horrorlist, mazemakers, hogwarts2}
+
+Breadth-first search (BFS) can be used to find single-source shortest
+paths (\emph{i.e.} shortest paths from a particular starting vertex to
+all other vertices) in an unweighted graph. BFS comes up often in many
+different guises, so it's worth being very familiar with BFS and its
+variants. Below is pseudocode showing a generic BFS implementation.
+Important invariants:
+\begin{itemize}
+\item Every vertex in $Q$ has already been marked visited. (This is
+  important since it prevents vertices from being added to $Q$
+  multiple times.)
+\item $Q$ only contains vertices from at most two (consecutive) levels
+  at a time.
+\end{itemize}
+
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\begin{algorithm}[H]
+  \begin{algorithmic}[1]
+\State $s \gets$ starting vertex
+\State Mark $s$ visited
+\State $Q \gets$ new queue containing only $s$
+\State $\mathit{level}[s] \gets 0$
+\While{$Q$ not empty}
+  \State $u \gets Q.\mathit{remove}$
+  \For{each neighbor $v$ of $u$}
+    \If{$v$ is not visited}
+      \State $\mathit{level}[v] \gets \mathit{level}[u] + 1$ \Comment{Optionally mark level}
+      \State Add $v$ to $Q$
+      \State Mark $v$ visited
+      \State $\mathit{parent}[v] \gets u$ \Comment{Optionally record parent}
+    \EndIf
+  \EndFor
+\EndWhile
+  \end{algorithmic}
+\caption{BFS}
+\end{algorithm}
+\end{minipage}
+\end{center}
+
+Some options/variants:
+\begin{itemize}
+\item The $\mathit{level}$ array shown above is optional, and can be
+  omitted if not needed.  Sometimes it makes sense to have the
+  $\mathit{level}$ array do double-duty to also track visited vertices:
+  if the $\mathit{level}$ of every vertex is initialized to some
+  nonsensical value such as $-1$ or $\infty$, then a vertex is visited
+  iff its $\mathit{level}$ is not equal to the initial value.
+
+  Figure~\ref{fig:horrorlist} shows a sample solution for
+  \inlinekattis{horrorlist}, exhibiting a BFS with level labelling.
+\item The parent map is also optional, and can be used to reconstruct
+  an actual shortest path from $s$ to any vertex, by starting with the
+  end vertex and iteratively following parents backwards until
+  reaching $s$.
+\item If you want to compute shortest paths from \emph{any} of a set
+  of starting vertices, simply replace the initialization of $s$ with
+  the desired set (\emph{i.e.} mark them all visited, add them all to
+  $Q$, and set their $\mathit{level}$ to $0$ before starting the loop;
+  the loop itself does not change) (\inlinekattis{zoning}).
+\item Replacing $Q$ with a stack results in a depth-first rather than
+  breadth-first search (although often it makes more sense to
+  implement a DFS recursively; see \link{sec:dfs}).
+\end{itemize}
+
+\begin{figure}
+  \small
+  \code{graph/horrorList.java}
+  \caption{Sample solution for \texttt{horrorlist} (Adjacency set
+    representation; BFS with level labelling)}  \label{fig:horrorlist}
+\end{figure}
+
+\todo{Applications of BFS: identify reachable vertices; identify
+  (weakly) connected components; identify bipartite graphs/odd cycles
+  (detect cross-edges with map of level sets)}
+
+\newpage
+\section{DFS} \label{sec:dfs}
+\kattis{caveexploration, birthday}
+\todo{How to decide on start/finish labelling, recursive vs stack}
+
+Depth First Search (DFS) is very similar to BFS, but with the change that we fully explore one child before we move on to the next instead of interleaving them. Note that while this means we can't use it to calculate a sense of `depth' at each vertex, we can use it to split the graphs into `chunks' that are reachable from each child.
+
+\begin{figure}
+  \small
+  \code{graph/dfs.java}
+  \caption{Depth First Search} \label{fig:dfs}
+\end{figure}
+
+
+Articulation points are defined as the vertices which are a chokepoint for all paths between two (or more) parts of the graph. That is, if they were removed then parts of the graph that were previously connected would be disconnected. Similarly, bridges are edges that would split the graph into more components if they are removed. Both of these can be detected with a slightly modified version of DFS to split the graph into bi-connected components (regions with two entirely different paths between vertices).
+
+\begin{figure}
+  \small
+  \code{graph/ArticulationPoints.java}
+  \caption{Articulation Points via DFS} \label{fig:articulationpoints}
+\end{figure}
+
+\newpage
+\section{SCCs and 2-SAT}
+
+\kattis{loopycabdrivers, cantinaofbabel, pieceittogether, cleaningpipes}
+\todo {Finding explicit 2-SAT solutions}
+Strongly Connected Components are components of a graph in which all pairs of vertices can reach each other in either direction. The vital thing to recognize is that if we think of entire SCCs as vertices in a larger DAG (because if the condensed graph had cycles then it must have a way to return to where you started).
+
+
+A problem which is solvable with SCCs is looking for a simultaneous solution to a group of `or' questions on a set of boolean values. The core idea is to construct a graph with two nodes for each boolean (representing it being provably true or provably false). If we have a constraint $a_1 \lor a_2$ this is equivalent to saying `if $a_1$ is false then $a_2$ must be true' and `if $a_2$ is false then $a_1$ must be true'. Because of that we add two edges between $\neg a_1$ and $a_2$ and $\neg a_2$ and $a_1$. The SCCs in this graph represent values which each imply each other if any of them are true. Thus, if there is any variable which is in the same SCC as its negation there is a contradiction in the constraints and no solution exists.  
+
+\begin{figure}
+  \small
+  \code{graph/scc.java}
+  \caption{$O(V+E)$ Kosaraju's Algorithm} \label{fig:scc}
+\end{figure}
+
+\newpage
+\section{Topological sorting} \label{sec:topsort}
+
+\kattis{builddeps, easyascab, eatingeverything, excavatorexpedition,
+  mravi, promotions, reactivity, runningmom, succession}
+
+% , ccsc18.topicx
+
+A \emph{topological sort} of a directed graph $G$ is a list of
+vertices such that whenever there is an edge from $u$ to $v$, $u$
+comes before $v$ in the list; $G$ has a topological sort if and only
+if it is acyclic.  Topological sorting can thus be used to detect the
+presence of cycles. It is also often used in conjunction with dynamic
+programming (\inlinekattis{eatingeverything, excavatorexpedition,
+  mravi}): if we need to compute some value of each vertex
+such that the value can be computed once we already know the values
+for all the outgoing (or incoming) neighbors, topological sort gives
+us the right order for computing the values.
+
+There are two main methods to do a topological sort.  Method 1 (Kahn's
+Algorithm) is to repeatedly remove nodes with no incoming edges (or
+dually, nodes with no outgoing edges).  Empirically this seems to be
+faster than Method 2, but is perhaps a bit more code.  Pseudocode is
+as follows:
+
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\begin{algorithm}[H]
+  \begin{algorithmic}[1]
+    \Require Directed graph $G = (V,E)$.
+    \State $T \gets$ empty list (to store topsort)
+    \State $Z \gets$ empty queue (to store nodes with $0$ indegree)
+    \State $\mathit{in} \gets$ dictionary mapping all vertices to
+    their indegree
+    \State Put all vertices with indegree $0$ into $Z$
+    \While{$Z$ is not empty}
+      \State $v \gets Z.\mathit{dequeue}$
+      \State append $v$ to $T$
+      \For{each $u$ adjacent to $v$}
+        \State decrement $\mathit{in}[u]$
+        \If{$\mathit{in}[u] = 0$}
+          \State add $u$ to $Z$
+        \EndIf
+      \EndFor
+    \EndWhile
+  \end{algorithmic}
+  \caption{{\sc TopSort}(G)}
+  \label{alg:topsort}
+\end{algorithm}
+\end{minipage}
+\end{center}
+
+If the queue becomes empty before all vertices have been added to the
+topsort, then a cycle exists.
+
+For a sample implementation of this algorithm, see the solution to
+\inlinekattis{succession} at \url{https://github.com/Hendrix-CS/programming-team/blob/master/solved/Succession.java}.
+
+The second method is to do a recursive DFS: simply add each vertex to
+a list just \emph{after} recursively processing all its neighbors;
+this yields a topsort in reverse order.
+
+\begin{center}
+  \begin{minipage}{0.8\textwidth}
+    \begin{algorithm}[H]
+      \begin{algorithmic}[1]
+        \Function{TopSort-DFS}{G}
+        \State $T \gets$ empty list/stack to hold topsort
+        \ForAll{$v \in V$}
+        \If{$v$ is not visited}
+        \Call{DFS}{$v$, $T$}
+        \EndIf
+        \EndFor
+        \State \Return{$T$}
+        \EndFunction \\
+
+        \Function{DFS}{$x$, $T$}
+        \State Mark $x$ visited
+        \ForAll{$(x,y) \in E$}
+          \If{$y$ is not visited}
+            \Call{DFS}{$y$, $T$}
+          \EndIf
+        \EndFor
+        \State Add $x$ to $T$
+        \EndFunction
+      \end{algorithmic}
+      \caption{Topological sort via DFS}
+      \label{alg:topsort-dfs}
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+
+\section{Single-source shortest paths (Dijkstra)} \label{sec:dijkstra}
+
+\kattis{bigtruck, blockcrusher, coffeedate, detour, george, getshorty, kitchen,
+  rainbowroadrace, shortestpath1, shortestpath2, showroom, walkway}
+
+Dijkstra's algorithm is the standard algorithm for solving the
+\emph{single-source shortest path} problem in weighted, directed
+graphs.  That is, given a graph with (possibly) directed edges and a
+weight on each edge, Dijkstra's algorithm can find the shortest
+directed path from a single chosen start vertex to every other vertex
+in the graph (where the length of a path is the sum of the weights on
+the edges). If you want to find the shortest path in a weighted,
+undirected graph, just make a directed graph with edges going both
+directions between each pair of vertices.  Figure~\ref{fig:dijkstra}
+has a basic implementation.
+\begin{figure}
+  \small
+  \code{graph/Dijkstra.java}
+  \caption{$O(VE)$ Dijkstra's algorithm} \label{fig:dijkstra}
+\end{figure}
+\begin{warning}
+  Since Java's \javadoc{util}{PriorityQueue} class does not have a
+  ``decrease key'' method, on line 28 we have to instead do a
+  \texttt{remove} followed by an \texttt{add}; but \texttt{remove} is
+  $O(n)$, making the whole algorithm $O(VE)$.  If you really need
+  $O(E \lg V)$ performance (\inlinekattis{flowerytrails}), you can use
+  an \fulllink{sec:adj-pq}.  In some situations you can also simply
+  call \texttt{add} without calling \texttt{remove}; see the
+  discussion below.
+
+  \todo{using adjust, you have to decide whether to 'add' or 'adjust'}
+\end{warning}
+
+There are many possible variants of this basic template; here are a
+few.
+
+\begin{itemize}
+\item The given code explores the \emph{entire} graph.  However, if
+  you have a particular target vertex in mind you can stop early once
+  you find it: just \texttt{break} out of the loop if removing the
+  next node from the priority queue yields the target node, since at
+  that point we are guaranteed that we know the shortest path from the
+  start node to the target node.
+\item If the vertices of your graph are not naturally represented as
+  integers in the range $0 \dots n-1$, one could modify the algorithm
+  to use \texttt{Map}s in place of the \texttt{parent} and
+  \texttt{dist} arrays.  Alternatively, it may be easier to deal with
+  this outside of Dijkstra's algorithm: just arbitrarily assign
+  indices to vertices and use a \texttt{Map} or two to keep track of
+  the assignment.  Then run Dijkstra using the assigned vertex indices
+  and translate the result back to the original vertices.
+\item If the priority queue contains objects whose priority never
+  changes once they are put in the priority queue (note that the
+  example code in Figure~\ref{fig:dijkstra} does \emph{not} have this
+  property, since \texttt{Integer}s in the PQ are compared by the
+  value stored in the external array \texttt{dist}, which can change)
+  then it can be an optimization to simply call \texttt{pq.add(next)}
+  without calling \texttt{pq.remove(next)} first. The priority queue
+  will end up with multiple copies of the same node, each with a
+  different priority, but this is not a problem; when removing the
+  next node from the PQ just ignore it if it has already been visited.
+  (\inlinekattis{nikola})
+\item Dijkstra's algorithm uses addition to combine the weights of
+  consecutive edges and \texttt{min} to pick the shortest path among
+  parallel options.  However, there are other pairs of operations one
+  can use with the same basic algorithm template.\footnote{The details
+  of which properties of the operations are needed for this to work
+  are too far outside the scope of this document; see \todo{XXX}}
+  \begin{itemize}
+  \item Using \texttt{min}/\texttt{max} in place of
+    \texttt{+}/\texttt{min} yields an algorithm which finds the path
+    with the maximum possible minimum weight (\inlinekattis{vuk,
+      crowdcontrol, muddyhike}).  For example, if the edge weights are
+    thought of as capacities, and the capacity of a path is equal to
+    the minimum capacity of any of its edges (\emph{i.e.} the
+    bottleneck) then this corresponds to finding maximum-capacity
+    paths.  One must be careful to:
+    \begin{itemize}
+    \item update the comparison operation for the priority queue to
+      use \texttt{min} instead of \texttt{max} (\emph{e.g.} by
+      switching to \texttt{dist[v] - dist[u]} instead of
+      \texttt{dist[u] - dist[v]}),
+    \item initialize all the entries of \texttt{dist} to an
+      appropriate identity value for \texttt{max} such as \texttt{0},
+      \texttt{-1}, or \texttt{-INF} instead of \texttt{INF},
+    \item change the definition of \texttt{nextDist} to use
+      \texttt{min} instead of \texttt{+}, and
+    \item change the comparison of \texttt{nextDist} and
+      \texttt{dist[next]} to use \texttt{>} instead of \texttt{<}.
+    \end{itemize}
+  \item If we have a directed graph with edge weights corresponding to
+    probabilities, where the probability of a path is defined as the
+    product of the probabilities of its edges, then Dijkstra's algorithm
+    with \texttt{*}/\texttt{max} finds highest-probability paths.
+    Similar modifications have to be made as in the previous example.
+  \end{itemize}
+\item One can modify the basic algorithm to keep track of extra
+  information, such as the \emph{number} of shortest paths from the
+  start to any given node: add to the count when finding a new path
+  equal in weight to the previous best-known path; reset the count
+  when finding a shorter path than previously known
+  (\inlinekattis{visualgo}).
+\item Dijkstra can also deal with edges whose weight depends on the
+  time they are reached (think of \emph{e.g.} bus routes, where you
+  may have to wait a while for the next bus to come depending on what
+  time you reach the stop). (\inlinekattis{coffeedate})
+\end{itemize}
+
+\section{All-pairs shortest paths (Floyd-Warshall)} \label{sec:floydwarshall}
+
+\kattis{crosscountry, allpairspath, shoppingmalls, transportationplanning, units}
+
+The \emph{all-pairs shortest path} problem is to find the shortest
+path in a (directed, weighted) graph between \emph{any} pair of
+vertices.  Typically the idea is to precompute some table(s)
+and then be able to quickly look up any pair of vertices to find the
+distance between them.  This could be done by running \emph{e.g.}
+Dijkstra's algorithm once from every vertex, but that takes at least
+$O(VE \log V)$ (which is $O(V^3 \log V)$ for a dense graph) and
+doesn't work if there are negative edge weights. The Floyd-Warshall
+algorithm runs in $O(V^3)$ no matter how many edges there, can
+handle negative edge weights, and is just a few lines of code.
+
+Note this only works when $|V|$ is small enough for a cubic algorithm
+to fit in the time limits, typically something like $|V| \leq 400$,
+though I have seen examples with $|V|$ even up to $1000$ that work.
+Each individual loop of Floyd-Warshall is only a few operations so the
+constant factor is very small.
+
+Assume the vertices in $G$ are labelled $\{0, \dots, n-1\}$.  Create a
+2D matrix of distances $d$ and initialize it like so:
+\[ d[i][j] =
+  \begin{cases}
+    0      & \text{if $i = j$} \\
+    w_{ij} & \text{if there is an edge $i \to j$} \\
+    \infty & \text{otherwise}
+  \end{cases}
+\]
+If there can be multiple edges from $i$ to $j$, be sure to set
+$d[i][j]$ to the \emph{minimum} of all the edge weights. In practice,
+for $\infty$, just use a value that is much larger than any other
+values that could occur in the problem.
+
+Then the Floyd-Warshall algorithm is as follows.  We iterate $k$ from
+$0$ to $n-1$; $k$ represents the intermediate vertex we will consider.
+Then for every possible pair of vertices $u$ and $v$, we check if
+there is a way to get from $u$ to $k$ and a way to get from $k$ to
+$v$, and the sum of these distances is less than the current shortest
+distance from $u$ to $v$.  If so, we update it.
+
+\begin{minted}{java}
+for (int k = 0; k < n; k++)
+  for (int u = 0; u < n; u++)
+    for (int v = 0; v < n; v++)
+      if (d[u][k] < INF && d[k][v] < INF)
+        d[u][v] = Math.min(d[u][v], d[u][k] + d[k][v]);
+\end{minted}
+
+After running the above loops, $d[i][j]$ will contain the length of
+the shortest path from $i$ to $j$.  If there is no path from $i$ to
+$j$ then the length will be $\infty$.  Analyzing the running time of
+this algorithm is a Data Structures student's dream: there are
+literally three nested loops which each iterate exactly $|V|$ times, so the
+running time is $O(V^3)$.
+
+Variants:
+
+\begin{itemize}
+\item If you want to detect the presence of negative cycles, you can
+  use the fact that after running the main algorithm, $d[i][i] < 0$ if
+  and only if vertex $i$ is contained in some negative cycle.  Hence
+  if there are no negative numbers along the diagonal of the matrix,
+  the graph is negative-cycle-free.  However, if there are
+  negative cycles then the distances found may not be valid (if there
+  is a negative cycle along a path from $u$ to $v$ then one could travel
+  around the cycle any number of times before finally going to $v$).
+
+\item If you actually want to distinguish negative-cycle-free paths
+  (for which the computed minimum distance is valid) from others
+  (\inlinekattis{allpairspath}), you can run the following additional
+  code, which propagates information about negative cycles:
+
+  \begin{minted}{java}
+    for (int u = 0; u < n; u++)
+      for (int v = 0; v < n; v++)
+        for (int k = 0; d[u][v] != -INF && k < n; k++)
+          if (d[u][k] < INF && d[k][k] < 0 && d[k][v] < INF)
+            d[u][v] = -INF;
+  \end{minted}
+
+  For each pair of vertices $u, v$, we check all possible intermediate
+  nodes $k$. If there is a path $u \to k$ and a path $k \to v$,
+  and $k$ is part of some negative cycle, then we set the distance
+  from $u$ to $v$ to $-\infty$ to signify that the length of a path
+  from $u$ to $v$ can be arbitrarily small.
+
+\item Sometimes you want to know not only the \emph{length} of the
+  shortest path, but the actual shortest path itself.  This can be
+  accomplished by keeping a 2D array $\mathit{next}$ such that
+  $\mathit{next}[i][j]$ stores the next vertex along the shortest path
+  from $i$ to $j$.  Initialize $\mathit{next}[i][j]$ to $j$ whenever
+  there is an edge from $i$ to $j$ (it does not matter what value it
+  has otherwise).  Then update the \texttt{if} statement in the inner
+  loop as follows:
+  \begin{minted}{java}
+    if (d[u][k] < INF && d[k][v] < INF && d[u][k] + d[k][v] < d[u][v]) {
+      d[u][v] = d[u][k] + d[k][v];
+      next[u][v] = next[u][k];
+    }
+  \end{minted}
+  Now after running the algorithm, the shortest path from $u$ to $v$
+  can be recovered by looking up $u_2 = \mathit{next}[u][v]$, then
+  $u_3 = \mathit{next}[u_2][v]$, and so on, until $v$ is reached.
+
+\end{itemize}
+
+\section{Min spanning trees (Kruskal)} \label{sec:kruskal}
+
+\kattis{drivingrange, islandhopping, jurassicjigsaw, lostmap, minspantree, treehouses}
+
+Kruskal's algorithm is the go-to algorithm for computing a minimum
+spanning tree (MST).  It is relatively straightforward to code, given
+an implementation of a \fulllink{sec:union-find} data structure.
+
+\begin{itemize}
+\item Create an initial union-find structure \texttt{uf} with one entry
+  corresponding to each vertex.
+\item Sort the edges of the graph by weight.  Typically, one makes a
+  small \texttt{class} to store an edge (it may store \emph{e.g.} the
+  two endpoints of the edge and its weight), which implements
+  \texttt{Comparable} in such a way that \texttt{compareTo} compares
+  the weights.  Then one can simply make an \texttt{ArrayList} of edge
+  objects and call \texttt{Collections.sort} on it.
+\item Iterate through the edges from smallest to largest weight.
+\item For each edge, check whether its endpoints are already connected
+  (\texttt{uf.find(x) == uf.find(y)}).  If not, connect them
+  (\texttt{uf.union(x,y)}) and add the edge to the MST.  (If so,
+  discard the edge and move on to the next.)
+\item Stop as soon as the number of chosen edges is one less than the
+  number of vertices.
+\end{itemize}
+
+Given an efficient union-find implementation, the running time is
+dominated by the time to sort the edges, $O(E \lg E)$.
+
+An example solution for \inlinekattis{minspantree} is shown in Figure~\ref{fig:minspantree}.
+\begin{figure}
+  \small
+  \code{graph/MinSpanTree.java}
+  \caption{Sample solution for minspantree} \label{fig:minspantree}
+\end{figure}
+
+\section{Eulerian paths} \label{sec:eulerian-path}
+
+\kattis{railroad2, eulerianpath, catenyms}
+
+An \emph{Eulerian path} is one which traverses every edge exactly once
+(but may visit vertices multiple times).  An \emph{Eulerian circuit}
+is an Eulerian path which starts and ends at the same vertex.
+
+Checking whether an Eulerian path/circuit \emph{exists}
+(\inlinekattis{railroad2}) is relatively simple:
+
+\begin{itemize}
+\item An undirected graph has an Eulerian path if and only if it is
+  connected, and exactly zero or two vertices have odd degree, and all
+  the rest have even degree.  If all vertices have even degree then it
+  the Eulerian path is actually a cycle.
+\item A \emph{directed} graph has an Eulerian path if and only if it
+  is strongly connected, and every vertex has equal in- and
+  out-degrees, except possibly two, one of which must have one more
+  incoming edge than outgoing, and the other has one more outgoing
+  edge than incoming.  If all vertices have equal in- and out-degree
+  then the Eulerian path is actually a cycle.
+\end{itemize}
+
+\todo{This is not correct.  Need to check if it's weakly connected
+  from start vertex if we want a path not a cycle.}
+\todo{Include sample code for eulerianpath?}
+In other words,
+first check whether the graph is connected using \fulllink{sec:dfs} or
+\fulllink{sec:bfs}.  Then compute the (in/out) degrees of every vertex
+and check how many are even/odd (for undirected graphs) or how many
+have matching in/out degrees (for directed).
+
+To \emph{find} an Eulerian path, use Hierholzer's Algorithm. In an
+undirected graph, start at a vertex with odd degree, (or at any vertex
+if there are no odd-degree vertices); in a directed graph, start at
+the vertex whose outdegree is one greater than the indegree (or any
+vertex if all have equal in/out-degree).  \todo{Explain, example
+  code.}
+
+\section{Max flow/min cut}
+
+\kattis{copsandrobbers,escapeplan,gopher2,guardianofdecency,marblestree,maxflow,mincut,paintball,pianolessons,waif}
+
+A \emph{flow network} is a directed, weighted graph where the edge
+weights (typically integers) are thought of as representing
+\emph{capacities} (\eg imagine pipes of varying sizes).  The \emph{max
+  flow problem} is to determine, given a flow network, the maximum
+possible amount of \emph{flow} which can move through the network
+between given source and sink vertices, subject to the constraints
+that the flow on any edge is no greater than the capacity, and the sum
+of incoming flows equals the sum of outgoing flows at every vertex
+other than the source or sink.
+
+\subsection{Flow network problem types}
+
+\begin{itemize}
+\item Certain types of problems about optimally assigning items or
+  resources subject to some constraints can be solved by finding a
+  maximum flow in an appropriate flow network
+  (\inlinekattis{escapeplan, gopher2, pianolessons, waif}).
+\item Maximum matchings in a bipartite graph can be found by creating
+  two new virtual nodes, a source node with a connection to every
+  vertex in the left-hand set and a sink node with a connection from
+  every vertex in the right-hand set.  Set all edge capacities to 1;
+  then a maximum flow corresponds to a maximum matching in the graph
+  (\inlinekattis{guardianofdecency, paintball})
+\item A famous theorem asserts that the maximum flow on a network
+  corresponds exactly to the \emph{minimum cut}, which is the minimum
+  ``bottleneck'', \emph{i.e.} the minimum possible sum of capacities
+  of a set of edges that splits the graph into two halves
+  (\inlinekattis{mincut, copsandrobbers}).
+\end{itemize}
+
+\subsection{Flow network variants}
+
+\begin{itemize}
+\item Flow networks must have a single source node and a single sink
+  node.  You can model multiple sources/sinks simply by adding a new
+  virtual source and/or sink node and connecting it to all the
+  source/sink nodes with infinite capacity edges.
+\item To model networks where the \emph{vertices} have capacities,
+  just split each vertex into two vertices with an edge in between
+  them having the given vertex capacity.  All the incoming edges
+  connect to the first new vertex and all the outgoing edges emanate
+  from the second new vertex.
+\item \todo{Minimum-cost max flow: use Edmonds-Karp with Dijkstra?}
+\end{itemize}
+
+\subsection{Dinitz' Algorithm}
+
+Dinitz' Algorithm\footnote{You may also see it spelled ``Dinic's
+  Algorithm'' but this is not the preferred spelling of its inventor,
+  Yefim Dinitz.} is probably the best all-around algorithm to use for
+solving max flow problems in competitive programming.  It takes
+$O(V^2 E)$ in theory (although is often much faster in practice).  In
+the special case where we are modelling a bipartite matching problem,
+Dinitz' Algorithm reduces to the Hopcroft-Karp algorithm which runs in
+$O(E \sqrt{V})$.
+
+Some general guidelines for using the max flow code below:
+\begin{itemize}
+\item Be very careful to decide which edges should be directed and
+  which should be undirected; this makes a big difference, and the
+  code given below requires calling \texttt{addDirEdge} or
+  \texttt{addEdge} appropriately (calling \texttt{addEdge} is
+  \emph{not} the same as calling \texttt{addDirEdge} once in each
+  direction!).
+\item The vertices of the graph must be labelled $0 \dots n-1$.
+  Typically they have some other labels which are specified as part of
+  the problem.  You must carefully keep track of which entities in the
+  problem map to which vertex indices, either via some formulas or
+  using some lookup tables.
+\end{itemize}
+
+
+{\small
+\code{flow/Dinitz.java}
+}
+
+\todo{Include a sample solution using a flow network}
+
+\chapter{Trees}
+\label{chap:trees}
+
+\todo{Special facts about tree graphs}
+\todo{Reading and storing trees, orienting/rooting trees}
+\todo{Problems that can be solved more easily on trees}
+\todo{LCA queries}
+\todo{Pr\"ufer codes}
+
+\chapter{Dynamic Programming}
+\label{chap:dyn-prog}
+
+\kattis{balanceddiet, drivinglanes, justpassingthrough, ticketpricing,
+  walkforest, ninepacks}
+
+\todo{subset sum}
+\todo{knapsack, longest common subsequence}
+\todo{longest increasing subsequence ($O(n^2)$ and $O(n \lg n)$, see \url{https://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming})}
+\todo{DP with 3 (or more?) parameters (\inlinekattis{justpassingthrough})}
+
+\chapter{Sequences and strings}
+
+\section{Longest Increasing Subsequence (LIS)}
+
+\kattis{increasingsubsequence,longincsubseq,manhattanmornings,signals}
+
+A \emph{subsequence} of a sequence is a subset of the elements, taken in
+order, but not necessarily contiguous.  (By contrast, a contiguous
+subset of elements is often referred to as a \emph{subinterval}.)  For
+example, $[1, 3, 4, 7]$ is a subsequence of
+$[1, 2, 3, 4, 5, 6, 7, 8]$.  Given a sequence of integers (or any
+elements which can be ordered), the \emph{longest increasing
+  subsequence} (LIS) problem is to find the longest subsequence which
+is in strictly increasing order.  For example, given the sequence
+$[9,2,8,10,5,4,20,16,7,1]$, one increasing subsequence is
+$[2, 5, 16]$, but it is not the longest.  There are several increasing
+subsequences of length $4$, such as $[2,8,10,16]$, and it turns out
+that this is the longest possible.
+
+Conceptually, to compute the LIS of a sequence, we first build a
+\emph{downravel}, a set of nonincreasing subsequences which partition
+the original sequence.  We keep these subsequences as a list of
+stacks, and maintain the invariant that their top elements are always
+sorted from smallest to biggest.  We iterate through the elements of
+$S$ and push each onto the leftmost possible stack whose top is
+$\geq$ the element being added.
+
+\begin{center}
+  \begin{minipage}{0.8\textwidth}
+    \begin{algorithm}[H]
+      \begin{algorithmic}[1]
+        \Function{Downravel}{S}
+        \State $D \gets$ empty list of stacks
+        \ForAll{$x \in S$}
+          \State $k \gets$ first stack in $D$ whose top is $\geq x$
+          \If{no such $k$ exists}
+            \State Add a new singleton stack containing $x$ to the end
+            of $D$
+          \Else
+            \State Push $x$ onto $k$
+          \EndIf
+          \EndFor
+        \State \Return{$D$}
+        \EndFunction
+      \end{algorithmic}
+      \caption{Building a downravel of a sequence $S$}
+      \label{alg:downravel}
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+
+\todo{add some pictures?}
+
+The length of the LIS is the same as the length of the downravel $D$.
+Na\"ively, this runs in $O(n^2)$ time, since for each of the the $n$
+elements in $S$, we have to search through up to $O(n)$ stacks in $D$
+to find the right one to push.  However, there are several possible
+optimizations.
+
+\begin{itemize}
+\item First, although the stacks are conceptually helpful, we do not
+  actually need to store them. It's enough to simply store the current
+  top element of each stack.  So instead of having a list of stacks we
+  just have a list of elements.
+\item Second, since this list will always be sorted from smallest to
+  biggest, we can use a binary search to find the proper place to push
+  each new element.  This brings the running time down to a very
+  respectable $O(n \lg n)$.
+\end{itemize}
+
+Of course, we might want not just the \emph{length} of the LIS but an
+actual LIS itself.
+
+\begin{itemize}
+\item First of all, we need to modify $D$ so it stores not the elements
+  themselves but their indices in $S$.  This requires a bit of extra
+  indirection while doing a binary search for the correct place to put
+  each new element.
+\item We keep an extra array $\mathit{back}$ such that
+  $\mathit{back}[i]$ stores the index of an element that could come
+  before $S[i]$ in a LIS up to and including $S[i]$.  Every time we
+  put a new element $S[i]$ into $D$, we set $\mathit{back[i]}$ to the
+  previous value in $D$---that is, the index of the element currently
+  on top of the previous stack in the list.
+\item After running the algorithm we start with the item represented by
+  the last entry in $D$, and then keep following $\mathit{back}$ links
+  to get each previous item.  This yields a LIS in reverse order.
+\end{itemize}
+
+\todo{include some examples and pictures}
+
+\code{sequence/LISCompact.java}
+
+\section{LCS via LIS}
+\kattis{inflagrantedelicto, princeandprincess}
+
+Given two sequences, the \emph{longest common subsequence} (LCS)
+problem is to find the longest sequence which is a subsequence of
+both. This comes up in quite a few real-world applications including
+DNA processing and diffing (\emph{i.e.} what Github does when it shows you
+which lines have changed).
+
+Most generally, the LCS of two sequences with lengths $m$ and $n$ can
+be computed via \fulllink{chap:dyn-prog} in $O(mn)$ time.  However, in
+the special case that the sequences do not have too many repeated
+elements, it is possible to solve it more quickly, as follows.
+
+Suppose the sequences are called $A$ and $B$.
+\begin{itemize}
+\item Construct all pairs of indices $(i,j)$ such that $A[i] = B[j]$,
+  that is, all pairs of locations where $A$ and $B$ agree.
+\item Sort these pairs lexicographically, that is, sort them first by
+  $i$ and break ties by $j$.
+\item Now make an array consisting of just the $j$ values from these
+  sorted pairs.
+\item A longest increasing subsequence in this array of $j$ values
+  gives the length of a LCS of $A$ and $B$.  (Exercise for the reader:
+  why does this work?)
+\end{itemize}
+
+\section{Z-algorithm}
+
+\section{Suffix arrays}
+
+\chapter{Mathematics}
+
+\section{GCD/Euclidean Algorithm} \label{sec:euclid}
+
+The \emph{Euclidean algorithm} can be used to compute the greatest
+common divisor of two \textbf{nonnegative} integers. (If you need it
+to work for negative numbers as well, just take absolute values
+first.)  It runs in logarithmic time.  The \emph{extended Euclidean
+  algorithm} not only finds the GCD $g$ of $a$ and $b$, but also finds
+integers $x$ and $y$ such that $ax + by = g$.
+
+\kattis{fairwarning, jughard, kutevi, candydistribution, diagonalcut}
+
+\code{math/GCD.java}
+
+\section{Rational numbers}
+
+\kattis{bikegears,jointattack,prosjek,prsteni,rationalarithmetic,wheels,zipfsong}
+
+Occasional problems may require dealing with explicit rational values
+rather than using floating-point approximations.  If a problem
+involves non-integer values but requires being able to test values for
+equality \emph{exactly}, then likely rational numbers are required.
+The below code for a \texttt{Rational} class is not difficult but it's nice
+to have it as a reference. Of course in a real contest situation you
+may not need all the methods.
+
+\newpage
+
+\code{math/Rational.java}
+
+\section{Modular arithmetic}
+
+\kattis{crackingrsa,modulararithmetic,pseudoprime,reducedidnumbers}
+
+\begin{warning}
+  Java's mod operator \texttt{\%} behaves strangely on negative
+  numbers. In many other languages (\eg Python, Haskell) \texttt{a \%
+    b} always returns a result between $0$ and $b-1$; however, in Java
+  (as in C/C++), if \texttt{a} is negative then \texttt{a \% b} will
+  also be negative.  Try adding \texttt{b} first if you need a
+  nonnegative result.
+\end{warning}
+
+For example, suppose \texttt{i} is an index into an array of length
+\texttt{n} and you need to shift by an offset \texttt{o}, wrapping
+around in case the index goes off the end of the array.  The obvious
+way to write this would be
+\begin{minted}{java}
+i = (i + o) % n;
+\end{minted}
+however, this is \textbf{incorrect if \texttt{o} could be negative!}
+If we assume that \texttt{o} will never be larger in absolute value
+than \texttt{n}, then we could write this correctly as
+\begin{minted}{java}
+i = (i + o + n) % n;
+\end{minted}
+If \texttt{o} could be arbitrarily large then we could write
+\begin{minted}{java}
+i = (((i + o) % n) + n) % n;
+\end{minted}
+(the first mod operation reduces it to lie between $-n \dots n$;
+adding $n$ ensures it is positive; and the final mod reduces it to the
+range $[0,n)$).
+
+\subsection*{Modular exponentiation and modular inverses}
+
+Sometimes one needs to compute the modular exponentiation
+$b^e \bmod m$ for some base $b$, exponent $e$, and modulus $m$.  Using
+repeated squaring, it is possible to do this efficiently even for very
+large exponents $e$.  Relatedly, if $b$ is relatively prime to $m$, it
+is possible to compute $b^{-1} \bmod m$, the \emph{modular inverse} of
+$b$, that is, the unique number $0 < b' < m$ such that
+$bb' \equiv 1 \pmod m$.
+
+In Java, probably the easiest way to compute these is using the
+\texttt{modPow} method from the \texttt{BigInteger} class
+\link{sec:bigint}.  If \texttt{b}, \texttt{e}, and \texttt{m} are
+\texttt{BigIntegers}, then \texttt{b.modPow(e, m)} is a
+\texttt{BigInteger} that represents $b^e \bmod m$.  The exponent
+\texttt{e} can also be negative; in particular, if \texttt{e} is $-1$
+then \texttt{b.modPow(e,m)} will compute the inverse of
+\texttt{b} modulo \texttt{m}.
+
+It is also useful to know how to compute modular exponentiation and
+inverses manually, in case you need some sort of variant version, or
+if \texttt{BigInteger} is not fast enough.
+
+\textbf{Modular exponentiation} can be computed by repeated squaring.
+The basic idea is to compute $b^e$ by splitting up $e$ into a sum of
+powers of two (according to its binary expansion), raising $b$ to each
+power of two and taking the product.  This can be done efficiently
+since we can get from $b^{2^k}$ to $b^{2^{k+1}}$ just by squaring.
+
+  \begin{warning}
+    Even if you need the answer modulo an \texttt{int} value such
+    as $10^9 + 7$, it is important to use \texttt{long} in the method
+    below: the product of two \texttt{int} values does not necessarily
+    fit in an \texttt{int}, even if the very next step will reduce it
+    modulo $m$ back into the range of an \texttt{int}.
+  \end{warning}
+
+\partcode{2}{10}{math/ModExp.java}
+
+Note this correctly computes $0^0 = 1$.  It would be possible to add a
+special case for when $b = 0$ and $e \neq 1$, to avoid multiplying $0$
+by itself a bunch of times, but it's hardly worth it.
+
+\textbf{Modular inverses} can be computed using the extended Euclidean
+algorithm \link{sec:euclid}.  In particular, suppose $a$ and $b$ are
+relatively prime, that is, their GCD is $1$.  In that case the
+\texttt{egcd} algorithm will compute numbers $x$ and $y$ such that
+$ax + by = 1$.  Taking this equation $(\bmod b)$ yields \[ ax + by
+  \equiv ax \equiv 1 \pmod b, \] and so $x$ is the modular inverse of
+$a$ modulo $b$ (in practice one may want to reduce $x \bmod b$ so $x$
+is between $0$ and $b-1$).
+
+Alternatively, for a prime $p$, Fermat's Little Theorem says that
+\[ a^{p-1} \equiv 1 \pmod p \] and hence $a^{p-2}$ is the modular
+inverse of $a$ modulo $p$, which can be computed using modular
+exponentiation.
+
+\section{Primes and factorization}
+
+Methods for primality testing and prime factorization that may show up
+in a contest can be put in two main classes.  First, methods based on
+\emph{trial division} are relatively simple to code and work well for
+testing just one or a few numbers.  \emph{Sieve} based methods
+construct a whole table of primes or factors all at once, and are
+often more efficient when many numbers need to be factored or tested
+for primality.
+
+\subsection{Trial division}
+
+\kattis{almostperfect,candydivision,crypto,enlarginghashtables,flowergarden,goldbach2,happyprime,iks,listgame,olderbrother,pascal,primalrepresentation}
+
+To test whether a single number is prime, you can use the following
+function which performs (somewhat optimized) trial division.  Note
+that although there are faster primality testing methods (\eg
+Miller-Rabin, Baille-PSW), it is highly unlikely that a contest would
+ever require anything more sophisticated than divisibility testing:
+Miller-Rabin is not hard to code but it is probabilistic, so a program
+using it may give different results on subsequent runs, hardly
+suitable for a competitive programming environment; Baille-PSW is
+known to be deterministic for numbers up to $2^{64}$, but is much more
+complex to code.
+
+Note that \texttt{isPrime} has runtime $O(\sqrt n)$ and is hence
+appropriate for numbers up to the maximum size of an \texttt{int}
+($\approx 2 \cdot 10^9$); running it on inputs up to the maximum size
+of a \texttt{long} is likely to be too slow.
+
+\partcode{2}{10}{math/IsPrime.java}
+
+The following method takes $O(\sqrt n)$ to factor a number into its
+prime factorization, also using trial division.  The returned prime
+factors will be sorted from smallest to biggest.
+
+\partcode{4}{18}{math/Factor.java}
+
+\subsection{Sieving}
+
+\kattis{industrialspy,nonprimefactors,primereduction,primesieve,reseto}
+
+The term \emph{sieve} comes from the ancient \emph{Sieve of
+  Eratosthenes}, a very effective method for generating all the primes
+up to a certain bound.  The basic idea is to make a table of all the
+numbers from $1$ up to some upper bound $n$ and iterate through the
+table. Each time we discover a prime $p$ we ``cross out'' all the
+multiples of $p$ in the table; we know a number is prime if it hasn't
+yet been crossed out by the time we get to.  This takes time
+$O(n \log \log n)$ (essentially linear time) to construct a table for
+$1 \dots n$.  The code below uses a \javadoc{util}{BitSet} which uses less
+memory than an array of \texttt{boolean}s. Constructing a
+\texttt{PrimeSieve} of size $10^8$ should take about a second and use
+only about 12 MB of memory; constructing smaller prime sieves should
+be quite fast.  Even a \texttt{PrimeSieve} of size
+\texttt{Integer.MAX\_VALUE}, \ie $\approx 2 \cdot 10^9$, will fit
+quite easily in memory, although constructing it will probably take
+too long for most contest problems.  (However, there may be occasional
+problems that require building a sieve of this size in order to
+precompute some data offline---\ie writing a program that runs for a
+few minutes in order to precompute some kind of set or lookup table to
+be included in the submitted solution.)
+
+\code{math/PrimeSieve.java}
+
+Instead of simply storing a boolean indicating whether each number is
+prime or not, we could also store the smallest prime factor.  We can
+still use this to test whether a given number is prime, by checking
+whether \texttt{smallest[n] == n}.  But we can also use it to quickly
+factor any composite \texttt{n}: simply divide \texttt{n} by
+\texttt{smallest[n]} and repeat. We can construct the smallest factor
+array using a sieving method similar to \texttt{PrimeSieve}.  The
+tradeoff is that this uses much more memory: instead of one bit per
+number, we use an entire \texttt{int}, that is, 32 bits.  A
+\texttt{FactorSieve} of size $10^8$ will take up around 380 MB.
+
+The \texttt{FactorSieve} class below includes a trivial
+\texttt{isPrime} method as well as a \texttt{factor} method, which is
+carefully written to work even for \texttt{int} values which are
+bigger than the lookup table.
+
+\code{math/FactorSieve.java}
+
+\section{Divisors and Euler's Totient Function}
+
+\kattis{farey,relatives}
+
+\todo{Number of divisors.  Euler's $\varphi$ function: computing
+  directly and by sieving.}
+
+\section{Factorial} \label{sec:factorial}
+
+\kattis{eulersnumber, factstone, howmanydigits, lastfactorialdigit,
+  inversefactorial, loworderzeros, factovisors}
+
+$n! = 1 \cdot 2 \cdots n$ is the number of ways of arranging $n$ things
+in a sequence.  Computing $n!$ is straightforward with a loop,
+although note that
+\begin{itemize}
+\item $12! = 479001600$ is the largest factorial that fits in a 32-bit
+  \texttt{int}, and
+\item $20! = 2432902008176640000$ is the largest factorial that fits
+  in a 64-bit \texttt{long}.
+\end{itemize}
+
+Note that
+$\log(n!) = \log(1 \cdot 2 \cdots n) = \log 1 + \log 2 + \dots + \log
+n$ which is occasionally handy.  For example, the number of base-10
+digits needed to represent a number $n$ is
+$\lfloor \log_{10} n \rfloor$, so by summing logs instead of computing
+a factorial and then taking the log, you can figure out how many
+digits are in very large factorials even when the numbers themselves
+would not fit in a \texttt{long} (\inlinekattis{howmanydigits}).
+
+\section{Combinatorics} \label{sec:combinatorics}
+
+\kattis{insert, anagramcounting, nine, secretsanta, kingscolors,
+  howmanyzeros, thedealoftheday}
+
+Some basic principles of combinatorics:
+\begin{itemize}
+\item If two sets of choices are completely disjoint, add their sizes
+  to get the total number of choices.  For example, the number of
+  subsets of $\{1, \dots, n\}$ is equal to the number of subsets that
+  do contain $3$ plus the number that don't.
+\item If two sets of choices are independent, multiply their sizes to
+  get the total number of combinations.  For example, if we can pick
+  one of five different shirts and independently pick one of seven
+  different hats, we have 35 possible outfit choices.
+\item Often, the answer to a combinatorics problem will be very large,
+  so the problem asks for the answer modulo $10^9 + 7$ (the smallest
+  prime bigger than $10^9$), which fits in a 32-bit \texttt{int}.
+  Since taking remainders commutes with addition and multiplication,
+  just reduce via mod at every step to make sure that the intermediate
+  values never overflow.
+  \begin{warning}
+    Although the \emph{sum} of two values under $10^9 + 7$ will fit in
+    a 32-bit \texttt{int}, their \emph{product} will not.  If you need
+    an answer modulo $10^9 + 7$ but computing the answer involves
+    multiplication, you must use 64-bit (\texttt{long}) values to
+    make sure the intermediate steps do not overflow.
+  \end{warning}
+  For example, to compute $n! \pmod{10^9 + 7}$, make a \texttt{long}
+  accumulator initialized to $1$, and then loop from $1$ to $n$, on
+  each step multiplying by the current index and then taking the
+  remainder mod $10^9 + 7$.
+\end{itemize}
+
+\subsection{Subsets and permutations}
+
+\todo{Number of subsets of set of size $n$ is $2^n$.  Number of
+  permutations is $n!$.  Explain how these follow from principle of
+  multiplication.  To actually generate all of them, see complete
+  search section, bit tricks, etc.}
+
+\subsection{Binomial and multinomial coefficients}
+
+The binomial coefficient
+\[ \binom n k = \binom{n}{n-k} = \frac{n!}{k!(n-k)!} \] counts the
+number of ways to choose a set of $k$ things out of $n$ possibilities;
+it is the $k$th entry in the $n$th row (both counting from $0$) of
+\fulllink{sec:pascal}.  $\binom n k$ can be computed using the
+following code, which works up to $n=60$ (higher values of $n$ will
+cause overflow):
+
+\partcode{3}{12}{math/Combinatorics.java}
+
+Some useful identities:
+\begin{itemize}
+\item $\binom n 0 = \binom n n = 1$ (there is only one way to choose
+  none of the items, or all of the items).
+\item $\binom n k = \binom{n-1}{k} + \binom{n-1}{k-1}$
+\end{itemize}
+
+The \emph{multinomial} coefficient
+\[ \binom{n}{k_1 \; k_2 \; \dots \; k_l} = \frac{n!}{k_1!k_2! \cdots
+    k_l!}, \] where $n = k_1 + k_2 + \dots + k_l$, represents the
+number of ways of partitioning a set of $n$ things into
+\emph{distinguished} groups of sizes $k_1, k_2, \dots, k_l$.  Note
+that the usual binomial coefficient $\binom n k$ can be thought of as
+the multinomial coefficient $\binom{n}{k \; (n-k)}$, or more
+symmetrically, as $\binom{n}{a \; b}$ where $a+b = n$.
+
+\todo{Computing multinomial coefficients.}
+
+\todo{Large binomial coefficients modulo a prime (modular inverse
+  factorial tables, Lucas's theorem).}
+
+\todo{PIE}
+
+\section{Probability}
+
+\todo{Write me}
+
+\section{Game Theory}
+
+\todo{Write me}
+
+\chapter{Bit Tricks} \label{chap:bittricks}
+
+\kattis{bits, classpicture, data, flipfive, font, gepetto, hypercube, mazemakers,
+  pagelayout, pebblesolitaire, safepassage, satisfiability, turningtrominos}
+
+\texttt{int} values are represented as a sequence of 32 bits;
+\texttt{long} values are 64 bits.  Sometimes it is useful to think
+about/work with such values directly as a sequence of bits rather than
+as a number. We typically think of the bits as indexed from $0$
+starting at the rightmost (least significant) bit.  For example,
+\[ \arraycolsep=1pt
+  974_{10} =
+  \begin{array}{cccccccccc}
+    1&1&1&1&0&0&1&1&1&0 \\
+      \scriptscriptstyle 9
+     &\scriptscriptstyle 8
+     &\scriptscriptstyle 7
+     &\scriptscriptstyle 6
+     &\scriptscriptstyle 5
+     &\scriptscriptstyle 4
+     &\scriptscriptstyle 3
+     &\scriptscriptstyle 2
+     &\scriptscriptstyle 1
+     &\scriptscriptstyle 0
+  \end{array} \]
+In general, a $1$ bit at index $i$ has value $2^i$.
+
+One frequently useful point of view is to think of a value of type
+\texttt{int}/\texttt{long} as representing a particular subset of a
+given set of up to 32/64 items.  The bit at index $i$ indicates
+whether item $i$ is included in the subset or not.
+
+Java has built-in operators to manipulate values at the bit level:
+\begin{itemize}
+\item \texttt{\&} represents bitwise logical AND.  That is, the
+  index-$i$ bit of the result is the logical AND of the index-$i$ bits
+  of the inputs; each bit index is considered separately.  It is often
+  useful to think of \texttt{\&} as a ``masking'' operation: given
+  values \texttt{v} and \texttt{mask}, evaluating \texttt{v \& mask}
+  will only ``let through'' the bits of \texttt{v} which correspond to
+  $1$ bits in \texttt{mask}; all other bits will be ``turned off''.
+  For example, if you want to extract only the last three bits of a
+  value \texttt{v}, you can compute \texttt{v \& 7} (since bitwise AND
+  with $7 = 111_2$ will turn off all bits except the last three).
+
+  If values are thought of as representing subsets, then \texttt{\&}
+  corresponds to set intersection.
+\item \texttt{|} represents bitwise logical OR.  This can be used to
+  ``turn on'' certain bits: \texttt{v \& on} will result in a value
+  which is the same as \texttt{v} except that the bits which are set
+  to $1$ in \texttt{on} will be turned on.
+
+  If values are thought of as representing subsets, then \texttt{|}
+  corresponds to set union.
+\item \verb|^| represents bitwise logical XOR.  This can be used to
+  ``toggle'' bits: \verb|v ^ toggle| will result in a value which is
+  the same as \texttt{v} except that the bits in positions
+  corresponding to the $1$ bits in \texttt{toggle} have been flipped.
+
+  If values are thought of as representing subsets, then \verb|^|
+  corresponds to symmetric difference: \verb|a ^ b| represents the set
+  of elements which are in \verb|a| or \verb|b| but not both.
+\item \verb|n >> k| shifts $n$ right by $k$ bits, chopping off the
+  rightmost $k$ bits.  This corresponds to (integer) division by
+  $2^k$.  \verb|n << k| shifts $n$ left by $k$ bits, adding $k$ zeros
+  on the right; this corresponds to multiplying by $2^k$.
+
+  Note that right shifting uses something called \emph{sign extension}
+  so that it fills in bits on the left according to whatever the
+  leftmost bit was initially: a value starting with a zero bit
+  (\emph{i.e.} a positive value) will have zeros filled in on the
+  left, but a (negative) value beginning with a one bit will have ones
+  filled in on the left.  If you don't want this (it rarely matters!)
+  you can use \verb|n >>> k| which does a right shift by $k$ bits
+  \emph{without} sign extension, that is, it always fills in zero bits
+  on the left regardless of the initial bit of $n$.
+\end{itemize}
+
+Here is a list of some non-obvious but sometimes useful things that
+can be done with bitmasks:
+
+\begin{itemize}
+\item To iterate through all possible subsets of an $n$-element set
+  (represented by an $n$-bit mask), just use a counter:
+\begin{minted}{java}
+  for (int S = 0; S < (1 << n); S++) {
+      // process subset S
+  }
+\end{minted}
+As the value of $S$ progresses from $0$ through $2^n - 1$, it will
+take on every possible pattern of $n$ bits.
+
+\item To check whether a particular bit is turned on, mask out
+  everything except that particular bit and check whether the result
+  is $0$.  For example, to check whether bit $j$ is set to $1$ in $S$:
+\begin{minted}{java}
+  if ((S & (1 << j)) != 0) ...
+\end{minted}
+  Be careful: the precedence of \verb|&| is actually lower than that of
+  \verb|!=|, so you need a bunch of parentheses.
+
+\item The \emph{least significant bit} (LSB) of a value \texttt{S} can
+  be extracted using the expression \verb|S & (-S)|.  The result is a
+  value with only a single bit set, corresponding to the LSB of $S$.
+  For example, if $S = 10001011000$, then \verb|S & (-S)| will be
+  $00000001000$.  It's worth taking a minute to convince yourself that
+  this works, keeping in mind that to negate a value in $2$'s
+  complement representation, you invert all the bits and then add one.
+
+  One way this can be used is when iterating over all subsets of a
+  set: for each subset, instead of iterating over all elements and
+  checking whether each one is in the subset, one can quickly iterate
+  through only the elements which are actually in the subset.  In some
+  cases this can yield a big constant-factor speedup.
+  \begin{minted}{java}
+    for (int S = 0; S < (1 << n); S++) {
+        int T = S;  // Save a copy of current subset S into T
+
+        // Iterate through all elements of T
+        while (T != 0) {
+            int X = T & (-T);  // Find last element X of T
+            ...                // process X
+            T ^= X;            // Remove X to move on to the next element
+        }
+    }
+  \end{minted}
+
+  Another place this technique is used is in the implementation of
+  Fenwick trees \link{sec:fenwick}.
+
+\item The \emph{least significant zero} (LSZ) can be computed by first
+  inverting all the bits, then finding the LSB.
+
+\item There is no quick way to compute the \emph{most significant bit}
+  (MSB), which amounts to finding the logarithm base 2 (rounded down).
+  The simplest is to keep shifting right until reaching 1, keeping a
+  count of the number of shifts required.
+
+\item The \emph{popcount} operation counts the number of 1 bits in a
+  number, and sometimes comes in useful (\inlinekattis{bits,
+    iboard, enviousexponents, pebblesolitaire}).  It can be accessed
+  via the \texttt{Long.bitCount(...)} or
+  \texttt{Integer.bitCount(...)} functions.  Note that processors
+  typically have a special popcount instruction, so this should be
+  very fast---certainly much faster than manually looping through the
+  bits of a number and counting how many are set to 1.
+
+\item Iterating through all the sub-subsets of a subset
+  \url{https://cp-algorithms.com/algebra/all-submasks.html}
+\end{itemize}
+
+\todo{iterating through sub-subsets}
+\url{https://cp-algorithms.com/algebra/all-submasks.html}
+
+\todo{BitSet instead of array of booleans.}
+
+\kattis{ith}
+
+\chapter{Geometry} \label{chap:geometry}
+
+\kattis{alldifferentdirections, convexpolygonarea, cookiecutter,
+  countingtriangles, cranes, glyphrecognition, hittingtargets,
+  hurricanedanger, jabuke, janitortroubles, polygonarea, rafting}
+
+\todo{Keep building above list---grep for geom.  Next to look at is robotprotection.}
+
+See also list of formulas.
+
+\todo{Points, angles.  Degrees/radians. \texttt{atan2}. Rotation. Vector magnitude, norm (squared), normalize.
+  Perpendicular (generate, test).}
+
+\section{Vectors}
+
+Vectors are one of the most basic units required in many geometrical programming problems. Vectors are very similar to line or line segments, but the key difference is that a vector will have a certain direction in which it is pointing and a point that exists on the vector. The direction of a vector is given by a coordinate pair $(x_{d},y_{d})$. This coordinate pair does not indicate the position of the vector, but it does indicate the \emph{direction} of the vector. Vectors are also described by a given point $(x_{p}, y_{p})$ that the vector passes through. For example if we are given a vector with direction $(1,2)$ and point $(3,4)$, then we know that the vector will extend to the point $(x_{p}+x_{d},y_{p}+y_{d}) = (4,6)$ \emph{IF} the point is included in the vector's magnitude (length). Sometimes you're given an origin point for the vector and the point of the tip of that vector. In this case you need to calculate the direction of the vector yourself. The information about the vector that you need to use depends on the context of the problem. Calculating the dot product of two vectors requires finding their lengths and the angle between them. Calculating the cross product of two vectors requires vectors represented by points that have a common origin.
+
+               
+
+\section{Dot Product}
+
+The Dot Product of two vectors can be thought of as a measurement of how similar their directions are. The dot product of the length of two vectors $a$ and $b$ is defined as $a \cdot b = |a| \times |b| \times \cos{\theta}$. Let $\theta$ be defined as the amplitude of the angle between vectors $a$ and $b$ and $|a|$ and $|b|$ be defined as the lengths of the two vectors. The more similar the vectors' direction are to each other, the greater their dot product will be. If $\theta = \frac{\pi}{2}$, then the dot product of $a$ and $b$ or $a \cdot b$ equals 0. Therefore, if the vectors are perpendicular, then the dot product will be 0. If the angle between the vectors is acute, then the dot product will be positive. If the angle between the vectors is obtuse, then the dot product will be negative. The dot product can also be considered as the projection $p$ of $a$ onto $b$.
+
+\begin{center}
+\includegraphics[width=3in]{images/dot-product}
+\end{center}
+
+With this visualization, where $p$ is defined as the dot product of $a$ and $b$, it becomes evident why the dot product of two vectors is 0 when they are perpendicular. The dot product is often used in problems to test if two vectors are perpendicular. In practice if you are given two vectors $(v_x, v_y)$ and $(u_x, u_y)$, the calculation for dot product is simply $v_x \times u_x + v_y \times u_y$.
+ 
+\section{Shortest Distance from Point to Line}
+
+Calculating the shortest distance from a point to a line can be made relatively easy by using dot product. Let $l$ be the line and let $a$ be the point. Let's imagine that on the line $l$ there exists a point $x$. Let the distance from $a$ to $x$ be the shortest distance from $a$ to $l$. If the vector $ax$ is perpendicular to $l$, then the length of $ax$ represents the shortest distance from $l$ to $a$. If we treat $l$ like a vector $l_v$ then $l_v \cdot ax = 0$.
+
+ 
+Let $l_v = (p_x, p_y) + t \times (v_x, v_y)$. This is a simple equation for representing vectors. $(p_x, p_y)$ represents a point on the vector (usually the origin of the vector, but if you're specifically dealing with a line as we are, then the origin of the vector is irrelevant to the problem). The coordinate pair $(v_x, v_y)$ describe the direction of the vector (in many cases this corresponds to the slope of the line. See the section on vectors for more information). Let's have $t$ represent a coefficient. Lets say we want to find a point on $l_v$. Simple: $(p_x + t \times v_x, p_y + t \times v_y)$ where t is a real number (if $l$ was really a vector, which it is not, then it would matter to us if $t$ was positive or negative. If $t$ was negative and $l$ was truly a vector with origin at $(p_x, p_y)$ then $a$ would be \emph{behind} $l$, and, since vectors only go one direction, the closest point on the vector to $a$ would be $(p_x, p_y)$). So $(p_x + t \times v_x, p_y + t \times v_y)$ represents all of the points on $l$. If this represents \emph{all} of the points on $l$ then the coordinates of $x$ can be represented by $= (p_x + t \times v_x, p_y + t \times v_y)$. Therefore the \emph{direction} of $ax$ where $a = (x_a, y_a)$ is $(p_x + t \times v_x - x_a, p_y + t \times v_y - y_a)$.
+
+Now we have direction vectors of both $l_v$ and $ax$. We can now use the dot product on these two vectors to solve for $t$, and, once we have $t$, we can calculate the position of $x$ and use the vector distance formula to find the length of $ax$. By the definition of the dot product, we know that $l_v \cdot ax = v_x \times (p_x + t \times v_x - x_a) + v_y \times (p_y + t \times v_y - y_a) = 0$. Solving for $t$ leaves us with $t = \frac{-v_x \times (x_a - p_x) + v_y \times (y_a - p_y)}{v^{2}_x v^{2}_y}$. Now use the vector distance formula to find the shortest distance from $a$ to $l$. Distance $d = \sqrt{(p_x + t \times v_x - x_a)^2 + (p_y + t \times v_y - y_a)^2}$.
+
+TLDR; If you're in a rush and just need a quick formula, then the distance $d$ from a point $(x_0, y_0)$ to the line in standard form $ax + by + c = 0$ is $d = \frac{|a(x_0) + b(y_0) + c|}{\sqrt{a^2 + b^2}}$.
+
+
+\section{Heron's Formula}
+	There is an easy way to calculate the area of a triangle from only its sidelengths $a,b,c$. We define the semi-perimeter $s = \frac{a+b+c}{2}$. The area is $\sqrt{s(s-a)(s-b)(s-c)}$. This is also useful for finding the area of quadrilaterals, if you can find the length of a diagonal and split it into two triangles.
+
+\section{Cross Product}
+Given two vectors $u, v$, the Cross Product $u \times v$ is the signed area of the parallelogram with points at the origin and the tips of $u$ and $v$. It is defined as $u \times v = u_xv_y - v_xu_y$.
+\begin{center}
+\includegraphics[width=3in]{images/Cross_product_parallelogram}
+\end{center}
+
+Note that this really requires 3D vectors in the definitions a typical Linear Algebra class uses, but when both input vectors are on the same plane the output can be described by a real number. Also, by `signed', We mean that the result is positive if $v$ is counter-clockwise relative to $u$ and negative if clockwise. 
+
+We can calculate the area of a triangle from its three corners by shifting them all such that one of the points is at origin, and then taking half the absolute value of the cross product of the vectors corresponding to the other two points.
+
+\section {Polygon Area}
+
+Given that we have the way to calculate the area of a triangle from its corners, calculating the area of a polygon is mostly a matter of cutting it into triangles. The easiest way to do this is to take each adjacent pair and a third point inside the polygon to define the corners. However, we can simplify this. Our third point can be the origin (0,0) no matter where the polygon is, meaning we can eliminate the step of shifting all the points. But to make this work we have to make sure to consider the pairs of adjacent corners in counter-clockwise order and calculate the signed area of each triangle. This is called the Shoelace Formula, and works because the far side of the polygon will have positive sign while the close side will have negative sign and thus be cancelled out. 
+
+\begin{center}
+\includegraphics[width=3in]{images/poly_area.png}
+\end{center}
+
+For the exact same reason, considering the points in clockwise order will give the correct answer but negative. The only restriction that we have is that the edges must not self intersect, in which case the polygon is `simple'. This is typically true in programming competitions, but it is good to check for. Note that we also have to account for the connection between the last and first point (here outside of the loop).
+
+\begin{minted}{java}
+static double cross(double[] u, double[] v) {
+    return u[0] * v[1] - v[0] * u[1];
+}
+
+static double polyArea(double[][] points) {
+    double result = 0.0;
+
+    for (int i = 1; i < points.length; i++) {
+        result += cross(points[i - 1], points[i]);
+    }
+    result += cross(points[points.length - 1], points[0]);
+    return result / 2.0;
+}
+\end{minted}
+
+
+  \todo{Lines/rays (point +
+  vector).  Line intersection. Segment intersection.} \todo{law of cosines.}
+% -- Distance from point p to line defined by p1, p2 is absolute value
+% -- of parallelogram area defined by p, p1, p2 divided by distance
+% -- between p1, p2.  Proof: rearrange triangle area formula A = bh/2 to
+% -- solve for h.
+
+\section{Convex Hull}
+The Convex Hull problem asks for the smallest Convex polygon which contains a specific set of points. The (easiest) algorithm to handle this is Andrew's Monotone Chain, which breaks the answer into two chains (representing the top and bottom halves of the answer). We first sort the points lexicographically (by x coordinates, breaking ties with y coordinates). If at any point the last 3 vertices in the chain make a clockwise turn that means that the 2nd is inside the hull, and the 1st and 3rd are the only ones required. We can construct the partial convex hull of the points with lower x value than points[i] by ensuring that it only consists of Counter-Clockwise turns. We then add the next point by eliminating vertices which are now inside considering our added point. Going through all the points results in the lower half of the chain, and we can then go in the reverse direction (right to left) to get the upper chain.
+
+\begin{center}
+\includegraphics[width=2.5in]{images/UpperAndLowerConvexHulls.png}
+\end{center}
+
+\begin{minted}{java}
+static double[] sub(double[] v, double[] u) {
+    return new double[] {
+        v[0] - u[0], v[1] - u[1]
+    };
+}
+static boolean ccw(double[] o, double[] u, double[] v) {
+    return cross(sub(u, o), sub(v, o)) > 0.0;
+}
+
+//Note: This code will probably need to be changed for edge cases like where only 1 or 2 points are given
+static double[][] convexHull(double[][] points) {
+    int n = points.length;
+    int k = 0;
+    double[][] H = new double[n * 2][2]; //chain could contain each point twice
+
+    Arrays.sort(points, Comparator.comparingDouble((double[] point) - > point[0])
+        .thenComparing(Comparator.comparingDouble((double[] point) - > point[1])));
+
+    for (int i = 0; i < n; ++i) {
+        while (k >= 2 && !ccw(H[k - 2], H[k - 1], points[i]))
+            k--;
+        H[k++] = points[i];
+    }
+    for (int i = n - 2, t = k + 1; i >= 0; i--) {
+        while (k >= t && !ccw(H[k - 2], H[k - 1], points[i]))
+            k--;
+        H[k++] = points[i];
+    }
+    //In most cases our chain will not contain every point, so we need to trim
+    //also, the final point is a duplicate of the first to represent the 'wrap around'
+    return Arrays.copyOfRange(H, 0, k - 1);
+}
+\end{minted}
+
+
+\todo{Inside/outside testing.}
+
+\section{Geometry References}
+
+\url{https://codeforces.com/blog/entry/48868}
+
+\url{https://vlecomte.github.io/cp-geo.pdf}
+
+\chapter{Miscellaneous}
+
+\section{2D grids}
+
+2D grids/arrays (of characters, numbers, booleans\dots) are a popular
+feature of many competitive programming problems.
+
+\begin{itemize}
+\item There is a trick for reading in a grid of characters which can
+  save a bit of coding effort.  The ``traditional'' way to read a grid of
+  characters would be something like:
+  \begin{minted}{java}
+    char[][] grid = new char[R][C];
+    for (int r = 0; r < R; r++) {
+        String line = in.nextLine();
+        for (int c = 0; c < C; c++) {
+            grid[r][c] = line.charAt(c);
+        }
+    }
+  \end{minted}
+  However, it is possible to assign each row of the 2D array all at
+  once, like so:
+  \begin{minted}{java}
+    char[][] grid = new char[R][C];
+    for (int r = 0; r < R; r++)
+        grid[r] = in.nextLine().toCharArray();
+  \end{minted}
+\item In many cases the grid should be thought of as a graph where
+  each cell is a vertex which is connected by edges to its neighbors.
+  Note that in these cases one rarely wants to explicitly construct
+  a different representation of the graph, but simply use the grid
+  itself as an (implicit) graph representation.
+\item It is often useful to be able to assign a unique number to each
+  cell in the grid, so we can store ID numbers of cells in data
+  structures rather than making some class to represent a pair of a
+  row and column index.  The easiest method is to number the first row
+  from $0$ to $C-1$ (where $C$ is the number of columns), then the
+  second row $C$ to $2C-1$, and so on.
+
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    $0$ & $1$ & $2$ & $\dots$ & $C-1$ \\
+    \hline
+    $C$ & $C+1$ & $C+2$ & $\dots$ & $2C-1$ \\
+    \hline
+    $2C$ & $2C+1$ & $2C+2$ & $\dots$ & $3C-1$ \\
+    \hline
+    $\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ \\
+    \hline
+    $(R-1)C$ & $(R-1)C+1$ & $(R-1)C+2$ & $\dots$ & $RC-1$ \\
+    \hline
+  \end{tabular}
+
+\item Using this scheme, to convert between $(r,c)$ pairs and ID
+  numbers $n$, one can use the formulas
+  \[ (r,c) \mapsto r \cdot C + c \qquad n \mapsto (n / C, n \% C) \]
+
+\item To list the four neighbors of a given cell $(r,c)$ to the north,
+  east, south, and west, one can of course simply list the four cases
+  manually, but sometimes this is tedious and error-prone, especially
+  if there is a lot of code to handle each neighbor that needs to be
+  copied four times.
+
+  Instead, one can use the following template. The idea is that
+  $(dr, dc)$ specifies the \emph{offset} from the current cell $(r,c)$
+  to one of its neighbors; each time through the loop we rotate it
+  counterclockwise by $1/4$ turn using the mapping
+  $(dr,dc) \mapsto (-dc,dr)$ (see \fulllink{chap:geometry}).
+
+  \code{grid/Neighbors.java}
+\end{itemize}
+
+\section{Hexagonal grids} \label{sec:hex-grids}
+
+\kattis{beehouseperimeter, honey, settlers2, beeproblem, honeyheist}
+
+Occasionally a problem will involve a 2D grid of tiled hexagons
+instead of a grid of squares.  (Typically such problems involve a
+story about bees.)  They are often not too hard (\eg some kind of
+straightforward application of \fulllink{sec:bfs}) other than the fact
+that dealing with hexagonal grids can be annoying, unless you know a
+few tricks for working with them elegantly.
+
+\todo{Write about hexagonal grids, storage, coordinate systems, etc.}
+Reference: \url{https://www.redblobgames.com/grids/hexagons/}
+
+\section{Range queries} \label{sec:range-queries}
+
+Suppose we have a $1$-indexed array $A[1 \dots n]$ containing some
+values, and there is some operation $\oplus$ which takes two values
+and combines them to produce a new value.  Given indices $i$ and $j$,
+we want to quickly find the value that results from combining all the
+values in the range $A[i \dots j]$, \ie $A[i] \oplus A[i+1] \oplus
+\dots \oplus A[j]$.
+
+For example, $A$ could be an array of integers, and $\oplus$ could be
+$\max$, that is, we want to find the maximum value in the range
+$A[i \dots j]$.  Likewise $\oplus$ could be sum, or product, or GCD.
+Or $A$ could be an array of booleans, and we want to find the AND, OR,
+or XOR of the range $A[i \dots j]$.
+
+\begin{itemize}
+\item For this to make sense, the combining operation must typically
+  be \emph{associative}, \ie $a \oplus (b \oplus c) = (a \oplus b) \oplus
+  c$.  (This is called a \emph{semigroup}.)
+\item Sometimes there is also an inverse operation $\ominus$ which
+  ``cancels out'' the effects of the combining operation, that is, $(a
+  \oplus b) \ominus b = a$ (this is called a \emph{group}).  For
+  example, subtraction cancels out addition. On the other hand, there
+  is no operation that can cancel out the effect of taking a maximum.
+\item If we only need to find the value of combining a \emph{single}
+  range $A[i \dots j]$, then ignore everything in this section and
+  simply iterate through the interval, combining all the values in
+  $O(n)$ time.
+\item More typically, we need to do many queries, and $O(n)$ per query
+  is not fast enough.  The idea is to preprocess the array into a data
+  structure which allows us to answer queries more quickly, \ie in
+  $O(1)$ or $O(\lg n)$.
+\item Sometimes we also need to be able to \emph{update} the array in
+  between queries; in this case we need a more sophisticated query
+  data structure that can be quickly updated.
+\end{itemize}
+
+Each of the below subsections outlines one approach to solving this
+problem; for quick reference, each subsection title says whether an
+inverse operation is required, how fast queries are, and whether the
+technique can handle updates.
+
+\subsection{Prefix scan (inverse required; $O(1)$ queries; no updates)}
+
+In a situation where we have an inverse operation and we do not need
+to update the array, there is a very simple solution.  First, make a
+\emph{prefix scan array} $P[0 \dots n]$ such that $P[i]$ stores the
+value that results from combining $A[1 \dots i]$.  ($P[0]$ stores the
+unique ``identity'' value $a \ominus a$, \eg zero if the combining
+operation is sum.)  $P$ can be computed in linear time by scanning
+from left to right; each $P[i] = P[i-1] \oplus A[i]$.  Now the value
+of $A[i \dots j]$ can be computed in $O(1)$ time as
+$P[j] \ominus P[i-1]$. That is, $P[j]$ gives us the value of
+$A[1] \oplus \dots \oplus A[j]$, and then we cancel
+$P[i-1] = A[1] \oplus \dots \oplus A[i-1]$ to leave just
+$A[i] \oplus \dots \oplus A[j]$ as desired.
+
+Note that having $P[0]$ store the identity value is not strictly
+necessary, but it removes the need for a special case.  If $A$ is
+already $0$-indexed instead of $1$-indexed, then it's probably easier
+to just put in a special case for looking up the value of $A[0 \dots
+j]$ as $P[j]$, without the need for an inverse operation.
+
+For example, suppose we are given an array of $10^5$ integers, along
+with $10^5$ pairs $(i,j)$ for which we must output the sum of
+$A[i \dots j]$.  Simply adding up the values in each range would be
+too slow. We could solve this with the following code:
+
+\code{range/PrefixSum.java}
+
+More commonly, a prefix scan is a necessary first step in a more
+complex solution. \kattis{divisible, dvoniz, srednji, subseqhard}
+
+\subsection{Kadane's Algorithm}
+
+As an aside, suppose we want to find the subsequence $A[i\dots j]$
+with the \emph{biggest} sum.  A brute-force approach is $O(n^3)$:
+iterate through all $(i,j)$ pairs and find the sum of each
+subsequence.  Using the prefix scan approach, we can cut this down to
+$O(n^2)$, since we can compute the sums of the $O(n^2)$ possible
+subsequences in $O(1)$ time each.  However, there is an even better
+$O(n)$ algorithm which is worth knowing, known as \emph{Kadane's
+  Algorithm}.
+
+The basic idea is simple: scan through the array, keeping a running
+sum in an accumulator, and also keeping track of the biggest total
+seen.  Whenever the running sum drops below zero, reset it to zero.
+Below is a sample solution to \inlinekattis{commercials}.  Note that
+subtracting \texttt{P} from each input is specific to the problem, but
+the rest is purely Kadane's Algorithm.
+
+\code{range/Commercials.java}
+
+\subsection{2D prefix scan}
+
+\todo{make pictures}
+
+It is possible to extend the prefix scan idea to two dimensions.
+Given a 2D array $A$, we create a parallel 2D array $P$ such that
+$P[i][j]$ is the result of combining all the entries of $A$ in the
+rectangle from the upper-left corner to $(i,j)$ inclusive.  The
+simplest way to do this is to compute \[ P[i][j] = A[i][j] + P[i-1][j]
+  + P[i][j-1] - P[i-1][j-1] \] Including $P[i-1][j]$ and $P[i][j-1]$
+double counts all the entries in the rectangle from the upper left to
+$(i-1,j-1)$ so we have to subtract them.
+
+Given $P$, to compute the combination of the elements in some
+rectangle from $(a,b)$ to $(c,d)$, we can compute \[ P[c][d] -
+  P[a-1][d] - P[c][b-1] + P[a-1][b-1] \]
+
+\inlinekattis{prozor} can be solved by brute force, but it's a nice
+exercise to solve it using the above approach.
+
+\subsection{Doubling windows (no inverse; $O(1)$ queries; no updates)}
+
+\todo{Include link to discussion in CP3}
+
+\subsection{Fenwick trees (inverse required; $O(\lg n)$ queries;
+  $O(\lg n)$ updates)} \label{sec:fenwick}
+
+\kattis{fenwick, supercomputer, turbo, moviecollection, dailydivision}
+
+We can use a \emph{Fenwick tree} to query the range $A[i..j]$ (\ie get
+the combination of all the values in the range $A[i] \dots A[j]$
+according to the combining operation $\oplus$) in $O(\lg n)$ time.  We
+can also dynamically update any entry in the array in $O(\lg n)$ time.
+If dynamic updates are required and we have an invertible combining
+operation, a Fenwick tree should definitely be the first choice
+because the code is quite short. (Segment
+trees~\link{sec:segment-trees} can also handle dynamic updates, and
+work for any combining operation, even with no inverse, but the
+required code is a bit longer.)
+
+The code shown here stores \texttt{int} values and uses addition as
+the combining operation, so range queries return the \emph{sum} of all
+values in the range; but it can be easily modified for any other type
+of values and any other invertible combining operation: change the
+type of the array, change the \texttt{+} operation in the
+\texttt{prefix} and \texttt{add} methods, change the subtraction
+in the \texttt{range} method, and change the assignment \texttt{s = 0}
+in \texttt{prefix} to the identity element instead of zero.
+
+\begin{warning}
+  Note that this \texttt{FenwickTree} code assumes the
+  underlying array is $1$-indexed!
+\end{warning}
+
+\code{range/FenwickTree.java}
+
+\begin{itemize}
+\item The constructor creates a \texttt{FenwickTree} over an array of
+  all zeros.
+\item To create a \texttt{FenwickTree} over a given $1$-indexed array
+  $A$, simply create a default tree and then loop through the array,
+  calling \texttt{ft.add(i, A[i])} for each \texttt{i}.  This takes
+  $O(n \lg n)$.
+\item \texttt{ft.add(i, delta)} can be used to update the value at a
+  particular index by adding \texttt{delta} to it.
+\item If you want to simply replace the value at index $i$ instead of
+  adding something to it, you could use \texttt{ft.add(i, newValue - ft.range(i,i))}.
+\item \texttt{ft.range(i,j)} returns the sum $A[i] + \dots + A[j]$.
+\end{itemize}
+
+\todo{Discuss CP3 presentation of Fenwick trees; explain how Fenwick
+  trees work}
+
+\subsection{Segment trees (no inverse required; $O(\lg n)$ queries;
+  $O(\lg n)$ updates)} \label{sec:segment-trees}
+
+\todo{Segment trees.}
+
+\section{Cycle finding} \label{sec:cycle-finding}
+
+\todo{Floyd's algorithm, Brent's algorithm}
+
+\chapter{Formulas} \label{chap:formulas}
+
+\begin{itemize}
+\item \textbf{Ceiling division}
+  (\inlinekattis{soylent,wordcloud,amultiplicationgame}).  If
+  \texttt{p} and \texttt{q} are positive values of type \texttt{int}
+  or \texttt{long}, then \texttt{p/q} computes $\lfloor p/q \rfloor$,
+  the quotient (rounded down).  If you want the quotient rounded
+  \emph{up}, that is, $\lceil p/q \rceil$, compute
+  \[ \texttt{(p + q - 1) / q}. \] Note that \texttt{-((-p)/q)} does
+  not work in Java since Java truncates the result of integer division
+  towards zero, instead of always taking the floor.
+
+\item \textbf{Derangements} (\inlinekattis{secretsanta}).  The number
+  of permutations of $n$ objects such that no object is left in its
+  original place is
+  \[ !n = n \cdot !(n-1) + (-1)^n = n! \sum_{k=0}^n \frac{(-1)^k}{k!}
+    = \left[ \frac{n!}{e} \right], \]
+  where $!1 = 0$, and $[x]$ denotes the closest
+      integer to $x$.  The first few values of $!n$ are \[
+        0,1,2,9,44,265,1854,14833,133496,1334961. \]
+\item \textbf{Heron's Formula}. The area of a triangle with side
+  lengths $a$, $b$, $c$ is \[ \sqrt{s(s-a)(s-b)(s-c)} \qquad
+    \text{where } s = (a+b+c)/2. \]
+\item \textbf{Brahmagupta's Formula} (\inlinekattis{janitortroubles}).
+  The area of a quadrilateral with side lengths $a$, $b$, $c$, and
+  $d$, with all vertices lying on a common circle, is
+  \[ \sqrt{s(s-a)(s-b)(s-c)(s-d)} \qquad \text{where } s =
+    (a+b+c+d)/2. \] This is also the maximum possible area of a
+  quadrilateral with the given side lengths.
+\item \textbf{Euler's formula} (\inlinekattis{dontfencemein}). In a
+  planar graph with $V$ vertices, $E$ edges, $F$ faces (a ``face'' is
+  a maximal connected region of the plane, separated from other faces
+  by one or more edges), and $C$ connected components, \[ V - E + F =
+    C + 1. \]
+\end{itemize}
+
+\chapter{Advanced topics} \label{chap:advanced}
+
+This is a list of advanced topics that may eventually be included in
+this document, but for now you can go read up on them if you are
+interested!  (And then of course write up what you have learned for
+inclusion in this document.)
+
+\begin{itemize}
+\item Chinese Remainder Theorem (\inlinekattis{heliocentric,
+    generalchineseremainder, dvdscreensaver})
+\item Divisors of $n!$ (\inlinekattis{factovisors})
+\item Gauss-Jordan elimination (\ie row reduction \ie solving linear
+  systems) (\inlinekattis{primonimo})
+\item Exact Set Cover with Algorithm X/dancing links (\inlinekattis{programmingteamselection})
+\item Matrix powers
+  \kattis{diceandladders,driving,linearrecurrence,mortgage,overlappingmaps,squawk,timing}
+\item Markov chains \kattis{lostinthewoods,gruesomecave}
+\item Min cost max flow
+\item Max flow with minimum and maximum capacities
+\item Discrete logarithms with baby step/giant step
+  (\inlinekattis{discretelogging})
+\item Faster primality testing with Miller-Rabin (\eg testing with $a
+  = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41$ makes it
+  deterministic).
+\item Divide \& conquer algorithm for counting inversions.
+  \kattis{excursion, froshweek, ultraquicksort}
+\item 2-SAT
+\item SAT solving with DPLL
+\item LCA queries: Tarjan's OLCA; via RMQ; binary lifting (\inlinekattis{tourists})
+\item Convolutions with FFT/NTT (\inlinekattis{tiles, aplusb,
+    kinversions})
+\item Testing DFA equivalence with Hopcroft-Karp union-find algorithm
+  (\inlinekattis{outsourcing})
+\end{itemize}
+
+\appendix
+
+\chapter{Reference} \label{chap:reference}
+
+% \section{The Alphabet}
+
+% \section{ASCII}
+
+\section{Primes}
+
+All primes up to 1000: \medskip
+
+\noindent 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73
+79 83 89 97 \\ 101 103 107 109 113 127 131 137 139 149 151 157 163 167
+173 179 181 191 193 197 199 \\ 211 223 227 229 233 239 241 251 257 263
+269 271 277 281 283 293 \\ 307 311 313 317 331 337 347 349 353 359 367
+373 379 383 389 397 \\ 401 409 419 421 431 433 439 443 449 457 461 463
+467 479 487 491 499 \\ 503 509 521 523 541 547 557 563 569 571 577 587
+593 599 \\ 601 607 613 617 619 631 641 643 647 653 659 661 673 677 683
+691 \\ 701 709 719 727 733 739 743 751 757 761 769 773 787 797 \\ 809 811
+821 823 827 829 839 853 857 859 863 877 881 883 887 \\ 907 911 919 929
+937 941 947 953 967 971 977 983 991 997
+
+\section{Pascal's Triangle}
+\label{sec:pascal}
+
+\[
+  \arraycolsep=1.5pt
+  \begin{array}{ccccccccccccccccccccc}
+    & &  & &  &  &   &  &   &   &1  &   &   &  &   &  &  & &  & & \\
+    & &  & &  &  &   &  &   &1  &   &1  &   &  &   &  &  & &  & & \\
+    & &  & &  &  &   &  &1  &   &2  &   &1  &  &   &  &  & &  & & \\
+    & &  & &  &  &   &1 &   &3  &   &3  &   &1 &   &  &  & &  & & \\
+    & &  & &  &  &1  &  &4  &   &6  &   &4  &  &1  &  &  & &  & & \\
+    & &  & &  &1 &   &5 &   &10 &   &10 &   &5 &   &1 &  & &  & & \\
+    & &  & &1 &  &6  &  &15 &   &20 &   &15 &  &6  &  &1 & &  & & \\
+    & &  &1&  &7 &   &21&   &35 &   &35 &   &21&   &7 &  &1&  & & \\
+    & &1 & &8 &  &28 &  &56 &   &70 &   &56 &  &28 &  &8 & &1 & & \\
+    &1&  &9&  &36&   &84&   &126&   &126&   &84&   &36&  &9&  &1& \\
+   1& &10& &45&  &120&  &210&   &252&   &210&  &120&  &45& &10& &1
+  \end{array}
+\]
+
+\chapter{Resources} \label{chap:resources}
+
+Some good resources for further learning/reference:
+
+\begin{itemize}
+\item Problems/online judges
+  \begin{itemize}
+  \item Of course, \href{http://open.kattis.com}{Open Kattis} has a
+    collection of over 1000 great problems ranging from trivial to
+    very difficult.
+  \item The \href{https://uva.onlinejudge.org/}{UVa Online Judge} has
+    been around much longer than Kattis and also has a huge collection
+    of problems, mostly disjoint from those on Kattis.
+  \item The CP3 website has a
+    \href{https://cpbook.net/methodstosolve}{Methods to Solve} page
+    with a huge annotated list of problems from Kattis and UVa,
+    grouped by topic (corresponding to sections in CP3) with small
+    hints for each one.
+  \end{itemize}
+\item Books
+  \begin{itemize}
+  \item \href{http://cpbook.net}{Competitive Programming, 3rd edition}
+    (aka CP3) by Steven and Felix Halim is amazing.  Anyone serious
+    about competitive programming should get a copy.
+  \item
+    \href{http://acm.cs.buap.mx/downloads/Programming_Challenges.pdf}{Programming
+      Challenges} by Skiena and Revilla is also good.
+  \end{itemize}
+\item Reference
+  \begin{itemize}
+  \item \todo{Geeksforgeeks}
+  \item \todo{Topcoder}
+  \item \todo{Codeforces}
+  \item \todo{cp-algorithms.com}
+  \end{itemize}
+\end{itemize}
+
+\end{document}
