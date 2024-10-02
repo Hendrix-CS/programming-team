@@ -25,6 +25,9 @@ within a fixed time limit.
 
 # <a name="practice">Practice</a>
 
+- [10/2/24 practice contest](https://open.kattis.com/contests/aweniz)
+- [9/25/24 practice contest](https://open.kattis.com/contests/sseke4)
+- [9/18/24 practice contest](https://open.kattis.com/contests/wek353)
 - [9/11/24 practice contest](https://open.kattis.com/contests/ua7xx7) (BFS, number theory)
 - [9/4/24 practice contest](https://open.kattis.com/contests/qxbsmt) (Dijkstra)
 - [8/28/24 practice contest](https://open.kattis.com/contests/u43r4a) (brute force, parsing, trees)
